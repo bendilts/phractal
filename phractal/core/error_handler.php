@@ -1,4 +1,4 @@
-<?php
+<?php if (!defined('BASEPATH')) { exit(-1); }
 /**
  * phractal
  *
