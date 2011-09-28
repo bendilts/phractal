@@ -1,4 +1,4 @@
-<?php if (!defined('PHRACTAL')) { exit(-1); }
+<?php if (!defined('PHRACTAL')) { exit('no access'); }
 /**
  * phractal
  *
