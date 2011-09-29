@@ -22,7 +22,7 @@
  * 
  * @var string
  */
-define('ENVIRONMENT', 'production');
+define('ENVIRONMENT', 'development');
 
 /**
  * Absolute path to the webroot of the application.
