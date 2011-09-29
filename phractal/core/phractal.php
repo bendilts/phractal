@@ -14,6 +14,21 @@
 // ------------------------------------------------------------------------
 
 /**
+ * Thrown when a context is required, but none exist.
+ */
+class PhractalNoContextException extends PhractalException {}
+
+// ------------------------------------------------------------------------
+
+/**
+ * Thrown when multiple instances of the Phractal singleton
+ * are created.
+ */
+class PhractalMultipleInstancesException extends PhractalException {}
+
+// ------------------------------------------------------------------------
+
+/**
  * Phractal Class
  *
  * Manages references to all objects in the current request. This
@@ -31,7 +46,7 @@ final class Phractal extends PhractalObject
 	 * The number of contexts on the stack
 	 * @var int
 	 */
-	private $num_contexts = 0;
+	private $context_index = -1;
 	
 	/**
 	 * The global context variables.
@@ -50,9 +65,19 @@ final class Phractal extends PhractalObject
 	 * Constructor
 	 * 
 	 * This class is a singleton. Use Phractal::get_instance instead.
+	 * 
+	 * @throws PhractalMultipleInstancesException
 	 */
 	public function __construct()
 	{
+		parent::__construct();
+		
+		static $instance_count = 0;
+		if (++$instance_count !== 1)
+		{
+			throw new PhractalMultipleInstancesException();
+		}
+		
 		$this->push_context();
 	}
 	
@@ -61,6 +86,8 @@ final class Phractal extends PhractalObject
 	 */
 	public function __destruct()
 	{
+		parent::__destruct();
+		
 		$this->pop_context();
 	}
 	
@@ -69,7 +96,7 @@ final class Phractal extends PhractalObject
 	 */
 	private function push_context()
 	{
-		$this->num_contexts++;
+		$this->context_index++;
 		array_push($this->contexts, array(
 			'registry' => new PhractalRegistry(),
 		));
@@ -77,11 +104,27 @@ final class Phractal extends PhractalObject
 	
 	/**
 	 * Pop the current context off the stack
+	 * 
+	 * @throws PhractalNoContextException
 	 */
 	private function pop_context()
 	{
-		$this->num_contexts--;
+		$this->ensure_context_exists();
+		$this->context_index--;
 		array_pop($this->contexts);
+	}
+	
+	/**
+	 * Make sure a context exists, or throw an exception
+	 * 
+	 * @throws PhractalNoContextException
+	 */
+	private function ensure_context_exists()
+	{
+		if ($this->context_index === -1)
+		{
+			throw new PhractalNoContextException();
+		}
 	}
 	
 	/**
@@ -89,10 +132,12 @@ final class Phractal extends PhractalObject
 	 * 
 	 * @param string $name
 	 * @return mixed
+	 * @throws PhractalNoContextException
 	 */
 	private function get_from_current_context($name)
 	{
-		return $this->contexts[$this->num_contexts - 1][$name];
+		$this->ensure_context_exists();
+		return $this->contexts[$this->context_index][$name];
 	}
 	
 	/**
@@ -110,6 +155,7 @@ final class Phractal extends PhractalObject
 	 * Get the class registry from the current context
 	 * 
 	 * @return PhractalRegistry
+	 * @throws PhractalNoContextException
 	 */
 	public function get_registry()
 	{
