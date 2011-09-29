@@ -53,6 +53,10 @@ require_once(PATH_PHRACTAL . '/config/bootstrap.php');
 // set global context items (autoloader, error handler, logger, etc)
 $phractal = Phractal::get_instance();
 
+$config = new PhractalConfig();
+$config->load_file('config');
+$phractal->set_config($config);
+
 $loader = new PhractalLoader();
 $phractal->set_loader($loader);
 

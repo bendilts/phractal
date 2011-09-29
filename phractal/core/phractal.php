@@ -43,6 +43,7 @@ final class Phractal extends PhractalObject
 		'inflector' => null,
 		'logger'    => null,
 		'benchmark' => null,
+		'config'    => null,
 	);
 	
 	/**
@@ -229,6 +230,26 @@ final class Phractal extends PhractalObject
 	public function set_logger(PhractalLogger $logger)
 	{
 		$this->global['logger'] = $logger;
+	}
+	
+	/**
+	 * Get the Config object
+	 * 
+	 * @return PhractalConfig
+	 */
+	public function get_config()
+	{
+		return $this->get_from_global_context('config');
+	}
+	
+	/**
+	 * Set the Config object.
+	 * 
+	 * @param PhractalConfig $config
+	 */
+	public function set_config(PhractalConfig $config)
+	{
+		$this->global['config'] = $config;
 	}
 	
 	/**
