@@ -14,6 +14,48 @@
 // ------------------------------------------------------------------------
 
 /**
+ * Thrown when the loader is double registered or double unregistered.
+ */
+class PhractalLoaderRegistrationException extends PhractalException {}
+
+// ------------------------------------------------------------------------
+
+/**
+ * Thrown when a file cannot be loaded.
+ */
+class PhractalLoaderCannotLoadFileException extends PhractalException
+{
+	/**
+	 * Name of the file
+	 * 
+	 * @type string
+	 */
+	protected $filename;
+	
+	/**
+	 * Constructor
+	 * @param string $filename
+	 */
+	public function __construct($filename)
+	{
+		parent::__construct();
+		$this->filename = $filename;
+	}
+	
+	/**
+	 * Get the name of the file that couldn't be loaded
+	 * 
+	 * @return string
+	 */
+	public function get_filename()
+	{
+		return $this->filename;
+	}
+}
+
+// ------------------------------------------------------------------------
+
+/**
  * Loader Class
  *
  * Including an autoload registration, this class is in charge
@@ -30,26 +72,34 @@ class PhractalLoader extends PhractalObject
 	
 	/**
 	 * Registers the autoload function on this class.
+	 * 
+	 * @throws PhractalLoaderRegistrationException
 	 */
 	public function register()
 	{
-		if (!$this->registered)
+		if ($this->registered)
 		{
-			spl_autoload_register(array($this, 'autoload'), false, false);
-			$this->registered = true;
+			throw new PhractalLoaderRegistrationException();
 		}
+		
+		spl_autoload_register(array($this, 'autoload'), false, false);
+		$this->registered = true;
 	}
 	
 	/**
 	 * Unregister the autoload function on this class.
+	 * 
+	 * @throws PhractalLoaderRegistrationException
 	 */
 	public function unregister()
 	{
-		if ($this->registered)
+		if (!$this->registered)
 		{
-			spl_autoload_unregister(array($this, 'autoload'));
-			$this->registered = false;
+			throw new PhractalLoaderRegistrationException();
 		}
+		
+		spl_autoload_unregister(array($this, 'autoload'));
+		$this->registered = false;
 	}
 	
 	/**
@@ -62,6 +112,7 @@ class PhractalLoader extends PhractalObject
 	 *     - Third Party Classes
 	 * 
 	 * @param string $classname Name of the class to load
+	 * @throws PhractalLoaderCannotLoadFileException
 	 */
 	public function autoload($classname)
 	{
@@ -92,7 +143,14 @@ class PhractalLoader extends PhractalObject
 				// TODO: This doesn't account for subclasses like MysqlDriver, ApcCacheComponent, etc.
 				$classname = substr($classname, 0, strlen($classname) - $suffix_length);
 				$underscored = Phractal::get_instance()->get_inflector()->underscore($classname);
-				require_once($base . '/' . $path . '/' . $underscored . '.php');
+				$filename = $base . '/' . $path . '/' . $underscored . '.php';
+				
+				if (!file_exists($filename) || !is_file($filename) || !is_readable($filename))
+				{
+					throw new PhractalLoaderCannotLoadFileException($filename);
+				}
+				
+				require_once($filename);
 				break;
 			}
 		}
