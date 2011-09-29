@@ -21,7 +21,7 @@ class PhractalRegistryObjectNotFoundException extends PhractalException
 	/**
 	 * Name of the object that wasn't found
 	 * 
-	 * @type string
+	 * @var string
 	 */
 	protected $name;
 	
@@ -59,7 +59,7 @@ class PhractalRegistry extends PhractalObject
 {
 	/**
 	 * Array of objects that have been registered
-	 * @type array
+	 * @var array
 	 */
 	protected $objects = array();
 	

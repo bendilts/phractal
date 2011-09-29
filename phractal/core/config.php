@@ -36,7 +36,7 @@ class PhractalConfigCannotLoadFileException extends PhractalException
 	/**
 	 * Name of the file
 	 * 
-	 * @type string
+	 * @var string
 	 */
 	protected $filename;
 	
@@ -71,7 +71,7 @@ class PhractalConfigNoValueFoundException extends PhractalException
 	/**
 	 * Name of the config that wasn't set
 	 * 
-	 * @type string
+	 * @var string
 	 */
 	protected $name;
 	
@@ -109,7 +109,7 @@ class PhractalConfig extends PhractalObject
 	 * Configuration stack. Each entry contains
 	 * a set of configuration values.
 	 * 
-	 * @type array
+	 * @var array
 	 */
 	protected $stack = array();
 	

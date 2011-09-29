@@ -28,7 +28,7 @@ class PhractalLoaderCannotLoadFileException extends PhractalException
 	/**
 	 * Name of the file
 	 * 
-	 * @type string
+	 * @var string
 	 */
 	protected $filename;
 	
