@@ -179,7 +179,7 @@ class PhractalConfig extends PhractalObject
 			$filename = PATH_APP . '/config/' . $filename;
 		}
 		
-		if (!file_exists($filename) || !is_readable($filename))
+		if (!file_exists($filename) || !is_file($filename) || !is_readable($filename))
 		{
 			throw new PhractalConfigCannotLoadFileException($filename);
 		}
