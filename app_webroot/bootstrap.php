@@ -49,25 +49,35 @@ define('PATH_PHRACTAL', dirname(dirname(__FILE__)) . '/phractal');
 
 // require phractal core
 require_once(PATH_PHRACTAL . '/config/bootstrap.php');
-
-// set global context items (autoloader, error handler, logger, etc)
 $phractal = Phractal::get_instance();
+
+// ------------------------------------
 
 $config = new PhractalConfig();
 $config->load_file('config');
 $phractal->set_config($config);
 
+// ------------------------------------
+
 $loader = new PhractalLoader();
 $phractal->set_loader($loader);
+
+// ------------------------------------
 
 $error_handler = new PhractalErrorHandler();
 $phractal->set_error_handler($error_handler);
 
+// ------------------------------------
+
 $inflector = new PhractalInflector();
 $phractal->set_inflector($inflector);
 
+// ------------------------------------
+
 $benchmark = new PhractalBenchmark();
 $phractal->set_benchmark($benchmark);
+
+// ------------------------------------
 
 $logger = new PhractalLogger();
 $phractal->set_logger($logger);

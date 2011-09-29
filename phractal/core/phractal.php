@@ -205,7 +205,7 @@ final class Phractal extends PhractalObject
 	/**
 	 * Set the Benchmark object.
 	 * 
-	 * @param PhractalBenchmark $inflector
+	 * @param PhractalBenchmark $benchmark
 	 */
 	public function set_benchmark(PhractalBenchmark $benchmark)
 	{
@@ -225,7 +225,7 @@ final class Phractal extends PhractalObject
 	/**
 	 * Set the Logger object.
 	 * 
-	 * @param PhractalLogger $inflector
+	 * @param PhractalLogger $logger
 	 */
 	public function set_logger(PhractalLogger $logger)
 	{
