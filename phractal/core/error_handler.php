@@ -90,6 +90,7 @@ class PhractalErrorHandler extends PhractalObject
 	 */
 	public function handle_error($errno, $errstr, $errfile, $errline, array $errcontext)
 	{
+		// TODO: fill in
 		var_dump($errstr);
 		die();
 	}
@@ -105,6 +106,7 @@ class PhractalErrorHandler extends PhractalObject
 	 */
 	public function handle_exception(Exception $exception)
 	{
+		// TODO: fill in
 		var_dump($exception->getMessage());
 		die();
 	}
