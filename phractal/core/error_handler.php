@@ -39,6 +39,8 @@ class PhractalErrorHandler extends PhractalObject
 	
 	/**
 	 * Register this class's error and exception handlers
+	 * 
+	 * @throws PhractalErrorHandlerRegistrationException
 	 */
 	public function register()
 	{
@@ -58,6 +60,8 @@ class PhractalErrorHandler extends PhractalObject
 	 * This function will succeed whether or not the current
 	 * error handlers belong to this class. There is no
 	 * validation on which handlers are currently registered.
+	 * 
+	 * @throws PhractalErrorHandlerRegistrationException
 	 */
 	public function unregister()
 	{
