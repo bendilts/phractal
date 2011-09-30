@@ -174,6 +174,7 @@ class PhractalLogger extends PhractalObject
 	 */
 	public function __destruct()
 	{
+		parent::__destruct();
 		$this->write_logs_to_file();
 	}
 
