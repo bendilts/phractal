@@ -14,6 +14,13 @@
 // ------------------------------------------------------------------------
 
 /**
+ * Thrown when the error handler is double registered or double unregistered.
+ */
+class PhractalErrorHandlerRegistrationException extends PhractalException {}
+
+// ------------------------------------------------------------------------
+
+/**
  * Error Handler
  *
  * This class can handle exceptions and errors. It is the
@@ -35,12 +42,14 @@ class PhractalErrorHandler extends PhractalObject
 	 */
 	public function register()
 	{
-		if (!$this->registered)
+		if ($this->registered)
 		{
-			set_error_handler(array($this, 'handle_error'));
-			set_exception_handler(array($this, 'handle_exception'));
-			$this->registered = true;
+			throw new PhractalErrorHandlerRegistrationException();
 		}
+		
+		set_error_handler(array($this, 'handle_error'));
+		set_exception_handler(array($this, 'handle_exception'));
+		$this->registered = true;
 	}
 	
 	/**
@@ -52,12 +61,14 @@ class PhractalErrorHandler extends PhractalObject
 	 */
 	public function unregister()
 	{
-		if ($this->registered)
+		if (!$this->registered)
 		{
-			restore_error_handler();
-			restore_exception_handler();
-			$this->registered = false;
+			throw new PhractalErrorHandlerRegistrationException();
 		}
+		
+		restore_error_handler();
+		restore_exception_handler();
+		$this->registered = false;
 	}
 	
 	/**
