@@ -23,35 +23,7 @@ class PhractalLoaderRegistrationException extends PhractalException {}
 /**
  * Thrown when a file cannot be loaded.
  */
-class PhractalLoaderCannotLoadFileException extends PhractalException
-{
-	/**
-	 * Name of the file
-	 * 
-	 * @var string
-	 */
-	protected $filename;
-	
-	/**
-	 * Constructor
-	 * @param string $filename
-	 */
-	public function __construct($filename)
-	{
-		parent::__construct();
-		$this->filename = $filename;
-	}
-	
-	/**
-	 * Get the name of the file that couldn't be loaded
-	 * 
-	 * @return string
-	 */
-	public function get_filename()
-	{
-		return $this->filename;
-	}
-}
+class PhractalLoaderCannotLoadFileException extends PhractalNameException {}
 
 // ------------------------------------------------------------------------
 

@@ -31,70 +31,14 @@ class PhractalConfigNothingLoadedException extends PhractalException {}
 /**
  * Thrown when a file cannot be loaded.
  */
-class PhractalConfigCannotLoadFileException extends PhractalException
-{
-	/**
-	 * Name of the file
-	 * 
-	 * @var string
-	 */
-	protected $filename;
-	
-	/**
-	 * Constructor
-	 * @param string $filename
-	 */
-	public function __construct($filename)
-	{
-		parent::__construct();
-		$this->filename = $filename;
-	}
-	
-	/**
-	 * Get the name of the file that couldn't be loaded
-	 * 
-	 * @return string
-	 */
-	public function get_filename()
-	{
-		return $this->filename;
-	}
-}
+class PhractalConfigCannotLoadFileException extends PhractalNameException {}
 
 // ------------------------------------------------------------------------
 
 /**
  * Thrown when a config is not set, but is accessed.
  */
-class PhractalConfigNoValueFoundException extends PhractalException
-{
-	/**
-	 * Name of the config that wasn't set
-	 * 
-	 * @var string
-	 */
-	protected $name;
-	
-	/**
-	 * Constructor
-	 * @param string $name
-	 */
-	public function __construct($name)
-	{
-		parent::__construct();
-		$this->name = $name;
-	}
-	
-	/**
-	 * Get the name of the config
-	 * 
-	 * @return string
-	 */
-	public function get_name()
-	{
-		return $this->name;
-	}
-}
+class PhractalConfigNoValueFoundException extends PhractalNameException {}
 
 // ------------------------------------------------------------------------
 

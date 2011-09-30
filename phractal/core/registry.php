@@ -16,35 +16,7 @@
 /**
  * Thrown when an object is requested, but not found in the registry
  */
-class PhractalRegistryObjectNotFoundException extends PhractalException
-{
-	/**
-	 * Name of the object that wasn't found
-	 * 
-	 * @var string
-	 */
-	protected $name;
-	
-	/**
-	 * Constructor
-	 * @param string $name
-	 */
-	public function __construct($name)
-	{
-		parent::__construct();
-		$this->name = $name;
-	}
-	
-	/**
-	 * Get the name of the object
-	 * 
-	 * @return string
-	 */
-	public function get_name()
-	{
-		return $this->name;
-	}
-}
+class PhractalRegistryObjectNotFoundException extends PhractalNameException {}
 
 // ------------------------------------------------------------------------
 
