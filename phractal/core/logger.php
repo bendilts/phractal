@@ -14,10 +14,363 @@
 // ------------------------------------------------------------------------
 
 /**
+ * Thrown when a logger group is requested but has not been registered.
+ */
+class PhractalLoggerGroupNotRegisteredException extends PhractalNameException {}
+
+// ------------------------------------------------------------------------
+
+/**
+ * Thrown when a logger group is registered multiple times
+ */
+class PhractalLoggerGroupAlreadyRegisteredException extends PhractalNameException {}
+
+// ------------------------------------------------------------------------
+
+/**
+ * Thrown when headers were already sent, so the logger cannot send more
+ */
+class PhractalLoggerHeadersSentException extends PhractalException {}
+
+// ------------------------------------------------------------------------
+
+/**
  * Logger Class
  *
  * Logs errors and debug information in requests.
  */
 class PhractalLogger extends PhractalObject
 {
+	/**
+	 * All the logging levels combined
+	 *
+	 * @var int
+	 */
+	const LEVEL_ALL      = 0x1111111111111111;
+
+	/**
+	 * Critical log level.
+	 *
+	 * Logs of this level need immediate attention.
+	 *
+	 * @var int
+	 */
+	const LEVEL_CRITICAL = 0x0000000000000001;
+
+	/**
+	 * Error log level.
+	 *
+	 * Logs of this level represent an error that occurred
+	 * in the system. They are breaking the current system,
+	 * but not as badly as the critical logs.
+	 *
+	 * @var int
+	 */
+	const LEVEL_ERROR    = 0x0000000000000010;
+
+	/**
+	 * Warning log level.
+	 *
+	 * Logs of this level can lead to errors and criticals
+	 * if not examined in some reasonable amount of time.
+	 *
+	 * @var int
+	 */
+	const LEVEL_WARNING  = 0x0000000000000100;
+
+	/**
+	 * Notice log level.
+	 *
+	 * Logs of this level will probably not lead to any
+	 * damage to the system, but are good to know.
+	 *
+	 * @var int
+	 */
+	const LEVEL_NOTICE   = 0x0000000000001000;
+
+	/**
+	 * Debug log level.
+	 *
+	 * Logs of this level are good for debugging problems,
+	 * but will probably not make sense in a production
+	 * environment.
+	 *
+	 * @var int
+	 */
+	const LEVEL_DEBUG    = 0x0000000000010000;
+
+	/**
+	 * Info log level.
+	 *
+	 * Logs of this level are good for informing system
+	 * administrators what is going on in the system.
+	 *
+	 * @var int
+	 */
+	const LEVEL_INFO     = 0x0000000000100000;
+
+	/**
+	 * Names of the levels for output
+	 *
+	 * @var array
+	 */
+	static $level_names = array(
+	self::LEVEL_CRITICAL => 'Critical',
+	self::LEVEL_ERROR    => 'Error',
+	self::LEVEL_WARNING  => 'Warning',
+	self::LEVEL_NOTICE   => 'Notice',
+	self::LEVEL_DEBUG    => 'Debug',
+	self::LEVEL_INFO     => 'Info',
+	);
+
+	/**
+	 * All the log entries
+	 *
+	 * @var array
+	 */
+	protected $logs = array();
+
+	/**
+	 * Log groups.
+	 *
+	 * Each group has a level bitmask for filtering,
+	 * and can be dumped to file or retrieved.
+	 *
+	 * @var string
+	 */
+	protected $groups = array();
+
+	/**
+	 * Print an entry all pretty-like.
+	 *
+	 * @param array $entry
+	 * @return string
+	 */
+	protected function format_entry($entry)
+	{
+		return '[' . date('Y-m-d H:i:s', $entry['time']) . '] ' . self::$level_names[$entry['level']] . ': ' . $entry['message'];
+	}
+
+	/**
+	 * Create a log entry with the level and message specified.
+	 *
+	 * If the message isn't a string, var_export will be used
+	 * to stringify it.
+	 *
+	 * @param int $level
+	 * @param mixed $message
+	 */
+	protected function log($level, $message)
+	{
+		$this->logs[] = array(
+			'time'    => time(),
+			'message' => $message,
+			'level'   => $level,
+		);
+	}
+
+	/**
+	 * Destructor
+	 */
+	public function __destruct()
+	{
+		$this->write_logs_to_file();
+	}
+
+	/**
+	 * Write all logs to their group files
+	 *
+	 * This function is private because it happens
+	 * automatically on __destruct.
+	 */
+	protected function write_logs_to_file()
+	{
+		foreach ($this->groups as $name => $group)
+		{
+			if (!$group['file']) { continue; }
+				
+			$formatted = array();
+			$level = $group['level'];
+			foreach ($this->logs as $entry)
+			{
+				if ($entry['level'] & $level)
+				{
+					$formatted[] = $this->format_entry($entry);
+				}
+			}
+				
+			if (!empty($formatted))
+			{
+				// TODO: Use config to determine path
+				$filename = PATH_APP . '/tmp/logs/' . $name . '.log';
+
+				// suppress errors here, because what would we do? log an error?
+				@file_put_contents($filename, "---\n" . implode("\n", $formatted) . "\n", FILE_APPEND);
+			}
+		}
+	}
+
+	/**
+	 * Write all logs to the browser using HTTP headers
+	 *
+	 * @throws PhractalLoggerHeadersSentException
+	 */
+	public function write_logs_to_browser()
+	{
+		if (headers_sent())
+		{
+			throw new PhractalLoggerHeadersSentException();
+		}
+
+		foreach ($this->groups as $name => $group)
+		{
+			if (!$group['header']) { continue; }
+				
+			$i = 0;
+			$level = $group['level'];
+			foreach ($this->logs as $entry)
+			{
+				if ($entry['level'] & $level)
+				{
+					header('log-' . $name . '-' . $i++ . ': ' . $this->format_entry($entry));
+				}
+			}
+		}
+	}
+
+	/**
+	 * Register a log group
+	 *
+	 * @param string $name Name of the group
+	 * @param int $level_bitmask Bitmask of all log levels to monitor
+	 * @param bool $write_to_file True to save logs in this group to a file
+	 * @param bool $write_to_headers True to send logs in this group to the browser using HTTP headers
+	 * @throws PhractalLoggerGroupAlreadyRegisteredException
+	 */
+	public function register_group($name, $level_bitmask, $write_to_file = false, $write_to_headers = false)
+	{
+		if (isset($this->groups[$name]))
+		{
+			throw new PhractalLoggerGroupAlreadyRegisteredException($name);
+		}
+
+		$this->groups[$name] = array(
+			'level'  => $level_bitmask,
+			'file'   => $write_to_file,
+			'header' => $write_to_headers,
+		);
+	}
+
+	/**
+	 * Unregister a group from logging
+	 *
+	 * @param string $name
+	 * @throws PhractalLoggerGroupNotRegisteredException
+	 */
+	public function unregister_group($name)
+	{
+		if (!isset($this->groups[$group]))
+		{
+			throw new PhractalLoggerGroupNotRegisteredException($group);
+		}
+
+		unset($this->groups[$name]);
+	}
+
+	/**
+	 * Find all the logs in a certain group
+	 *
+	 * @param string $group
+	 * @return array
+	 * @throws PhractalLoggerGroupNotRegisteredException
+	 */
+	public function get_logs_by_group($group)
+	{
+		if (!isset($this->groups[$group]))
+		{
+			throw new PhractalLoggerGroupNotRegisteredException($group);
+		}
+
+		$level = $this->groups[$group]['level'];
+		return $this->get_logs_by_level($level);
+	}
+
+	/**
+	 * Get all the logs by a level bitmask
+	 *
+	 * @param int $level_bitmask
+	 * @return array
+	 */
+	public function get_logs_by_level($level_bitmask)
+	{
+		$logs = array();
+		foreach ($this->logs as $entry)
+		{
+			if ($entry['level'] & $level_bitmask)
+			{
+				$logs[] = $entry;
+			}
+		}
+		return $logs;
+	}
+
+	/**
+	 * Log a critical message
+	 *
+	 * @param mixed $message
+	 */
+	public function critical($message)
+	{
+		$this->log(self::LEVEL_CRITICAL, $message);
+	}
+
+	/**
+	 * Log an error message
+	 *
+	 * @param mixed $message
+	 */
+	public function error($message)
+	{
+		$this->log(self::LEVEL_ERROR, $message);
+	}
+
+	/**
+	 * Log a warning message
+	 *
+	 * @param mixed $message
+	 */
+	public function warning($message)
+	{
+		$this->log(self::LEVEL_WARNING, $message);
+	}
+
+	/**
+	 * Log a notice message
+	 *
+	 * @param mixed $message
+	 */
+	public function notice($message)
+	{
+		$this->log(self::LEVEL_NOTICE, $message);
+	}
+
+	/**
+	 * Log a debug message
+	 *
+	 * @param mixed $message
+	 */
+	public function debug($message)
+	{
+		$this->log(self::LEVEL_DEBUG, $message);
+	}
+
+	/**
+	 * Log an informational message
+	 *
+	 * @param mixed $message
+	 */
+	public function info($message)
+	{
+		$this->log(self::LEVEL_INFO, $message);
+	}
 }

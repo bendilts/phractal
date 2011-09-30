@@ -59,6 +59,14 @@ $phractal->set_config($config);
 
 // ------------------------------------
 
+$logger = new PhractalLogger();
+$logger->register_group('error',   PhractalLogger::LEVEL_CRITICAL | PhractalLogger::LEVEL_ERROR,   true,  true);
+$logger->register_group('warning', PhractalLogger::LEVEL_NOTICE   | PhractalLogger::LEVEL_WARNING, false, false);
+$logger->register_group('trace',   PhractalLogger::LEVEL_DEBUG    | PhractalLogger::LEVEL_INFO,    false, false);
+$phractal->set_logger($logger);
+
+// ------------------------------------
+
 $loader = new PhractalLoader();
 $phractal->set_loader($loader);
 
@@ -76,8 +84,3 @@ $phractal->set_inflector($inflector);
 
 $benchmark = new PhractalBenchmark();
 $phractal->set_benchmark($benchmark);
-
-// ------------------------------------
-
-$logger = new PhractalLogger();
-$phractal->set_logger($logger);
