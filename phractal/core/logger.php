@@ -232,6 +232,11 @@ class PhractalLogger extends PhractalObject
 		{
 			throw new PhractalLoggerHeadersSentException();
 		}
+		
+		if (RUNTIME === 'cli')
+		{
+			return;
+		}
 
 		foreach ($this->groups['header'] as $name => $level)
 		{
