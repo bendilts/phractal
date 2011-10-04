@@ -12,19 +12,6 @@
  */
 
 /**
- * Set the environment to run in. This environment can be anything you choose.
- * Examples are:
- * 
- * - production
- * - development
- * - staging
- * - testing
- * 
- * @var string
- */
-define('ENVIRONMENT', 'development');
-
-/**
  * Absolute path to the webroot of the application.
  * Does NOT contain a trailing slash.
  * @var string
