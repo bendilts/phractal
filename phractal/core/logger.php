@@ -144,11 +144,14 @@ class PhractalLogger extends PhractalObject
 	 * Log groups.
 	 *
 	 * Each group has a level bitmask for filtering,
-	 * and can be dumped to file or retrieved.
+	 * and a destination
 	 *
 	 * @var string
 	 */
-	protected $groups = array();
+	protected $groups = array(
+		'file'   => array(),
+		'header' => array(),
+	);
 
 	/**
 	 * Print an entry all pretty-like.
@@ -196,12 +199,9 @@ class PhractalLogger extends PhractalObject
 	 */
 	protected function write_logs_to_file()
 	{
-		foreach ($this->groups as $name => $group)
+		foreach ($this->groups['file'] as $name => $level)
 		{
-			if (!$group['file']) { continue; }
-				
 			$formatted = array();
-			$level = $group['level'];
 			foreach ($this->logs as $entry)
 			{
 				if ($entry['level'] & $level)
@@ -233,12 +233,9 @@ class PhractalLogger extends PhractalObject
 			throw new PhractalLoggerHeadersSentException();
 		}
 
-		foreach ($this->groups as $name => $group)
+		foreach ($this->groups['header'] as $name => $level)
 		{
-			if (!$group['header']) { continue; }
-				
 			$i = 0;
-			$level = $group['level'];
 			foreach ($this->logs as $entry)
 			{
 				if ($entry['level'] & $level)
@@ -248,62 +245,84 @@ class PhractalLogger extends PhractalObject
 			}
 		}
 	}
-
+	
 	/**
-	 * Register a log group
+	 * Register a logging group of a certain type
 	 *
 	 * @param string $name Name of the group
 	 * @param int $level_bitmask Bitmask of all log levels to monitor
-	 * @param bool $write_to_file True to save logs in this group to a file
-	 * @param bool $write_to_headers True to send logs in this group to the browser using HTTP headers
 	 * @throws PhractalLoggerGroupAlreadyRegisteredException
 	 */
-	public function register_group($name, $level_bitmask, $write_to_file = false, $write_to_headers = false)
+	protected function register_group($type, $name, $level_bitmask)
 	{
-		if (isset($this->groups[$name]))
+		if (isset($this->groups[$type][$name]))
 		{
 			throw new PhractalLoggerGroupAlreadyRegisteredException($name);
 		}
-
-		$this->groups[$name] = array(
-			'level'  => $level_bitmask,
-			'file'   => $write_to_file,
-			'header' => $write_to_headers,
-		);
+		
+		$this->groups[$type][$name] = $level_bitmask;
 	}
-
+	
 	/**
-	 * Unregister a group from logging
+	 * Unregister a logging group of a certain type
 	 *
 	 * @param string $name
 	 * @throws PhractalLoggerGroupNotRegisteredException
 	 */
-	public function unregister_group($name)
+	public function unregister_group($type, $name)
 	{
-		if (!isset($this->groups[$group]))
+		if (!isset($this->groups[$type][$name]))
 		{
-			throw new PhractalLoggerGroupNotRegisteredException($group);
+			throw new PhractalLoggerGroupNotRegisteredException($name);
 		}
-
-		unset($this->groups[$name]);
+		
+		unset($this->groups[$type][$name]);
+	}
+	
+	/**
+	 * Register a file logging group
+	 *
+	 * @param string $name Name of the group
+	 * @param int $level_bitmask Bitmask of all log levels to monitor
+	 * @throws PhractalLoggerGroupAlreadyRegisteredException
+	 */
+	public function register_file($name, $level_bitmask)
+	{
+		$this->register_group('file', $name, $level_bitmask);
 	}
 
 	/**
-	 * Find all the logs in a certain group
+	 * Unregister a file logging group
 	 *
-	 * @param string $group
-	 * @return array
+	 * @param string $name
 	 * @throws PhractalLoggerGroupNotRegisteredException
 	 */
-	public function get_logs_by_group($group)
+	public function unregister_file($name)
 	{
-		if (!isset($this->groups[$group]))
-		{
-			throw new PhractalLoggerGroupNotRegisteredException($group);
-		}
+		$this->unregister_group('file', $name);
+	}
 
-		$level = $this->groups[$group]['level'];
-		return $this->get_logs_by_level($level);
+	/**
+	 * Register a header logging group
+	 *
+	 * @param string $name Name of the group
+	 * @param int $level_bitmask Bitmask of all log levels to monitor
+	 * @throws PhractalLoggerGroupAlreadyRegisteredException
+	 */
+	public function register_header($name, $level_bitmask)
+	{
+		$this->register_group('header', $name, $level_bitmask);
+	}
+
+	/**
+	 * Unregister a header logging group
+	 *
+	 * @param string $name
+	 * @throws PhractalLoggerGroupNotRegisteredException
+	 */
+	public function unregister_header($name)
+	{
+		$this->unregister_group('header', $name);
 	}
 
 	/**
