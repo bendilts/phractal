@@ -45,6 +45,12 @@ define('PATH_APP', dirname(dirname(__FILE__)) . '/app');
  */
 define('PATH_PHRACTAL', dirname(dirname(__FILE__)) . '/phractal');
 
+/**
+ * The PHP runtime being used.
+ * @var string cli|web
+ */
+define('RUNTIME', isset($_SERVER['argc']) ? 'cli' : 'web');
+
 // ------------------------------------------------------------------------
 
 // require phractal core
