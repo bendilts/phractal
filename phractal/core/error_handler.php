@@ -76,6 +76,44 @@ class PhractalErrorHandler extends PhractalObject
 	}
 	
 	/**
+	 * Format an error or exception as a log message
+	 * 
+	 * @param Exception $exception True if an exception, false if an error
+	 * @param int $errno Contains the level of the error raised.
+	 * @param string $errstr Contains the error message.
+	 * @param string $errfile Contains the filename that the error was raised in.
+	 * @param int $errline Contains the line number the error was raised at.
+	 * @param array $errcontext Points to the active symbol table at the point the error occurred.
+	 *                          In other words, errcontext will contain an array of every variable
+	 *                          that existed in the scope the error was triggered in. User error
+	 *                          handler must not modify error context.
+	 */
+	protected function format_log_message(Exception $exception = null, $errno, $errstr, $errfile, $errline, array $errcontext)
+	{
+		static $titles = array(
+			E_COMPILE_ERROR     => 'Compiler Error',
+			E_COMPILE_WARNING   => 'Compiler Warning',
+			E_CORE_ERROR        => 'Core Error',
+			E_CORE_WARNING      => 'Core Warning',
+			E_DEPRECATED        => 'Deprecated',
+			E_ERROR             => 'Error',
+			E_NOTICE            => 'Notice',
+			E_PARSE             => 'Parse',
+			E_RECOVERABLE_ERROR => 'Recoverable Error',
+			E_USER_DEPRECATED   => 'User Deprecated',
+			E_USER_ERROR        => 'User Error',
+			E_USER_NOTICE       => 'User Notice',
+			E_USER_WARNING      => 'User Warning',
+			E_WARNING           => 'Warning',
+		);
+		
+		$title = !is_null($exception) ?
+		         'Uncaught ' . get_class($exception) :
+		         $titles[$errno];
+		return $title . ' "' . $errstr . '" on line ' . $errline . ' of ' . $errfile;
+	}
+	
+	/**
 	 * Handle an error.
 	 * 
 	 * @param int $errno Contains the level of the error raised.
@@ -90,9 +128,49 @@ class PhractalErrorHandler extends PhractalObject
 	 */
 	public function handle_error($errno, $errstr, $errfile, $errline, array $errcontext)
 	{
-		// TODO: fill in
-		var_dump($errstr);
-		die();
+		$live = $errno & (E_DEPRECATED | E_CORE_WARNING | E_NOTICE | E_RECOVERABLE_ERROR | E_USER_DEPRECATED | E_USER_NOTICE | E_USER_WARNING | E_WARNING);
+		
+		$logger = Phractal::get_instance()->get_logger();
+		if ($logger)
+		{
+			$message = $this->format_log_message(null, $errno, $errstr, $errfile, $errline, $errcontext);
+			
+			switch ($errno)
+			{
+				case E_COMPILE_ERROR:
+				case E_CORE_ERROR:
+				case E_PARSE:
+					$logger->critical($message);
+					break;
+				
+				case E_ERROR:
+				case E_RECOVERABLE_ERROR:
+				case E_USER_ERROR:
+					$logger->error($message);
+					break;
+				
+				case E_COMPILE_WARNING:
+				case E_CORE_WARNING:
+				case E_USER_WARNING:
+				case E_WARNING:
+					$logger->warning($message);
+					break;
+				
+				case E_DEPRECATED:
+				case E_NOTICE:
+				case E_USER_DEPRECATED:
+				case E_USER_NOTICE:
+					$logger->notice($message);
+					break;
+			}
+		}
+		
+		if (!$live)
+		{
+			die();
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -106,8 +184,15 @@ class PhractalErrorHandler extends PhractalObject
 	 */
 	public function handle_exception(Exception $exception)
 	{
-		// TODO: fill in
-		var_dump($exception->getMessage());
+		$logger = Phractal::get_instance()->get_logger();
+		if ($logger)
+		{
+			$message = $this->format_log_message($exception, $exception->getCode(), $exception->getMessage(), $exception->getFile(), $exception->getLine(), $exception->getTrace());
+			$logger->critical($message);
+		}
+		
+		// PHP5 dies anyway, whether I call it here explicitly or not.
+		// I call it explicity here as a way to draw attention to it.
 		die();
 	}
 }
