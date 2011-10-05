@@ -78,18 +78,6 @@ final class Phractal extends PhractalObject
 		{
 			throw new PhractalMultipleInstancesException();
 		}
-		
-		$this->push_context();
-	}
-	
-	/**
-	 * Destructor
-	 */
-	public function __destruct()
-	{
-		parent::__destruct();
-		
-		$this->pop_context();
 	}
 	
 	/**
