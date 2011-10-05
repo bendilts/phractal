@@ -158,3 +158,14 @@ $phractal->set_inflector($inflector);
  */
 $benchmark = new PhractalBenchmark();
 $phractal->set_benchmark($benchmark);
+
+// ------------------------------------
+
+/**
+ * Dispatcher
+ * 
+ * Replace this class with a subclass of PhractalDispatcher
+ * to customize dispatching
+ */
+$dispatcher = new PhractalDispatcher();
+$phractal->set_dispatcher($dispatcher);
