@@ -112,7 +112,6 @@ class PhractalLoader extends PhractalObject
 			$suffix_length = strlen($suffix);
 			if (substr($classname, -$suffix_length) === $suffix)
 			{
-				// TODO: This doesn't account for subclasses like MysqlDriver, ApcCacheComponent, etc.
 				$classname = substr($classname, 0, strlen($classname) - $suffix_length);
 				$underscored = Phractal::get_instance()->get_inflector()->underscore($classname);
 				$filename = $base . '/' . $path . '/' . $underscored . '.php';
