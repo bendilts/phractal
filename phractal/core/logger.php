@@ -151,6 +151,7 @@ class PhractalLogger extends PhractalObject
 	protected $groups = array(
 		'file'   => array(),
 		'header' => array(),
+		'screen' => array(),
 	);
 
 	/**
@@ -189,12 +190,13 @@ class PhractalLogger extends PhractalObject
 	{
 		parent::__destruct();
 		$this->write_logs_to_file();
+		$this->write_logs_to_screen();
 	}
 
 	/**
 	 * Write all logs to their group files
 	 *
-	 * This function is private because it happens
+	 * This function is protected because it happens
 	 * automatically on __destruct.
 	 */
 	protected function write_logs_to_file()
@@ -217,6 +219,40 @@ class PhractalLogger extends PhractalObject
 
 				// suppress errors here, because what would we do? log an error?
 				@file_put_contents($filename, "---\n" . implode("\n", $formatted) . "\n", FILE_APPEND);
+			}
+		}
+	}
+
+	/**
+	 * Write all logs to the screen
+	 *
+	 * This function is protected because it happens
+	 * automatically on __destruct.
+	 */
+	protected function write_logs_to_screen()
+	{
+		foreach ($this->groups['screen'] as $name => $level)
+		{
+			$formatted = array();
+			foreach ($this->logs as $entry)
+			{
+				if ($entry['level'] & $level)
+				{
+					$formatted[] = $this->format_entry($entry);
+				}
+			}
+				
+			if (!empty($formatted))
+			{
+				$output = implode("\n", $formatted) . "\n";
+				if (RUNTIME === 'cli')
+				{
+					echo $output;
+				}
+				elseif (RUNTIME === 'web')
+				{
+					echo '<pre>' . $output . '</pre>';
+				}
 			}
 		}
 	}
@@ -305,6 +341,29 @@ class PhractalLogger extends PhractalObject
 	public function unregister_file($name)
 	{
 		$this->unregister_group('file', $name);
+	}
+	
+	/**
+	 * Register a screen logging group
+	 *
+	 * @param string $name Name of the group
+	 * @param int $level_bitmask Bitmask of all log levels to monitor
+	 * @throws PhractalLoggerGroupAlreadyRegisteredException
+	 */
+	public function register_screen($name, $level_bitmask)
+	{
+		$this->register_group('screen', $name, $level_bitmask);
+	}
+
+	/**
+	 * Unregister a screen logging group
+	 *
+	 * @param string $name
+	 * @throws PhractalLoggerGroupNotRegisteredException
+	 */
+	public function unregister_screen($name)
+	{
+		$this->unregister_group('screen', $name);
 	}
 
 	/**

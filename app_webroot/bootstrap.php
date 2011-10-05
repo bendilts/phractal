@@ -92,6 +92,10 @@ $phractal->set_config($config);
  * the name of the file and the log levels that should go
  * into that file.
  * 
+ * To send logs to the screen, use $logger->register_screen and
+ * pass in the name of the group and the log levels that should
+ * be sent to the screen.
+ * 
  * To log to the HTTP client using headers, use
  * $logger->register_header and pass in the name of the header
  * and the log levels that should be sent.
@@ -102,6 +106,7 @@ $logger->register_file('warning',     PhractalLogger::LEVEL_NOTICE   | PhractalL
 $logger->register_file('trace',       PhractalLogger::LEVEL_DEBUG    | PhractalLogger::LEVEL_INFO);
 $logger->register_file('benchmark',   PhractalLogger::LEVEL_BENCHMARK);
 $logger->register_header('benchmark', PhractalLogger::LEVEL_ALL);
+$logger->register_screen('onscreen',  PhractalLogger::LEVEL_CRITICAL | PhractalLogger::LEVEL_ERROR);
 $phractal->set_logger($logger);
 
 // ------------------------------------
