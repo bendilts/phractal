@@ -161,12 +161,9 @@ class PhractalConfig extends PhractalObject
 	 * 
 	 * @param string $name
 	 * @return bool
-	 * @throws PhractalConfigNothingLoadedException
 	 */
 	public function check($name)
 	{
-		$this->ensure_config_loaded();
-		
 		for ($i = $this->stack_index; $i >= 0; $i--)
 		{
 			if (isset($this->stack[$name]))

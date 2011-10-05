@@ -214,8 +214,11 @@ class PhractalLogger extends PhractalObject
 				
 			if (!empty($formatted))
 			{
-				// TODO: Use config to determine path
-				$filename = PATH_APP . '/tmp/logs/' . $name . '.log';
+				$config = Phractal::get_instance()->get_config();
+				$path      = $config->check('log.file.path')      ? $config->get('log.file.path')      : PATH_APP . '/tmp/logs';
+				$extension = $config->check('log.file.extension') ? $config->get('log.file.extension') : 'log';
+				
+				$filename = $path . '/' . $name . '.' . $extension;
 
 				// suppress errors here, because what would we do? log an error?
 				@file_put_contents($filename, "---\n" . implode("\n", $formatted) . "\n", FILE_APPEND);
