@@ -128,8 +128,6 @@ class PhractalErrorHandler extends PhractalObject
 	 */
 	public function handle_error($errno, $errstr, $errfile, $errline, array $errcontext)
 	{
-		$live = $errno & (E_DEPRECATED | E_CORE_WARNING | E_NOTICE | E_RECOVERABLE_ERROR | E_USER_DEPRECATED | E_USER_NOTICE | E_USER_WARNING | E_WARNING);
-		
 		$logger = Phractal::get_instance()->get_logger();
 		if ($logger)
 		{
@@ -165,6 +163,7 @@ class PhractalErrorHandler extends PhractalObject
 			}
 		}
 		
+		$live = $errno & (E_COMPILE_WARNING | E_CORE_WARNING | E_USER_WARNING | E_WARNING | E_DEPRECATED | E_NOTICE | E_USER_DEPRECATED | E_USER_NOTICE);
 		if (!$live)
 		{
 			die();
