@@ -1,0 +1,25 @@
+#
+# It is highly recommended that you use the apache configuration
+# found in /etc/apache2 or /etc/httpd (depending on Linux distribution)
+# instead of using htaccess files. The reason is speed. Configuration
+# files are loaded on apache start, and kept in memory. htaccess files
+# are statted, read, parsed, and applied on every request.
+#
+# If you are too lazy to read the above paragraph:
+#
+# Use apache configuration over htaccess files.
+#
+
+Options +FollowSymLinks
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	
+	# Change this to whatever the URL root is
+	RewriteBase /
+	
+	# All non-files will be routed to index.php
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule ^(.*)$ index.php [QSA,L,NE]
+</IfModule>
