@@ -11,12 +11,17 @@
  * @filesource
  */
 
+// ------------------------------------------------------------------------
+
 /**
  * The recommended way to fill this, and all other, configuration file
  * is to use PHP's autoprepend. The autoprepend file should exist outside
  * of the code checkout. Because of it's sensitive nature (usernames,
  * hostnames, passwords, etc), it should never be committed to any source
  * code control like subversion or git.
+ * 
+ * You should not use the prepend for any non-sensitive files, like
+ * routes.
  * 
  * The reason why this is recommended is because it ensures configuration
  * stays on the machine and doesn't change during releases. It also ensures
@@ -39,6 +44,10 @@
  * 
  * @link http://www.php.net/auto_prepend_file
  */
+
+// ------------------------------------------------------------------------
+// COMMON CONFIGURATION
+// ------------------------------------------------------------------------
 
 /**
  * Log file path
