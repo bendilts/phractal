@@ -118,6 +118,16 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	protected $files = array();
 	
 	/**
+	 * ROUTER variables
+	 * 
+	 * The matched route can have variables associated
+	 * with it. Those variables are put here.
+	 * 
+	 * @var array
+	 */
+	protected $router = array();
+	
+	/**
 	 * Constructor
 	 * 
 	 * @param string $method Request Method
@@ -945,5 +955,90 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	public function check_files($name)
 	{
 		return isset($this->files[$name]);
+	}
+	
+	/**
+	 * Set a ROUTER variable
+	 * 
+	 * @param string $name
+	 * @param mixed $value
+	 */
+	public function set_router($name, $value)
+	{
+		$this->throw_exception_if_locked();
+		$this->router[$name] = $value;
+	}
+	
+	/**
+	 * Set an array of ROUTER variables
+	 * 
+	 * This will not replace all the existing ROUTER values, but will
+	 * overwrite any that were already set.
+	 * 
+	 * @param array $array
+	 * @throws PhractalRequestComponentLockedException
+	 */
+	public function set_router_array(array $array)
+	{
+		$this->throw_exception_if_locked();
+		$this->router = array_merge($this->router, $array);
+	}
+	
+	/**
+	 * Delete a ROUTER variable
+	 * 
+	 * @param string $name
+	 */
+	public function del_router($name)
+	{
+		$this->throw_exception_if_locked();
+		unset($this->router[$name]);
+	}
+	
+	/**
+	 * Get a ROUTER variable
+	 * 
+	 * If the variable isn't found, $default will be returned.
+	 * If $default is null, an exception will be thrown.
+	 * 
+	 * @param string $name
+	 * @param mixed $default
+	 * @throws PhractalRequestComponentVariableNotFoundException
+	 */
+	public function get_router($name, $default = null)
+	{
+		if (isset($this->router[$name]))
+		{
+			return $this->router[$name];
+		}
+		elseif ($default !== null)
+		{
+			return $default;
+		}
+		else
+		{
+			throw new PhractalRequestComponentVariableNotFoundException('ROUTER::' . $name);
+		}
+	}
+	
+	/**
+	 * Get all of the ROUTER variables in an associative array.
+	 * 
+	 * @return array
+	 */
+	public function get_all_router()
+	{
+		return $this->router;
+	}
+	
+	/**
+	 * Check to see if a ROUTER variable exists
+	 * 
+	 * @param string $name
+	 * @return bool
+	 */
+	public function check_router($name)
+	{
+		return isset($this->router[$name]);
 	}
 }

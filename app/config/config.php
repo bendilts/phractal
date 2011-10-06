@@ -79,3 +79,97 @@ $config->set('log.file.extension', 'log');
  * @var string
  */
 $config->set('environment', 'development');
+
+// ------------------------------------------------------------------------
+// ROUTING CONFIGURATION
+// ------------------------------------------------------------------------
+
+$routes = array();
+
+$routes[] = array(
+	'uri'          => '/',
+	'methods'      => array('GET'),
+	'no_extension' => 'html',
+	'controller'   => 'Home',
+	'action'       => 'index',
+	'extensions'   => array('html', 'htm'),
+);
+
+$routes[] = array(
+	'uri'          => '/cron/maintenance',
+	'methods'      => array('CRON'),
+	'runtimes'     => array('cli'),
+	'controller'   => 'Maintenance',
+	'action'       => 'doit',
+	'no_extension' => 'none',
+	'extensions'   => array(),
+);
+
+$routes[] = array(
+	'uri'          => '/admin/sidebar',
+	'methods'      => array('INTERNAL'),
+	'controller'   => 'Admin',
+	'action'       => 'sidebar',
+	'no_extension' => 'html',
+	'extensions'   => array(),
+	'extra_named'  => array(
+		'var1' => 'abc',
+		'var2' => 'def',
+	),
+);
+
+$routes[] = array(
+	'uri'          => '/users/{userid}-{abc}/profile/{profiletype}',
+	'methods'      => array('GET', 'POST'),
+	'controller'   => 'UserProfile',
+	'action'       => 'get_user_profile',
+	'extensions'   => array('json', 'xml'),
+	'regex'        => array(
+		'userid'      => '/^\d+$/',
+		'profiletype' => '/^account|password|history|picture$/',
+	),
+);
+
+/**
+ * Routing Table
+ * 
+ * Each element of the routing table should be an associative array with the following keys:
+ * 
+ *   - string  uri           (required) Request URI that matches this route (leave off the extension).
+ *                           The uri must begin with a '/'. It can contain static parts as well as
+ *                           named variables. A named variable is used like this:
+ *                           /blogs/{userid}-{blogid}/{pagenum}
+ *                           In this example, there are 3 named variables: userid, blogid, and pagenum.
+ *                           /blogs/matthew-barlocker-17/5 does NOT match this example route.
+ *                           These will be set in the request object after routing.
+ *   
+ *   - string  controller    (required) Classname of the controller (without 'Controller') to use
+ *                           when processing the route.
+ *   
+ *   - string  action        (required) Name of the method on the controller to use when processing
+ *                           the route.
+ *   
+ *   - array   extensions    (optional) Array of allowed extensions. If absent, all extensions
+ *                           will be allowed.
+ *   
+ *   - array   methods       (optional) Array of methods that can match the route. HTTP methods
+ *                           (GET, POST, etc) are going to be used most commonly, but all strings
+ *                           are allowed. This enables routes to be restricted to cron jobs or
+ *                           internal requests. If not specified, all methods will be allowed.
+ *   
+ *   - string  no_extension  (optional) If no extension is given, use this one. If no extension is
+ *                           provided, and no_extension == null, then the route will not
+ *                           be matched.
+ *   
+ *   - array   runtimes      (optional) Array of runtimes to allow access to. If not defined, all
+ *                           runtimes will be allowed access.
+ *   
+ *   - array   extra_named   (optional) Extra named variables to be added to the request object.
+ *   
+ *   - array   regex         (optional) Regular expression validations to be applied to all named
+ *                           variables found in the url. If any regex doesn't match, the route
+ *                           will not match.
+ * 
+ * @var array
+ */
+$config->set('route.table', $routes);
