@@ -170,7 +170,7 @@ final class Phractal extends PhractalObject
 	public function set_loader(PhractalLoader $loader)
 	{
 		$current_loader = $this->get_loader();
-		if (!is_null($current_loader))
+		if ($current_loader !== null)
 		{
 			$current_loader->unregister();
 		}
@@ -198,7 +198,7 @@ final class Phractal extends PhractalObject
 	public function set_error_handler(PhractalErrorHandler $handler)
 	{
 		$current_handler = $this->get_error_handler();
-		if (!is_null($current_handler))
+		if ($current_handler !== null)
 		{
 			$current_handler->unregister();
 		}

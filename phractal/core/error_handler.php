@@ -107,9 +107,9 @@ class PhractalErrorHandler extends PhractalObject
 			E_WARNING           => 'Warning',
 		);
 		
-		$title = !is_null($exception) ?
-		         'Uncaught ' . get_class($exception) :
-		         $titles[$errno];
+		$title = $exception === null ?
+		         $titles[$errno] :
+		         'Uncaught ' . get_class($exception);
 		return $title . ' "' . $errstr . '" on line ' . $errline . ' of ' . $errfile;
 	}
 	

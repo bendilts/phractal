@@ -204,7 +204,7 @@ class PhractalConfig extends PhractalObject
 			}
 		}
 		
-		if (!is_null($default))
+		if ($default !== null)
 		{
 			return $default;
 		}
