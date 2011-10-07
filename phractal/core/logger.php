@@ -123,7 +123,7 @@ class PhractalLogger extends PhractalObject
 	 *
 	 * @var array
 	 */
-	static $level_names = array(
+	private static $level_names = array(
 		self::LEVEL_CRITICAL  => 'Critical',
 		self::LEVEL_ERROR     => 'Error',
 		self::LEVEL_WARNING   => 'Warning',
