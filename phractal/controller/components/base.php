@@ -16,8 +16,9 @@
 /**
  * Component Base Class
  *
- * Handles transformations to the persistent
- * layer of the application.
+ * Bundles units of logic into separate files and classes.
+ * Components are classes outside of MVC that execute
+ * common functions.
  */
 abstract class PhractalBaseComponent extends PhractalObject
 {
