@@ -88,7 +88,7 @@ class PhractalRouterComponent extends PhractalBaseComponent
 		$request_uri_part_count = count($request_uri_parts);
 		
 		// loop through each route looking for a match
-		$config = Phractal::get_instance()->get_config();
+		$config = Phractal::get_config();
 		$routes = $config->get('route.table');
 		$matched_route = null;
 		foreach ($routes as $route)

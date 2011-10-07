@@ -182,7 +182,7 @@ class PhractalLoader extends PhractalObject
 			if (substr($classname, -$suffix_length) === $suffix)
 			{
 				$classname = substr($classname, 0, strlen($classname) - $suffix_length);
-				$underscored = Phractal::get_instance()->get_inflector()->underscore($classname);
+				$underscored = Phractal::get_inflector()->underscore($classname);
 				$filename = $base . '/' . $path . '/' . $underscored . '.php';
 				
 				if (!file_exists($filename) || !is_file($filename) || !is_readable($filename))

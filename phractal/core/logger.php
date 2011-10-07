@@ -214,7 +214,7 @@ class PhractalLogger extends PhractalObject
 				
 			if (!empty($formatted))
 			{
-				$config = Phractal::get_instance()->get_config();
+				$config = Phractal::get_config();
 				$path      = $config->check('log.file.path')      ? $config->get('log.file.path')      : PATH_APP . '/tmp/logs';
 				$extension = $config->check('log.file.extension') ? $config->get('log.file.extension') : 'log';
 				

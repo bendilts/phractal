@@ -128,7 +128,7 @@ class PhractalErrorHandler extends PhractalObject
 	 */
 	public function handle_error($errno, $errstr, $errfile, $errline, array $errcontext)
 	{
-		$logger = Phractal::get_instance()->get_logger();
+		$logger = Phractal::get_logger();
 		if ($logger)
 		{
 			$message = $this->format_log_message(null, $errno, $errstr, $errfile, $errline, $errcontext);
@@ -183,7 +183,7 @@ class PhractalErrorHandler extends PhractalObject
 	 */
 	public function handle_exception(Exception $exception)
 	{
-		$logger = Phractal::get_instance()->get_logger();
+		$logger = Phractal::get_logger();
 		if ($logger)
 		{
 			$message = $this->format_log_message($exception, $exception->getCode(), $exception->getMessage(), $exception->getFile(), $exception->getLine(), $exception->getTrace());

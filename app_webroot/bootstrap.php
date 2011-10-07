@@ -40,9 +40,7 @@ define('RUNTIME', isset($_SERVER['argc']) ? 'cli' : 'web');
 
 // ------------------------------------------------------------------------
 
-// require phractal core
 require_once(PATH_PHRACTAL . '/config/bootstrap.php');
-$phractal = Phractal::get_instance();
 
 // ------------------------------------
 
@@ -74,7 +72,7 @@ $phractal = Phractal::get_instance();
  */
 $config = new PhractalConfig();
 $config->load_file('config');
-$phractal->set_config($config);
+Phractal::set_config($config);
 
 // ------------------------------------
 
@@ -107,7 +105,7 @@ $logger->register_file('trace',       PhractalLogger::LEVEL_DEBUG    | PhractalL
 $logger->register_file('benchmark',   PhractalLogger::LEVEL_BENCHMARK);
 $logger->register_header('benchmark', PhractalLogger::LEVEL_ALL);
 $logger->register_screen('onscreen',  PhractalLogger::LEVEL_CRITICAL | PhractalLogger::LEVEL_ERROR);
-$phractal->set_logger($logger);
+Phractal::set_logger($logger);
 
 // ------------------------------------
 
@@ -121,7 +119,7 @@ $phractal->set_logger($logger);
  * missing classes.
  */
 $loader = new PhractalLoader();
-$phractal->set_loader($loader);
+Phractal::set_loader($loader);
 
 // ------------------------------------
 
@@ -135,7 +133,7 @@ $phractal->set_loader($loader);
  * catch errors and exceptions from the PHP runtime.
  */
 $error_handler = new PhractalErrorHandler();
-$phractal->set_error_handler($error_handler);
+Phractal::set_error_handler($error_handler);
 
 // ------------------------------------
 
@@ -146,7 +144,7 @@ $phractal->set_error_handler($error_handler);
  * to customize inflecting
  */
 $inflector = new PhractalInflector();
-$phractal->set_inflector($inflector);
+Phractal::set_inflector($inflector);
 
 // ------------------------------------
 
@@ -157,7 +155,7 @@ $phractal->set_inflector($inflector);
  * to customize benchmarking
  */
 $benchmark = new PhractalBenchmark();
-$phractal->set_benchmark($benchmark);
+Phractal::set_benchmark($benchmark);
 
 // ------------------------------------
 
@@ -168,4 +166,4 @@ $phractal->set_benchmark($benchmark);
  * to customize dispatching
  */
 $dispatcher = new PhractalDispatcher();
-$phractal->set_dispatcher($dispatcher);
+Phractal::set_dispatcher($dispatcher);

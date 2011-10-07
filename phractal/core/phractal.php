@@ -21,38 +21,30 @@ class PhractalNoContextException extends PhractalException {}
 // ------------------------------------------------------------------------
 
 /**
- * Thrown when multiple instances of the Phractal singleton
- * are created.
- */
-class PhractalMultipleInstancesException extends PhractalException {}
-
-// ------------------------------------------------------------------------
-
-/**
  * Phractal Class
  *
  * Manages references to all objects in the current request. This
  * is the only singleton class.
  */
-final class Phractal extends PhractalObject
+final class Phractal
 {
 	/**
 	 * A stack of contexts and variables within contexts
 	 * @var array
 	 */
-	private $contexts = array();
+	private static $contexts = array();
 	
 	/**
 	 * The number of contexts on the stack
 	 * @var int
 	 */
-	private $context_index = -1;
+	private static $context_index = -1;
 	
 	/**
 	 * The global context variables.
 	 * @var array
 	 */
-	private $global = array(
+	private static $global = array(
 		'loader'    => null,
 		'error'     => null,
 		'inflector' => null,
@@ -63,32 +55,22 @@ final class Phractal extends PhractalObject
 	);
 	
 	/**
-	 * Constructor
+	 * Get the number of contexts in existence.
 	 * 
-	 * This class is a singleton. Use Phractal::get_instance instead.
-	 * 
-	 * @throws PhractalMultipleInstancesException
+	 * @return int
 	 */
-	public function __construct()
+	public static function num_contexts()
 	{
-		parent::__construct();
-		
-		static $instance_count = 0;
-		if (++$instance_count !== 1)
-		{
-			throw new PhractalMultipleInstancesException();
-		}
+		return self::$context_index + 1;
 	}
 	
 	/**
 	 * Push a new context on the stack
 	 */
-	private function push_context()
+	public static function push_context()
 	{
-		$this->context_index++;
-		array_push($this->contexts, array(
-			'registry' => new PhractalRegistry(),
-		));
+		self::$context_index++;
+		array_push(self::$contexts, array());
 	}
 	
 	/**
@@ -96,48 +78,15 @@ final class Phractal extends PhractalObject
 	 * 
 	 * @throws PhractalNoContextException
 	 */
-	private function pop_context()
+	public static function pop_context()
 	{
-		$this->ensure_context_exists();
-		$this->context_index--;
-		array_pop($this->contexts);
-	}
-	
-	/**
-	 * Make sure a context exists, or throw an exception
-	 * 
-	 * @throws PhractalNoContextException
-	 */
-	private function ensure_context_exists()
-	{
-		if ($this->context_index === -1)
+		if (self::$context_index === -1)
 		{
 			throw new PhractalNoContextException();
 		}
-	}
-	
-	/**
-	 * Get a variable from the current context by name
-	 * 
-	 * @param string $name
-	 * @return mixed
-	 * @throws PhractalNoContextException
-	 */
-	private function get_from_current_context($name)
-	{
-		$this->ensure_context_exists();
-		return $this->contexts[$this->context_index][$name];
-	}
-	
-	/**
-	 * Get a variable from the global context by name
-	 * 
-	 * @param string $name
-	 * @return mixed
-	 */
-	private function get_from_global_context($name)
-	{
-		return $this->global[$name];
+		
+		self::$context_index--;
+		array_pop(self::$contexts);
 	}
 	
 	/**
@@ -146,9 +95,14 @@ final class Phractal extends PhractalObject
 	 * @return PhractalRegistry
 	 * @throws PhractalNoContextException
 	 */
-	public function get_registry()
+	public static function get_registry()
 	{
-		return $this->get_from_current_context('registry');
+		if (self::$context_index === -1)
+		{
+			throw new PhractalNoContextException();
+		}
+		
+		return self::$contexts[self::$context_index]['registry'];
 	}
 	
 	/**
@@ -156,9 +110,9 @@ final class Phractal extends PhractalObject
 	 * 
 	 * @return PhractalLoader
 	 */
-	public function get_loader()
+	public static function get_loader()
 	{
-		return $this->get_from_global_context('loader');
+		return self::$global['loader'];
 	}
 	
 	/**
@@ -167,15 +121,15 @@ final class Phractal extends PhractalObject
 	 * 
 	 * @param PhractalLoader $loader
 	 */
-	public function set_loader(PhractalLoader $loader)
+	public static function set_loader(PhractalLoader $loader)
 	{
-		$current_loader = $this->get_loader();
+		$current_loader = self::get_loader();
 		if ($current_loader !== null)
 		{
 			$current_loader->unregister();
 		}
 		
-		$this->global['loader'] = $loader;
+		self::$global['loader'] = $loader;
 		$loader->register();
 	}
 	
@@ -184,9 +138,9 @@ final class Phractal extends PhractalObject
 	 * 
 	 * @return PhractalErrorHandler
 	 */
-	public function get_error_handler()
+	public static function get_error_handler()
 	{
-		return $this->get_from_global_context('error');
+		return self::$global['error'];
 	}
 	
 	/**
@@ -195,15 +149,15 @@ final class Phractal extends PhractalObject
 	 * 
 	 * @param PhractalErrorHandler $handler
 	 */
-	public function set_error_handler(PhractalErrorHandler $handler)
+	public static function set_error_handler(PhractalErrorHandler $handler)
 	{
-		$current_handler = $this->get_error_handler();
+		$current_handler = self::get_error_handler();
 		if ($current_handler !== null)
 		{
 			$current_handler->unregister();
 		}
 		
-		$this->global['error'] = $handler;
+		self::$global['error'] = $handler;
 		$handler->register();
 	}
 	
@@ -212,9 +166,9 @@ final class Phractal extends PhractalObject
 	 * 
 	 * @return PhractalInflector
 	 */
-	public function get_inflector()
+	public static function get_inflector()
 	{
-		return $this->get_from_global_context('inflector');
+		return self::$global['inflector'];
 	}
 	
 	/**
@@ -222,9 +176,9 @@ final class Phractal extends PhractalObject
 	 * 
 	 * @param PhractalInflector $inflector
 	 */
-	public function set_inflector(PhractalInflector $inflector)
+	public static function set_inflector(PhractalInflector $inflector)
 	{
-		$this->global['inflector'] = $inflector;
+		self::$global['inflector'] = $inflector;
 	}
 	
 	/**
@@ -232,9 +186,9 @@ final class Phractal extends PhractalObject
 	 * 
 	 * @return PhractalBenchmark
 	 */
-	public function get_benchmark()
+	public static function get_benchmark()
 	{
-		return $this->get_from_global_context('benchmark');
+		return self::$global['benchmark'];
 	}
 	
 	/**
@@ -242,9 +196,9 @@ final class Phractal extends PhractalObject
 	 * 
 	 * @param PhractalBenchmark $benchmark
 	 */
-	public function set_benchmark(PhractalBenchmark $benchmark)
+	public static function set_benchmark(PhractalBenchmark $benchmark)
 	{
-		$this->global['benchmark'] = $benchmark;
+		self::$global['benchmark'] = $benchmark;
 	}
 	
 	/**
@@ -252,9 +206,9 @@ final class Phractal extends PhractalObject
 	 * 
 	 * @return PhractalLogger
 	 */
-	public function get_logger()
+	public static function get_logger()
 	{
-		return $this->get_from_global_context('logger');
+		return self::$global['logger'];
 	}
 	
 	/**
@@ -262,9 +216,9 @@ final class Phractal extends PhractalObject
 	 * 
 	 * @param PhractalLogger $logger
 	 */
-	public function set_logger(PhractalLogger $logger)
+	public static function set_logger(PhractalLogger $logger)
 	{
-		$this->global['logger'] = $logger;
+		self::$global['logger'] = $logger;
 	}
 	
 	/**
@@ -272,9 +226,9 @@ final class Phractal extends PhractalObject
 	 * 
 	 * @return PhractalConfig
 	 */
-	public function get_config()
+	public static function get_config()
 	{
-		return $this->get_from_global_context('config');
+		return self::$global['config'];
 	}
 	
 	/**
@@ -282,9 +236,9 @@ final class Phractal extends PhractalObject
 	 * 
 	 * @param PhractalConfig $config
 	 */
-	public function set_config(PhractalConfig $config)
+	public static function set_config(PhractalConfig $config)
 	{
-		$this->global['config'] = $config;
+		self::$global['config'] = $config;
 	}
 	
 	/**
@@ -292,9 +246,9 @@ final class Phractal extends PhractalObject
 	 * 
 	 * @return PhractalDispatcher
 	 */
-	public function get_dispatcher()
+	public static function get_dispatcher()
 	{
-		return $this->get_from_global_context('dispatch');
+		return self::$global['dispatch'];
 	}
 	
 	/**
@@ -302,23 +256,8 @@ final class Phractal extends PhractalObject
 	 * 
 	 * @param PhractalDispatcher $config
 	 */
-	public function set_dispatcher(PhractalDispatcher $dispatcher)
+	public static function set_dispatcher(PhractalDispatcher $dispatcher)
 	{
-		$this->global['dispatch'] = $dispatcher;
-	}
-	
-	/**
-	 * Get the phractal instance
-	 * 
-	 * @return Phractal
-	 */
-	public static function &get_instance()
-	{
-		static $instance = null;
-		if (!$instance)
-		{
-			$instance = new Phractal();
-		}
-		return $instance;
+		self::$global['dispatch'] = $dispatcher;
 	}
 }
