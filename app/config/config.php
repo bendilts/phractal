@@ -110,8 +110,6 @@ $routes[] = array(
 	'runtimes'     => array('cli'),
 	'controller'   => 'Maintenance',
 	'action'       => 'doit',
-	'no_extension' => 'none',
-	'extensions'   => array(),
 );
 
 $routes[] = array(
@@ -120,7 +118,7 @@ $routes[] = array(
 	'controller'   => 'Admin',
 	'action'       => 'sidebar',
 	'no_extension' => 'html',
-	'extensions'   => array(),
+	'extensions'   => array('html'),
 	'extra_named'  => array(
 		'var1' => 'abc',
 		'var2' => 'def',
