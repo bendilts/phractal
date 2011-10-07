@@ -23,7 +23,6 @@ require_once(PATH_PHRACTAL . '/core/object.php');
 require_once(PATH_PHRACTAL . '/core/exception.php');
 require_once(PATH_PHRACTAL . '/core/config.php');
 require_once(PATH_PHRACTAL . '/core/inflector.php');
-require_once(PATH_PHRACTAL . '/core/registry.php');
 require_once(PATH_PHRACTAL . '/core/error_handler.php');
 require_once(PATH_PHRACTAL . '/core/loader.php');
 require_once(PATH_PHRACTAL . '/core/benchmark.php');

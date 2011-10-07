@@ -21,6 +21,13 @@ class PhractalNoContextException extends PhractalException {}
 // ------------------------------------------------------------------------
 
 /**
+ * Thrown when a key is not found in the current context.
+ */
+class PhractalKeyNotFoundInCurrentContextException extends PhractalNameException {}
+
+// ------------------------------------------------------------------------
+
+/**
  * Phractal Class
  *
  * Manages references to all objects in the current request. This
@@ -87,6 +94,103 @@ final class Phractal
 		
 		self::$context_index--;
 		array_pop(self::$contexts);
+	}
+	
+	/**
+	 * Get an object from the current context by key.
+	 * 
+	 * If the key doesn't exist, use the loader to
+	 * instantiate a new object, save, and return it.
+	 * 
+	 * @param string $key Key to use to get/set in the current context
+	 * @param string $name Basename of the class (@see PhractalLoader::instantiate)
+	 * @param string $type Type of the class (@see PhractalLoader::instantiate)
+	 * @param array $constructor_args Constructor args (@see PhractalLoader::instantiate)
+	 * @return mixed
+	 * @throws PhractalLoaderNoSuchClassException
+	 */
+	public static function get_or_instantiate_in_current_context($key, $classname, $type, array $constructor_args = array())
+	{
+		if (isset(self::$contexts[self::$context_index][$key]))
+		{
+			return self::$contexts[self::$context_index][$key];
+		}
+		
+		return self::get_loader()->instantiate($classname, $type, $constructor_args);
+	}
+	
+	/**
+	 * Get an object from the current context by key.
+	 * 
+	 * @param string $key
+	 * @return mixed
+	 * @throws PhractalKeyNotFoundInCurrentContextException
+	 */
+	public static function get_in_current_context($key)
+	{
+		if (self::$context_index === -1)
+		{
+			throw new PhractalNoContextException();
+		}
+		
+		if (isset(self::$contexts[self::$context_index][$key]))
+		{
+			return self::$contexts[self::$context_index][$key];
+		}
+		
+		throw new PhractalKeyNotFoundInCurrentContextException($key);
+	}
+	
+	/**
+	 * Set an object in the current context by key
+	 * 
+	 * @param string $key
+	 * @param string $value
+	 * @throws PhractalNoContextException
+	 */
+	public static function set_in_current_context($key, $value)
+	{
+		if (self::$context_index === -1)
+		{
+			throw new PhractalNoContextException();
+		}
+		
+		self::$contexts[self::$context_index][$key] = $value;
+	}
+	
+	/**
+	 * Check to see if a key exists in the current context
+	 * 
+	 * @param string $key
+	 * @return bool
+	 * @throws PhractalNoContextException
+	 */
+	public static function check_in_current_context($key)
+	{
+		if (self::$context_index === -1)
+		{
+			throw new PhractalNoContextException();
+		}
+		
+		return isset(self::$contexts[self::$context_index][$key]);
+	}
+	
+	/**
+	 * Delete an object from the current context.
+	 * 
+	 * Ignores missing keys.
+	 * 
+	 * @param string $key
+	 * @throws PhractalNoContextException
+	 */
+	public static function delete_from_current_context($key)
+	{
+		if (self::$context_index === -1)
+		{
+			throw new PhractalNoContextException();
+		}
+		
+		unset(self::$contexts[self::$context_index][$key]);
 	}
 	
 	/**
