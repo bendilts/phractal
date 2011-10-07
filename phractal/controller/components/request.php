@@ -32,7 +32,7 @@ class PhractalRequestComponentLockedException extends PhractalException {}
  * Request Component
  *
  * Contains all request parameters. This includes POST,
- * GET, PUT, DELETE, FILES, COOKIE, and SERVER.
+ * GET, FILES, COOKIE, and SERVER.
  */
 class PhractalRequestComponent extends PhractalBaseComponent
 {
@@ -47,7 +47,7 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * Request method
 	 * 
 	 * This can have any string value, but will commonly have
-	 * GET, POST, DELETE, PUT, etc. It will help determine the
+	 * GET, POST, etc. It will help determine the
 	 * route to use.
 	 * 
 	 * @var string
@@ -74,20 +74,6 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * @var array
 	 */
 	protected $post = array();
-	
-	/**
-	 * PUT variables
-	 * 
-	 * @var array
-	 */
-	protected $put = array();
-	
-	/**
-	 * DELETE variables
-	 * 
-	 * @var array
-	 */
-	protected $delete = array();
 	
 	/**
 	 * ENV variables
@@ -126,6 +112,13 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * @var array
 	 */
 	protected $router = array();
+	
+	/**
+	 * RAW input, from the body of the request.
+	 * 
+	 * @var string
+	 */
+	protected $raw;
 	
 	/**
 	 * Constructor
@@ -445,176 +438,6 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	public function check_post($name)
 	{
 		return isset($this->post[$name]);
-	}
-	
-	/**
-	 * Set a PUT variable
-	 * 
-	 * @param string $name
-	 * @param mixed $value
-	 */
-	public function set_put($name, $value)
-	{
-		$this->throw_exception_if_locked();
-		$this->put[$name] = $value;
-	}
-	
-	/**
-	 * Set an array of PUT variables
-	 * 
-	 * This will not replace all the existing PUT values, but will
-	 * overwrite any that were already set.
-	 * 
-	 * @param array $array
-	 * @throws PhractalRequestComponentLockedException
-	 */
-	public function set_put_array(array $array)
-	{
-		$this->throw_exception_if_locked();
-		$this->put = array_merge($this->put, $array);
-	}
-	
-	/**
-	 * Delete a PUT variable
-	 * 
-	 * @param string $name
-	 */
-	public function del_put($name)
-	{
-		$this->throw_exception_if_locked();
-		unset($this->put[$name]);
-	}
-	
-	/**
-	 * Get a PUT variable
-	 * 
-	 * If the variable isn't found, $default will be returned.
-	 * If $default is null, an exception will be thrown.
-	 * 
-	 * @param string $name
-	 * @param mixed $default
-	 * @throws PhractalRequestComponentVariableNotFoundException
-	 */
-	public function get_put($name, $default = null)
-	{
-		if (isset($this->put[$name]))
-		{
-			return $this->put[$name];
-		}
-		elseif ($default !== null)
-		{
-			return $default;
-		}
-		else
-		{
-			throw new PhractalRequestComponentVariableNotFoundException('PUT::' . $name);
-		}
-	}
-	
-	/**
-	 * Get all of the PUT variables in an associative array.
-	 * 
-	 * @return array
-	 */
-	public function get_all_put()
-	{
-		return $this->put;
-	}
-	
-	/**
-	 * Check to see if a PUT variable exists
-	 * 
-	 * @param string $name
-	 * @return bool
-	 */
-	public function check_put($name)
-	{
-		return isset($this->put[$name]);
-	}
-	
-	/**
-	 * Set a DELETE variable
-	 * 
-	 * @param string $name
-	 * @param mixed $value
-	 */
-	public function set_delete($name, $value)
-	{
-		$this->throw_exception_if_locked();
-		$this->delete[$name] = $value;
-	}
-	
-	/**
-	 * Set an array of DELETE variables
-	 * 
-	 * This will not replace all the existing DELETE values, but will
-	 * overwrite any that were already set.
-	 * 
-	 * @param array $array
-	 * @throws PhractalRequestComponentLockedException
-	 */
-	public function set_delete_array(array $array)
-	{
-		$this->throw_exception_if_locked();
-		$this->delete = array_merge($this->delete, $array);
-	}
-	
-	/**
-	 * Delete a DELETE variable
-	 * 
-	 * @param string $name
-	 */
-	public function del_delete($name)
-	{
-		$this->throw_exception_if_locked();
-		unset($this->delete[$name]);
-	}
-	
-	/**
-	 * Get a DELETE variable
-	 * 
-	 * If the variable isn't found, $default will be returned.
-	 * If $default is null, an exception will be thrown.
-	 * 
-	 * @param string $name
-	 * @param mixed $default
-	 * @throws PhractalRequestComponentVariableNotFoundException
-	 */
-	public function get_delete($name, $default = null)
-	{
-		if (isset($this->delete[$name]))
-		{
-			return $this->delete[$name];
-		}
-		elseif ($default !== null)
-		{
-			return $default;
-		}
-		else
-		{
-			throw new PhractalRequestComponentVariableNotFoundException('DELETE::' . $name);
-		}
-	}
-	
-	/**
-	 * Get all of the DELETE variables in an associative array.
-	 * 
-	 * @return array
-	 */
-	public function get_all_delete()
-	{
-		return $this->delete;
-	}
-	
-	/**
-	 * Check to see if a DELETE variable exists
-	 * 
-	 * @param string $name
-	 * @return bool
-	 */
-	public function check_delete($name)
-	{
-		return isset($this->delete[$name]);
 	}
 	
 	/**
@@ -1040,5 +863,45 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	public function check_router($name)
 	{
 		return isset($this->router[$name]);
+	}
+	
+	/**
+	 * Set the raw data input
+	 * 
+	 * @param string $value
+	 * @throws PhractalRequestComponentLockedException
+	 */
+	public function set_raw($value)
+	{
+		$this->throw_exception_if_locked();
+		$this->raw = $value;
+	}
+	
+	/**
+	 * Get the raw data
+	 * 
+	 * @return string
+	 */
+	public function get_raw()
+	{
+		return $this->raw;
+	}
+	
+	/**
+	 * Delete the raw data
+	 */
+	public function del_raw()
+	{
+		$this->raw = null;
+	}
+	
+	/**
+	 * Check to see if raw data exists.
+	 * 
+	 * @return bool
+	 */
+	public function check_raw()
+	{
+		return $this->raw !== null;
 	}
 }
