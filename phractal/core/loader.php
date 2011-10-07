@@ -28,6 +28,13 @@ class PhractalLoaderCannotLoadFileException extends PhractalNameException {}
 // ------------------------------------------------------------------------
 
 /**
+ * Thrown when a class cannot be instantiated.
+ */
+class PhractalLoaderNoSuchClassException extends PhractalNameException {}
+
+// ------------------------------------------------------------------------
+
+/**
  * Loader Class
  *
  * Including an autoload registration, this class is in charge
@@ -72,6 +79,68 @@ class PhractalLoader extends PhractalObject
 		
 		spl_autoload_unregister(array($this, 'autoload'));
 		$this->registered = false;
+	}
+	
+	/**
+	 * Instantiate a class by name and type.
+	 * 
+	 * This class will prefer the classes from the application, but will
+	 * also check the phractal core if the application does not have a
+	 * class by that name.
+	 * 
+	 * The name is the name of the class, minus the type. For example,
+	 * to load the UserController class, use this call:
+	 * 
+	 * instantiate('User', 'Controller');
+	 * 
+	 * If the constructor has arguments, those can be passed in as
+	 * the argument in the last position (optional). Up to 5
+	 * constructor arguments can be used.
+	 * 
+	 * instantiate('User', 'Controller', array('firstarg', 'secondarg'));
+	 * 
+	 * @param string $name
+	 * @param string $type
+	 * @param array $constructor_args
+	 * @return PhractalObject
+	 * @throws PhractalLoaderNoSuchClassException
+	 */
+	public function instantiate($name, $type, array $constructor_args = array())
+	{
+		$num_constructor_args = count($constructor_args);
+		
+		$app_name = $name . $type;
+		$names = array($app_name);
+		
+		if (strpos($app_name, 'Phractal') !== 0)
+		{
+			$names[] = 'Phractal' . $app_name;
+		}
+		
+		foreach ($names as $classname)
+		{
+			try
+			{
+				switch ($num_constructor_args)
+				{
+					case 0:
+						return new $classname();
+					case 1:
+						return new $classname($constructor_args[0]);
+					case 2:
+						return new $classname($constructor_args[0], $constructor_args[1]);
+					case 3:
+						return new $classname($constructor_args[0], $constructor_args[1], $constructor_args[2]);
+					case 4:
+						return new $classname($constructor_args[0], $constructor_args[1], $constructor_args[2], $constructor_args[3]);
+					case 5:
+						return new $classname($constructor_args[0], $constructor_args[1], $constructor_args[2], $constructor_args[3], $constructor_args[4]);
+				}
+			}
+			catch (Exception $e) {}
+		}
+		
+		throw new PhractalLoaderNoSuchClassException($app_name);
 	}
 	
 	/**
