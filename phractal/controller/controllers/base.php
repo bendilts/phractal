@@ -20,4 +20,8 @@
  */
 abstract class PhractalBaseController extends PhractalObject
 {
+	public function run()
+	{
+		echo 'Controller::run NOT IMPLEMENTED' . "\n";
+	}
 }
