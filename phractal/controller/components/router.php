@@ -63,28 +63,12 @@ class PhractalRouterComponent extends PhractalBaseComponent
 	{
 		$this->matched_route = null;
 		
-		$request_method = $this->request->get_method();
-		$request_uri = $this->request->get_uri();
+		$request_method    = $this->request->get_method();
+		$request_extension = $this->request->get_extension();
+		$request_path      = $this->request->get_path();
 		
-		// remove the query string
-		$query_start = strpos($request_uri, '?');
-		if ($query_start !== false)
-		{
-			$request_uri = substr($request_uri, 0, $query_start);
-		}
-		
-		// get the extension
-		$request_extension = null;
-		$last_slash = strpos($request_uri, '/');
-		$period = strpos($request_uri, '.', $last_slash);
-		if ($period !== false)
-		{
-			$request_extension = substr($request_uri, $period + 1);
-			$request_uri = substr($request_uri, 0, $period);
-		}
-		
-		// get all uri parts
-		$request_uri_parts = array_merge(array_filter(explode('/', $request_uri)));
+		// get all path parts
+		$request_uri_parts = array_merge(array_filter(explode('/', $request_path)));
 		$request_uri_part_count = count($request_uri_parts);
 		
 		// loop through each route looking for a match
@@ -122,7 +106,7 @@ class PhractalRouterComponent extends PhractalBaseComponent
 			}
 			
 			// check uri part count matches
-			$route_uri_parts = array_merge(array_filter(explode('/', $route['uri'])));
+			$route_uri_parts = array_merge(array_filter(explode('/', $route['path'])));
 			$route_uri_part_count = count($route_uri_parts);
 			if ($route_uri_part_count !== $request_uri_part_count)
 			{
@@ -259,6 +243,8 @@ class PhractalRouterComponent extends PhractalBaseComponent
 			
 			// MATCH FOUND!
 			$this->matched_route = $route;
+			$this->request->set_matched_route($route);
+			$this->request->set_extension($route_extension);
 			
 			// add other named params
 			if (isset($route['extra_named']))

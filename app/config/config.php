@@ -96,7 +96,7 @@ $config->set('environment', 'development');
 $routes = array();
 
 $routes[] = array(
-	'uri'          => '/',
+	'path'         => '/',
 	'methods'      => array('GET'),
 	'no_extension' => 'html',
 	'controller'   => 'Home',
@@ -105,7 +105,7 @@ $routes[] = array(
 );
 
 $routes[] = array(
-	'uri'          => '/cron/maintenance',
+	'path'         => '/cron/maintenance',
 	'methods'      => array('CRON'),
 	'runtimes'     => array('cli'),
 	'controller'   => 'Maintenance',
@@ -115,7 +115,7 @@ $routes[] = array(
 );
 
 $routes[] = array(
-	'uri'          => '/admin/sidebar',
+	'path'         => '/admin/sidebar',
 	'methods'      => array('INTERNAL'),
 	'controller'   => 'Admin',
 	'action'       => 'sidebar',
@@ -128,7 +128,7 @@ $routes[] = array(
 );
 
 $routes[] = array(
-	'uri'          => '/users/{userid}-{abc}/profile/{profiletype}',
+	'path'         => '/users/{userid}-{abc}/profile/{profiletype}',
 	'methods'      => array('GET', 'POST'),
 	'controller'   => 'UserProfile',
 	'action'       => 'get_user_profile',
@@ -144,8 +144,8 @@ $routes[] = array(
  * 
  * Each element of the routing table should be an associative array with the following keys:
  * 
- *   - string  uri           (required) Request URI that matches this route (leave off the extension).
- *                           The uri must begin with a '/'. It can contain static parts as well as
+ *   - string  path          (required) Request path that matches this route (no extension, no query string).
+ *                           The path must begin with a '/'. It can contain static parts as well as
  *                           named variables. A named variable is used like this:
  *                           /blogs/{userid}-{blogid}/{pagenum}
  *                           In this example, there are 3 named variables: userid, blogid, and pagenum.

@@ -55,11 +55,39 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	protected $method;
 	
 	/**
-	 * Request URI
+	 * The query string.
+	 * 
+	 * This is part of the uri after the '?'
 	 * 
 	 * @var string
 	 */
-	protected $uri;
+	protected $query;
+	
+	/**
+	 * The query path.
+	 * 
+	 * This is part of the uri leading up to the
+	 * extension or query string.
+	 * 
+	 * @var string
+	 */
+	protected $path;
+	
+	/**
+	 * The query extension
+	 * 
+	 * This is part of the uri.
+	 * 
+	 * @var string
+	 */
+	protected $extension;
+	
+	/**
+	 * The matched route information
+	 * 
+	 * @var array
+	 */
+	protected $route;
 	
 	/**
 	 * GET variables
@@ -131,7 +159,23 @@ class PhractalRequestComponent extends PhractalBaseComponent
 		parent::__construct();
 		
 		$this->method = strtoupper($method);
-		$this->uri = $uri;
+		
+		$query_start = strpos($uri, '?');
+		if ($query_start !== false)
+		{
+			$this->query = substr($uri, $query_start + 1);
+			$uri = substr($uri, 0, $query_start);
+		}
+		
+		$last_slash = strpos($uri, '/');
+		$period = strpos($uri, '.', $last_slash);
+		if ($period !== false)
+		{
+			$this->extension = substr($uri, $period + 1);
+			$uri = substr($uri, 0, $period);
+		}
+		
+		$this->path = $uri;
 	}
 	
 	/**
@@ -176,7 +220,83 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 */
 	public function get_uri()
 	{
-		return $this->uri;
+		$uri = $this->path;
+		
+		if ($this->extension !== null)
+		{
+			$uri .= '.' . $this->extension;
+		}
+		
+		if ($this->query !== null)
+		{
+			$uri .= '?' . $this->query;
+		}
+		
+		return $uri;
+	}
+	
+	/**
+	 * Get the extension, or null if there isn't one.
+	 * 
+	 * @return string
+	 */
+	public function get_extension()
+	{
+		return $this->extension;
+	}
+	
+	/**
+	 * Get the matched route
+	 * 
+	 * @return array
+	 */
+	public function get_matched_route()
+	{
+		return $this->route;
+	}
+	
+	/**
+	 * Set the matched route
+	 * 
+	 * @param array $route
+	 * @throws PhractalRequestComponentLockedException
+	 */
+	public function set_matched_route(array $route)
+	{
+		$this->throw_exception_if_locked();
+		$this->route = $route;
+	}
+	
+	/**
+	 * Change the request extension.
+	 * 
+	 * @param string $extension
+	 * @throws PhractalRequestComponentLockedException
+	 */
+	public function set_extension($extension)
+	{
+		$this->throw_exception_if_locked();
+		$this->extension = $extension;
+	}
+	
+	/**
+	 * Get the query string
+	 * 
+	 * @return string
+	 */
+	public function get_query()
+	{
+		return $this->query;
+	}
+	
+	/**
+	 * Get the query path
+	 * 
+	 * @return string
+	 */
+	public function get_path()
+	{
+		return $this->path;
 	}
 	
 	/**
