@@ -160,6 +160,19 @@ class PhractalRequestComponent extends PhractalBaseComponent
 		
 		$this->method = strtoupper($method);
 		
+		$config = Phractal::get_config();
+		$base = $config->get('route.base');
+		$base_length = strlen($base);
+		if (substr($uri, 0, $base_length) === $base)
+		{
+			$uri = substr($uri, $base_length);
+		}
+		
+		if (empty($uri) || $uri[0] !== '/')
+		{
+			$uri = '/' . $uri;
+		}
+		
 		$query_start = strpos($uri, '?');
 		if ($query_start !== false)
 		{

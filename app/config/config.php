@@ -89,6 +89,20 @@ $config->set('log.file.extension', 'log');
  */
 $config->set('environment', 'development');
 
+/**
+ * Basepath of routes
+ * 
+ * The basepath of the route is whatever URI is required
+ * to get to the webroot of this phractal installation.
+ * 
+ * If your DocumentRoot is at /var/www/html, and this
+ * installation is located at /var/www/html/some/other/folders,
+ * then this value should be /some/other/folders, assuming
+ * that index.php and cron.php are located in the 'folders'
+ * folder.
+ */
+$config->set('route.base', '/');
+
 // ------------------------------------------------------------------------
 // ROUTING CONFIGURATION
 // ------------------------------------------------------------------------
