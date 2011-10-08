@@ -14,6 +14,21 @@
 // ------------------------------------------------------------------------
 
 /**
+ * Thrown when no match can be found for a request.
+ */
+class PhractalRouterComponentNoMatchException extends PhractalException {}
+
+// ------------------------------------------------------------------------
+
+/**
+ * Thrown when the request has not been matched yet, but a function
+ * requires it.
+ */
+class PhractalRouterComponentNotMatchedException extends PhractalException {}
+
+// ------------------------------------------------------------------------
+
+/**
  * Router Component
  *
  * Determines the controller and action that should handle
@@ -57,7 +72,7 @@ class PhractalRouterComponent extends PhractalBaseComponent
 	 * 
 	 * The first route that matches will be used.
 	 * 
-	 * @return bool True on success
+	 * @throws PhractalRouterComponentNoMatchException
 	 */
 	public function match()
 	{
@@ -259,7 +274,10 @@ class PhractalRouterComponent extends PhractalBaseComponent
 			break;
 		}
 		
-		return $this->matched_route !== null;
+		if ($this->matched_route === null)
+		{
+			throw new PhractalRouterComponentNoMatchException();
+		}
 	}
 	
 	/**
@@ -267,9 +285,15 @@ class PhractalRouterComponent extends PhractalBaseComponent
 	 * to process the request.
 	 * 
 	 * @return string
+	 * @throws PhractalRouterComponentNotMatchedException
 	 */
 	public function get_controller()
 	{
+		if ($this->matched_route === null)
+		{
+			throw new PhractalRouterComponentNotMatchedException();
+		}
+		
 		return $this->matched_route['controller'];
 	}
 	
@@ -277,9 +301,15 @@ class PhractalRouterComponent extends PhractalBaseComponent
 	 * Get the name of the action to call on the controller.
 	 * 
 	 * @return string
+	 * @throws PhractalRouterComponentNotMatchedException
 	 */
 	public function get_action()
 	{
+		if ($this->matched_route === null)
+		{
+			throw new PhractalRouterComponentNotMatchedException();
+		}
+		
 		return $this->matched_route['action'];
 	}
 }
