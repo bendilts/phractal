@@ -235,9 +235,11 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * Set whether this request is client initiated.
 	 * 
 	 * @param bool $client_initiated
+	 * @throws PhractalRequestComponentLockedException
 	 */
 	public function set_client_initiated($client_initiated)
 	{
+		$this->throw_exception_if_locked();
 		$this->client_initiated = $client_initiated;
 	}
 	
