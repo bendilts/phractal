@@ -56,6 +56,7 @@ class PhractalDispatcher extends PhractalObject
 	 */
 	public function dispatch(PhractalRequestComponent $request)
 	{
+		$loader = Phractal::get_loader();
 		Phractal::push_context();
 		
 		$initial_request = Phractal::num_contexts() === 1;
@@ -64,12 +65,15 @@ class PhractalDispatcher extends PhractalObject
 			$this->grab_super_globals($request);
 		}
 		
-		$router = Phractal::get_loader()->instantiate('Router', 'Component', array($request));
+		$router = $loader->instantiate('Router', 'Component', array($request));
 		$router->match();
-		
 		$request->lock();
+		$controller = $loader->instantiate($router->get_controller(), 'Controller', array($request));
 		
-		$controller = Phractal::get_or_instantiate_in_current_context('controller', $router->get_controller(), 'Controller', array($request));
+		Phractal::set_in_current_context('request', $request);
+		Phractal::set_in_current_context('router', $router);
+		Phractal::set_in_current_context('controller', $controller);
+		
 		$controller->run();
 		
 		Phractal::pop_context();
