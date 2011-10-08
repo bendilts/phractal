@@ -67,7 +67,10 @@ class PhractalDispatcher extends PhractalObject
 		
 		$router = $loader->instantiate('Router', 'Component', array($request));
 		$router->match();
+		
+		$request->set_client_initiated($initial_request);
 		$request->lock();
+		
 		$controller = $loader->instantiate($router->get_controller(), 'Controller', array($request));
 		
 		Phractal::set_in_current_context('request', $request);

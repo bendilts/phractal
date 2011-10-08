@@ -37,6 +37,12 @@ class PhractalRequestComponentLockedException extends PhractalException {}
 class PhractalRequestComponent extends PhractalBaseComponent
 {
 	/**
+	 * True when the client initiated this request. False when
+	 * this is an internal request
+	 */
+	protected $client_initiated;
+	
+	/**
 	 * True when this request has been locked
 	 * 
 	 * @var bool
@@ -202,6 +208,37 @@ class PhractalRequestComponent extends PhractalBaseComponent
 		{
 			throw new PhractalRequestComponentLockedException();
 		}
+	}
+	
+	/**
+	 * Return true when the client initiated this request.
+	 * 
+	 * @return bool
+	 */
+	public function get_client_initiated()
+	{
+		return $this->client_initiated;
+	}
+	
+	/**
+	 * Return true when the system initiated this request
+	 * as a dependency of another request
+	 * 
+	 * @return bool
+	 */
+	public function get_system_initiated()
+	{
+		return !$this->client_initiated;
+	}
+	
+	/**
+	 * Set whether this request is client initiated.
+	 * 
+	 * @param bool $client_initiated
+	 */
+	public function set_client_initiated($client_initiated)
+	{
+		$this->client_initiated = $client_initiated;
 	}
 	
 	/**
