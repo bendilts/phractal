@@ -269,9 +269,11 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * Lock the request.
 	 * 
 	 * @return int Unlock code
+	 * @throws PhractalRequestComponentLockedException
 	 */
 	public function lock()
 	{
+		$this->throw_exception_if_locked();
 		$this->locked = rand(100, 999);
 		return $this->locked;
 	}
