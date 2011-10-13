@@ -29,6 +29,13 @@ class PhractalRequestComponentLockedException extends PhractalException {}
 // ------------------------------------------------------------------------
 
 /**
+ * Thrown when a bad code is used when unlocking the request.
+ */
+class PhractalRequestComponentBadUnlockCodeException extends PhractalException {}
+
+// ------------------------------------------------------------------------
+
+/**
  * Request Component
  *
  * Contains all request parameters. This includes POST,
@@ -45,9 +52,17 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	/**
 	 * True when this request has been locked
 	 * 
+	 * @var mixed Null when not locked, int otherwise
+	 */
+	protected $locked = null;
+	
+	/**
+	 * True when the request was force matched to some other
+	 * route than it matched. 404 errors are good examples.
+	 * 
 	 * @var bool
 	 */
-	protected $locked = false;
+	protected $force_matched = false;
 	
 	/**
 	 * Request method
@@ -93,7 +108,14 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * 
 	 * @var array
 	 */
-	protected $route;
+	protected $matched_route;
+	
+	/**
+	 * The name of the route that was matched
+	 * 
+	 * @var string
+	 */
+	protected $matched_route_name;
 	
 	/**
 	 * GET variables
@@ -204,7 +226,7 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 */
 	protected function throw_exception_if_locked()
 	{
-		if ($this->locked)
+		if ($this->locked !== null)
 		{
 			throw new PhractalRequestComponentLockedException();
 		}
@@ -246,13 +268,28 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	/**
 	 * Lock the request.
 	 * 
-	 * After being locked, the request cannot be modified.
-	 * All subsequent attempts to change the request will
-	 * throw an exception
+	 * @return int Unlock code
 	 */
 	public function lock()
 	{
-		$this->locked = true;
+		$this->locked = rand(100, 999);
+		return $this->locked;
+	}
+	
+	/**
+	 * Unlock the request using the unlock code from the lock() function
+	 * 
+	 * @param int $code
+	 * @throws PhractalRequestComponentBadUnlockCodeException
+	 */
+	public function unlock($code)
+	{
+		if ($this->locked === $code)
+		{
+			$this->locked = null;
+		}
+		
+		throw new PhractalRequestComponentBadUnlockCodeException();
 	}
 	
 	/**
@@ -304,19 +341,31 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 */
 	public function get_matched_route()
 	{
-		return $this->route;
+		return $this->matched_route;
+	}
+	
+	/**
+	 * Get the name of the matched route
+	 * 
+	 * @return string
+	 */
+	public function get_matched_route_name()
+	{
+		return $this->matched_route_name;
 	}
 	
 	/**
 	 * Set the matched route
 	 * 
 	 * @param array $route
+	 * @param string $matched_route_name
 	 * @throws PhractalRequestComponentLockedException
 	 */
-	public function set_matched_route(array $route)
+	public function set_matched_route(array $matched_route, $matched_route_name)
 	{
 		$this->throw_exception_if_locked();
-		$this->route = $route;
+		$this->matched_route = $matched_route;
+		$this->matched_route_name = $matched_route_name;
 	}
 	
 	/**
@@ -349,6 +398,29 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	public function get_path()
 	{
 		return $this->path;
+	}
+	
+	/**
+	 * Returns true when the route was a force match,
+	 * like a 404 error
+	 *
+	 * @return bool
+	 */
+	public function get_force_matched()
+	{
+		return $this->force_matched;
+	}
+	
+	/**
+	 * Set whether the request was force matched
+	 * 
+	 * @param bool $force_matched
+	 * @throws PhractalRequestComponentLockedException
+	 */
+	public function set_force_matched($force_matched)
+	{
+		$this->throw_exception_if_locked();
+		$this->force_matched = $force_matched;
 	}
 	
 	/**
@@ -447,6 +519,7 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * 
 	 * @param string $name
 	 * @param mixed $value
+	 * @throws PhractalRequestComponentLockedException
 	 */
 	public function set_get($name, $value)
 	{
@@ -473,6 +546,7 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * Delete a GET variable
 	 * 
 	 * @param string $name
+	 * @throws PhractalRequestComponentLockedException
 	 */
 	public function del_get($name)
 	{
@@ -532,6 +606,7 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * 
 	 * @param string $name
 	 * @param mixed $value
+	 * @throws PhractalRequestComponentLockedException
 	 */
 	public function set_post($name, $value)
 	{
@@ -558,6 +633,7 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * Delete a POST variable
 	 * 
 	 * @param string $name
+	 * @throws PhractalRequestComponentLockedException
 	 */
 	public function del_post($name)
 	{
@@ -617,6 +693,7 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * 
 	 * @param string $name
 	 * @param mixed $value
+	 * @throws PhractalRequestComponentLockedException
 	 */
 	public function set_cookie($name, $value)
 	{
@@ -643,6 +720,7 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * Delete a COOKIE variable
 	 * 
 	 * @param string $name
+	 * @throws PhractalRequestComponentLockedException
 	 */
 	public function del_cookie($name)
 	{
@@ -702,6 +780,7 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * 
 	 * @param string $name
 	 * @param mixed $value
+	 * @throws PhractalRequestComponentLockedException
 	 */
 	public function set_server($name, $value)
 	{
@@ -728,6 +807,7 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * Delete a SERVER variable
 	 * 
 	 * @param string $name
+	 * @throws PhractalRequestComponentLockedException
 	 */
 	public function del_server($name)
 	{
@@ -787,6 +867,7 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * 
 	 * @param string $name
 	 * @param mixed $value
+	 * @throws PhractalRequestComponentLockedException
 	 */
 	public function set_env($name, $value)
 	{
@@ -813,6 +894,7 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * Delete a ENV variable
 	 * 
 	 * @param string $name
+	 * @throws PhractalRequestComponentLockedException
 	 */
 	public function del_env($name)
 	{
@@ -872,6 +954,7 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * 
 	 * @param string $name
 	 * @param mixed $value
+	 * @throws PhractalRequestComponentLockedException
 	 */
 	public function set_files($name, $value)
 	{
@@ -898,6 +981,7 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * Delete a FILES variable
 	 * 
 	 * @param string $name
+	 * @throws PhractalRequestComponentLockedException
 	 */
 	public function del_files($name)
 	{
@@ -957,6 +1041,7 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * 
 	 * @param string $name
 	 * @param mixed $value
+	 * @throws PhractalRequestComponentLockedException
 	 */
 	public function set_router($name, $value)
 	{
@@ -983,6 +1068,7 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * Delete a ROUTER variable
 	 * 
 	 * @param string $name
+	 * @throws PhractalRequestComponentLockedException
 	 */
 	public function del_router($name)
 	{
@@ -1061,9 +1147,12 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	
 	/**
 	 * Delete the raw data
+	 * 
+	 * @throws PhractalRequestComponentLockedException
 	 */
 	public function del_raw()
 	{
+		$this->throw_exception_if_locked();
 		$this->raw = null;
 	}
 	

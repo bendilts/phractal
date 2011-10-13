@@ -105,6 +105,20 @@ $config->set('environment', 'development');
  */
 $config->set('route.base', '/');
 
+/**
+ * Specifies a route name to use when a 404 error occurs.
+ * 
+ * @var string
+ */
+$config->set('route.error.404.name', 'error404');
+
+/**
+ * Specifies a route name to use when a 500 error occurs.
+ * 
+ * @var string
+ */
+$config->set('route.error.500.name', 'error500');
+
 // ------------------------------------------------------------------------
 // ROUTING CONFIGURATION
 // ------------------------------------------------------------------------

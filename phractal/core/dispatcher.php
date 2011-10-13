@@ -57,6 +57,9 @@ class PhractalDispatcher extends PhractalObject
 	public function dispatch(PhractalRequestComponent $request)
 	{
 		$loader = Phractal::get_loader();
+		$logger = Phractal::get_logger();
+		$config = Phractal::get_config();
+		
 		Phractal::push_context();
 		
 		$initial_request = Phractal::num_contexts() === 1;
@@ -65,19 +68,67 @@ class PhractalDispatcher extends PhractalObject
 			$this->grab_super_globals($request);
 		}
 		
-		$router = $loader->instantiate('Router', 'Component', array($request));
-		$router->match();
-		
 		$request->set_client_initiated($initial_request);
-		$request->lock();
 		
-		$controller = $loader->instantiate($router->get_controller(), 'Controller', array($request));
+		$is_404 = false;
+		$router = $loader->instantiate('Router', 'Component', array($request));
+		try
+		{
+			$router->match();
+		}
+		catch (PhractalRouterComponentNoMatchException $e)
+		{
+			$is_404 = true;
+		}
 		
-		Phractal::set_in_current_context('request', $request);
-		Phractal::set_in_current_context('router', $router);
-		Phractal::set_in_current_context('controller', $controller);
+		$unlock_code = null;
+		$is_500 = false;
+		try
+		{
+			if ($is_404)
+			{
+				$route404_name = $config->get('route.error.404.name');
+				$router->force_match_by_name($route404_name);
+			}
+			
+			$unlock_code = $request->lock();
+			
+			$controller = $loader->instantiate($router->get_controller(), 'Controller', array($request));
+			$controller->run();
+		}
+		catch (Exception $e)
+		{
+			if ($is_404)
+			{
+				$logger->error('A 404 error was found, but an internal error occurred.');
+			}
+			
+			$is_500 = true;
+		}
 		
-		$controller->run();
+		if ($is_500)
+		{
+			try
+			{
+				if ($unlock_code !== null)
+				{
+					$request->unlock($unlock_code);
+					$unlock_code = null;
+				}
+				
+				$route500_name = $config->get('route.error.500.name');
+				$router->force_match_by_name($route500_name);
+				
+				$unlock_code = $request->lock();
+				
+				$controller = $loader->instantiate($router->get_controller(), 'Controller', array($request));
+				$controller->run();
+			}
+			catch (Exception $e)
+			{
+				$logger->error('A 500 error was found, but an internal error occurred.');
+			}
+		}
 		
 		Phractal::pop_context();
 	}

@@ -29,6 +29,14 @@ class PhractalRouterComponentNotMatchedException extends PhractalException {}
 // ------------------------------------------------------------------------
 
 /**
+ * Thrown when the request has not been matched yet, but a function
+ * requires it.
+ */
+class PhractalRouterComponentNamedRouteNotFoundException extends PhractalNameException {}
+
+// ------------------------------------------------------------------------
+
+/**
  * Router Component
  *
  * Determines the controller and action that should handle
@@ -60,6 +68,55 @@ class PhractalRouterComponent extends PhractalBaseComponent
 		parent::__construct();
 		
 		$this->request = $request;
+	}
+	
+	/**
+	 * Force the router to match a route by name
+	 * 
+	 * @param string $route_name
+	 * @throws PhractalRouterComponentNamedRouteNotFoundException
+	 */
+	public function force_match_by_name($route_name)
+	{
+		$this->matched_route = null;
+		
+		$config = Phractal::get_config();
+		$routes = $config->get('route.table');
+		if (!isset($routes[$route_name]))
+		{
+			throw new PhractalRouterComponentNamedRouteNotFoundException($route_name);
+		}
+		
+		$route = $routes[$route_name];
+		
+		$request_method    = $this->request->get_method();
+		$request_extension = $this->request->get_extension();
+		$request_path      = $this->request->get_path();
+		$named_vars = array();
+		
+		// override the extension if not present
+		if ($request_extension === null && isset($route['no_extension']))
+		{
+			$route_extension = $route['no_extension'];
+		}
+		else
+		{
+			$route_extension = $request_extension;
+		}
+		
+		$this->matched_route = $route;
+		$this->request->set_matched_route($route, $route_name);
+		$this->request->set_extension($route_extension);
+		$this->request->set_force_matched(true);
+		
+		// add other named params
+		if (isset($route['extra_named']))
+		{
+			$named_vars = array_merge($route['extra_named'], $named_vars);
+		}
+		
+		// set router variables on the request object
+		$this->request->set_router_array($named_vars);
 	}
 	
 	/**
@@ -258,8 +315,9 @@ class PhractalRouterComponent extends PhractalBaseComponent
 			
 			// MATCH FOUND!
 			$this->matched_route = $route;
-			$this->request->set_matched_route($route);
+			$this->request->set_matched_route($route, $route_name);
 			$this->request->set_extension($route_extension);
+			$this->request->set_force_matched(false);
 			
 			// add other named params
 			if (isset($route['extra_named']))
@@ -311,5 +369,15 @@ class PhractalRouterComponent extends PhractalBaseComponent
 		}
 		
 		return $this->matched_route['action'];
+	}
+	
+	/**
+	 * Returns true when a route has been matched
+	 * 
+	 * @return string
+	 */
+	public function matched()
+	{
+		return $this->matched_route !== null;
 	}
 }
