@@ -90,7 +90,7 @@ class PhractalRouterComponent extends PhractalBaseComponent
 		$config = Phractal::get_config();
 		$routes = $config->get('route.table');
 		$matched_route = null;
-		foreach ($routes as $route)
+		foreach ($routes as $route_name => $route)
 		{
 			// check request method
 			if (isset($route['methods']) && !in_array($request_method, $route['methods'], true))

@@ -111,7 +111,7 @@ $config->set('route.base', '/');
 
 $routes = array();
 
-$routes[] = array(
+$routes['home'] = array(
 	'path'         => '/',
 	'methods'      => array('GET'),
 	'no_extension' => 'html',
@@ -120,7 +120,7 @@ $routes[] = array(
 	'extensions'   => array('html', 'htm'),
 );
 
-$routes[] = array(
+$routes['maintenance'] = array(
 	'path'         => '/cron/maintenance',
 	'methods'      => array('CRON'),
 	'runtimes'     => array('cli'),
@@ -128,7 +128,7 @@ $routes[] = array(
 	'action'       => 'doit',
 );
 
-$routes[] = array(
+$routes['admin.sidebar'] = array(
 	'path'         => '/admin/sidebar',
 	'methods'      => array('INTERNAL'),
 	'controller'   => 'Admin',
@@ -141,7 +141,7 @@ $routes[] = array(
 	),
 );
 
-$routes[] = array(
+$routes['user.profile'] = array(
 	'path'         => '/users/{userid}-{abc}/profile/{profiletype}',
 	'methods'      => array('GET', 'POST'),
 	'controller'   => 'UserProfile',
@@ -153,10 +153,23 @@ $routes[] = array(
 	),
 );
 
+$routes['error404'] = array(
+	'path'        => '/errors/404',
+	'controller'  => 'Error',
+	'action'      => 'error404',
+);
+
+$routes['error500'] = array(
+	'path'        => '/errors/500',
+	'controller'  => 'Error',
+	'action'      => 'error500',
+);
+
 /**
  * Routing Table
  * 
- * Each element of the routing table should be an associative array with the following keys:
+ * This value must be an array. The keys for this routing table must be the names of the
+ * associated routes. The values must be associative arrays with the following keys:
  * 
  *   - string  path          (required) Request path that matches this route (no extension, no query string).
  *                           The path must begin with a '/'. It can contain static parts as well as
