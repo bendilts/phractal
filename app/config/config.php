@@ -100,6 +100,8 @@ $config->set('environment', 'development');
  * then this value should be /some/other/folders, assuming
  * that index.php and cron.php are located in the 'folders'
  * folder.
+ * 
+ * @var string
  */
 $config->set('route.base', '/');
 
