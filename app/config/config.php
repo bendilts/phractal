@@ -108,12 +108,20 @@ $config->set('route.base', '/');
 /**
  * Specifies a route name to use when a 404 error occurs.
  * 
+ * The route specified here should not contain uri parameters, validation,
+ * or valid extensions. It must accept all extensions and be as flexible as
+ * possible, as it will accept all 404 errors.
+ * 
  * @var string
  */
 $config->set('route.error.404.name', 'error404');
 
 /**
  * Specifies a route name to use when a 500 error occurs.
+ * 
+ * The route specified here should not contain uri parameters, validation,
+ * or valid extensions. It must accept all extensions and be as flexible as
+ * possible, as it will accept all 500 errors.
  * 
  * @var string
  */
