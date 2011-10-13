@@ -69,41 +69,62 @@ class PhractalDispatcher extends PhractalObject
 		}
 		
 		$request->set_client_initiated($initial_request);
+		$router = $loader->instantiate('Router', 'Component', array($request));
 		
 		$is_404 = false;
-		$router = $loader->instantiate('Router', 'Component', array($request));
-		try
-		{
-			$router->match();
-		}
-		catch (PhractalRouterComponentNoMatchException $e)
-		{
-			$is_404 = true;
-		}
-		
-		$unlock_code = null;
 		$is_500 = false;
-		try
+		$unlock_code = null;
+		
+		if ($config->get('site.maintenance'))
 		{
-			if ($is_404)
+			try
 			{
-				$route404_name = $config->get('route.error.404.name');
-				$router->force_match_by_name($route404_name);
+				$route_maintenance_name = $config->get('route.site.maintenance.name');
+				$router->force_match_by_name($route_maintenance_name);
+				
+				$unlock_code = $request->lock();
+				
+				$controller = $loader->instantiate($router->get_controller(), 'Controller', array($request));
+				$controller->run();
 			}
-			
-			$unlock_code = $request->lock();
-			
-			$controller = $loader->instantiate($router->get_controller(), 'Controller', array($request));
-			$controller->run();
+			catch (Exception $e)
+			{
+				$is_500 = true;
+			}
 		}
-		catch (Exception $e)
+		else
 		{
-			if ($is_404)
+			try
 			{
-				$logger->error('A 404 error was found, but an internal error occurred.');
+				$router->match();
+			}
+			catch (PhractalRouterComponentNoMatchException $e)
+			{
+				$is_404 = true;
 			}
 			
-			$is_500 = true;
+			try
+			{
+				if ($is_404)
+				{
+					$route404_name = $config->get('route.error.404.name');
+					$router->force_match_by_name($route404_name);
+				}
+				
+				$unlock_code = $request->lock();
+				
+				$controller = $loader->instantiate($router->get_controller(), 'Controller', array($request));
+				$controller->run();
+			}
+			catch (Exception $e)
+			{
+				if ($is_404)
+				{
+					$logger->error('A 404 error was found, but an internal error occurred.');
+				}
+				
+				$is_500 = true;
+			}
 		}
 		
 		if ($is_500)

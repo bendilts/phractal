@@ -50,6 +50,16 @@
 // ------------------------------------------------------------------------
 
 /**
+ * Site Maintenance
+ * 
+ * Set to true to show the maintenance route to all
+ * requesters.
+ * 
+ * @var bool
+ */
+$config->set('site.maintenance', true);
+
+/**
  * Log file path
  * 
  * All logs will be placed in this directory. The directory
@@ -127,6 +137,18 @@ $config->set('route.error.404.name', 'error404');
  */
 $config->set('route.error.500.name', 'error500');
 
+/**
+ * Specifies a route name to use when site.maintenance config is true.
+ * 
+ * The route specified here should not contain uri parameters, validation,
+ * or valid extensions. It must accept all extensions and be as flexible as
+ * possible, as it will accept all requests when the site is in maintenance
+ * mode.
+ * 
+ * @var string
+ */
+$config->set('route.site.maintenance.name', 'sitedown');
+
 // ------------------------------------------------------------------------
 // ROUTING CONFIGURATION
 // ------------------------------------------------------------------------
@@ -185,6 +207,12 @@ $routes['error500'] = array(
 	'path'        => '/errors/500',
 	'controller'  => 'Error',
 	'action'      => 'error500',
+);
+
+$routes['sitedown'] = array(
+	'path'        => '/sitedown',
+	'controller'  => 'Error',
+	'action'      => 'sitedown',
 );
 
 /**
