@@ -286,12 +286,12 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 */
 	public function unlock($code)
 	{
-		if ($this->locked === $code)
+		if ($this->locked !== $code)
 		{
-			$this->locked = null;
+			throw new PhractalRequestComponentBadUnlockCodeException();
 		}
 		
-		throw new PhractalRequestComponentBadUnlockCodeException();
+		$this->locked = null;
 	}
 	
 	/**
