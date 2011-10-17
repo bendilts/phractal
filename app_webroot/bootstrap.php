@@ -192,11 +192,12 @@ Phractal::set_dispatcher($dispatcher);
  */
 function main($request)
 {
-	$benchmark = Phractal::get_benchmark();
-	$logger = Phractal::get_logger();
+	$benchmark  = Phractal::get_benchmark();
+	$logger     = Phractal::get_logger();
+	$dispatcher = Phractal::get_dispatcher();
 	
 	$main_benchmark = $benchmark->start('global', 'main');
-	$response = Phractal::get_dispatcher()->dispatch($request);
+	$response = $dispatcher->dispatch($request);
 	$benchmark->stop($main_benchmark);
 	
 	// you probably only need 1 of these
