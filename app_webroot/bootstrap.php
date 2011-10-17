@@ -192,14 +192,17 @@ Phractal::set_dispatcher($dispatcher);
  */
 function main($request)
 {
-	$main_benchmark = Phractal::get_benchmark()->start('main', 'main');
+	$benchmark = Phractal::get_benchmark();
+	$logger = Phractal::get_logger();
+	
+	$main_benchmark = $benchmark->start('global', 'main');
 	$response = Phractal::get_dispatcher()->dispatch($request);
-	Phractal::get_benchmark()->stop($$main_benchmark);
+	$benchmark->stop($main_benchmark);
 	
 	// you probably only need 1 of these
-	Phractal::get_benchmark()->log_all();
-	//Phractal::get_benchmark()->log_all_groups();
+	$benchmark->log_all();
+	//$benchmark->log_all_groups();
 	
-	Phractal::get_logger()->write_logs_to_browser();
+	$logger->write_logs_to_browser();
 	$response->send_to_client();
 }
