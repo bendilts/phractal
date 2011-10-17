@@ -20,8 +20,19 @@
  */
 abstract class PhractalBaseController extends PhractalObject
 {
+	protected $request;
+	protected $response;
+	
+	public function __construct($request, $response)
+	{
+		parent::__construct();
+		
+		$this->request = $request;
+		$this->response = $response;
+	}
+	
 	public function run()
 	{
-		echo 'Controller::run NOT IMPLEMENTED' . "\n";
+		$this->response->set_body('Controller::run NOT IMPLEMENTED' . "\n");
 	}
 }

@@ -70,6 +70,7 @@ class PhractalDispatcher extends PhractalObject
 		
 		$request->set_client_initiated($initial_request);
 		$router = $loader->instantiate('Router', 'Component', array($request));
+		$response = $loader->instantiate('Response', 'Component', array($request));
 		
 		$is_404 = false;
 		$is_500 = false;
@@ -84,7 +85,7 @@ class PhractalDispatcher extends PhractalObject
 				
 				$unlock_code = $request->lock();
 				
-				$controller = $loader->instantiate($router->get_controller(), 'Controller', array($request));
+				$controller = $loader->instantiate($router->get_controller(), 'Controller', array($request, $response));
 				$controller->run();
 			}
 			catch (Exception $e)
@@ -113,7 +114,7 @@ class PhractalDispatcher extends PhractalObject
 				
 				$unlock_code = $request->lock();
 				
-				$controller = $loader->instantiate($router->get_controller(), 'Controller', array($request));
+				$controller = $loader->instantiate($router->get_controller(), 'Controller', array($request, $response));
 				$controller->run();
 			}
 			catch (Exception $e)
@@ -142,7 +143,7 @@ class PhractalDispatcher extends PhractalObject
 				
 				$unlock_code = $request->lock();
 				
-				$controller = $loader->instantiate($router->get_controller(), 'Controller', array($request));
+				$controller = $loader->instantiate($router->get_controller(), 'Controller', array($request, $response));
 				$controller->run();
 			}
 			catch (Exception $e)
@@ -152,5 +153,7 @@ class PhractalDispatcher extends PhractalObject
 		}
 		
 		Phractal::pop_context();
+		
+		return $response;
 	}
 }
