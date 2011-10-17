@@ -35,7 +35,14 @@ require_once(dirname(__FILE__) . '/bootstrap.php');
 
 // ------------------------------------------------------------------------
 
+$token = Phractal::get_benchmark()->start('main', 'main');
 $request = Phractal::get_loader()->instantiate('Request', 'Component', array($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']));
 $response = Phractal::get_dispatcher()->dispatch($request);
+Phractal::get_benchmark()->stop($token);
+
+Phractal::get_benchmark()->log_all();
+//Phractal::get_benchmark()->log_all_groups();
+
+Phractal::get_logger()->write_logs_to_browser();
 $response->send_to_client();
 
