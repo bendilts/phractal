@@ -46,7 +46,7 @@ class PhractalLogger extends PhractalObject
 	 *
 	 * @var int
 	 */
-	const LEVEL_ALL       = 0x1111111111111111;
+	const LEVEL_ALL        = 0x1111111111111111;
 
 	/**
 	 * Critical log level.
@@ -55,7 +55,7 @@ class PhractalLogger extends PhractalObject
 	 *
 	 * @var int
 	 */
-	const LEVEL_CRITICAL  = 0x0000000000000001;
+	const LEVEL_CRITICAL   = 0x0000000000000001;
 
 	/**
 	 * Error log level.
@@ -66,7 +66,7 @@ class PhractalLogger extends PhractalObject
 	 *
 	 * @var int
 	 */
-	const LEVEL_ERROR     = 0x0000000000000010;
+	const LEVEL_ERROR      = 0x0000000000000010;
 
 	/**
 	 * Warning log level.
@@ -76,7 +76,7 @@ class PhractalLogger extends PhractalObject
 	 *
 	 * @var int
 	 */
-	const LEVEL_WARNING   = 0x0000000000000100;
+	const LEVEL_WARNING    = 0x0000000000000100;
 
 	/**
 	 * Notice log level.
@@ -86,7 +86,7 @@ class PhractalLogger extends PhractalObject
 	 *
 	 * @var int
 	 */
-	const LEVEL_NOTICE    = 0x0000000000001000;
+	const LEVEL_NOTICE     = 0x0000000000001000;
 
 	/**
 	 * Debug log level.
@@ -97,7 +97,7 @@ class PhractalLogger extends PhractalObject
 	 *
 	 * @var int
 	 */
-	const LEVEL_DEBUG     = 0x0000000000010000;
+	const LEVEL_DEBUG      = 0x0000000000010000;
 
 	/**
 	 * Info log level.
@@ -107,7 +107,7 @@ class PhractalLogger extends PhractalObject
 	 *
 	 * @var int
 	 */
-	const LEVEL_INFO      = 0x0000000000100000;
+	const LEVEL_INFO       = 0x0000000000100000;
 	
 	/**
 	 * Bench log level
@@ -116,7 +116,17 @@ class PhractalLogger extends PhractalObject
 	 * 
 	 * @var int
 	 */
-	const LEVEL_BENCHMARK = 0x0000000001000000;
+	const LEVEL_BENCHMARK  = 0x0000000001000000;
+	
+	/**
+	 * Core debug log level
+	 * 
+	 * Logs of this level contain debug information about
+	 * the phractal core.
+	 * 
+	 * @var int
+	 */
+	const LEVEL_CORE_DEBUG = 0x0000000010000000;
 
 	/**
 	 * Names of the levels for output
@@ -124,13 +134,14 @@ class PhractalLogger extends PhractalObject
 	 * @var array
 	 */
 	private static $level_names = array(
-		self::LEVEL_CRITICAL  => 'Critical',
-		self::LEVEL_ERROR     => 'Error',
-		self::LEVEL_WARNING   => 'Warning',
-		self::LEVEL_NOTICE    => 'Notice',
-		self::LEVEL_DEBUG     => 'Debug',
-		self::LEVEL_INFO      => 'Info',
-		self::LEVEL_BENCHMARK => 'Benchmark',
+		self::LEVEL_CRITICAL   => 'Critical',
+		self::LEVEL_ERROR      => 'Error',
+		self::LEVEL_WARNING    => 'Warning',
+		self::LEVEL_NOTICE     => 'Notice',
+		self::LEVEL_DEBUG      => 'Debug',
+		self::LEVEL_INFO       => 'Info',
+		self::LEVEL_BENCHMARK  => 'Benchmark',
+		self::LEVEL_CORE_DEBUG => 'CoreDebug',
 	);
 
 	/**
@@ -479,5 +490,15 @@ class PhractalLogger extends PhractalObject
 	public function benchmark($message)
 	{
 		$this->log(self::LEVEL_BENCHMARK, $message);
+	}
+	
+	/**
+	 * Log a core debug message
+	 * 
+	 * @param string $message
+	 */
+	public function core_debug($message)
+	{
+		$this->log(self::LEVEL_CORE_DEBUG, $message);
 	}
 }
