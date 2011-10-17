@@ -49,16 +49,45 @@ class PhractalBenchmark extends PhractalObject
 	protected $tokens = array();
 	
 	/**
-	 * Get the current usage statistics
+	 * Add an entry to the benchmark array
 	 * 
-	 * @return array
+	 * @param string $group
+	 * @param string $name
+	 * @param array $stats Contains time and memory keys
+	 * @return int Token used for stop function
 	 */
-	protected function current_stats()
+	protected function add_entry($group, $name, $stats)
 	{
-		return array(
-			'time'   => microtime(true),
-			'memory' => memory_get_usage(true),
+		static $token_count = 0;
+		$token = $token_count++;
+		
+		$entry = array(
+			'token' => $token,
+			'start' => $stats,
+			'stop'  => false,
 		);
+		
+		$this->tokens[$token] = &$entry;
+		$this->groups[$group][$name][] = &$entry;
+		
+		return $token;
+	}
+	
+	/**
+	 * Create a completed benchmark as if it had been begun at
+	 * the script start.
+	 * 
+	 * @param string $group
+	 * @param string $name
+	 */
+	public function mark_from_script_start($group, $name)
+	{
+		$token = $this->add_entry($group, $name, array(
+			'time'   => START_TIME,
+			'memory' => START_MEMORY,
+		));
+		
+		$this->stop($token);
 	}
 	
 	/**
@@ -70,20 +99,10 @@ class PhractalBenchmark extends PhractalObject
 	 */
 	public function start($group, $name)
 	{
-		static $token_count = 0;
-		
-		$token = $token_count++;
-		
-		$entry = array(
-			'token' => $token,
-			'start' => $this->current_stats(),
-			'stop'  => false,
-		);
-		
-		$this->tokens[$token] = &$entry;
-		$this->groups[$group][$name][] = &$entry;
-		
-		return $token;
+		return $this->add_entry($group, $name, array(
+			'time'   => microtime(true),
+			'memory' => memory_get_usage(true),
+		));
 	}
 	
 	/**
@@ -106,7 +125,10 @@ class PhractalBenchmark extends PhractalObject
 			throw new PhractalBenchmarkTokenAlreadyStoppedException($token);
 		}
 		
-		$entry['stop'] = $this->current_stats();
+		$entry['stop'] = array(
+			'time'   => microtime(true),
+			'memory' => memory_get_usage(true),
+		);
 	}
 	
 	/**

@@ -14,14 +14,20 @@
 /**
  * Script start time.
  * 
- * While this isn't the actual start time of the script, it's
- * close enough to be accurate.
- * 
  * DON'T CHANGE THIS VALUE
  * 
  * @var float
  */
 define('START_TIME', microtime(true));
+
+/**
+ * Script start memory
+ * 
+ * DON'T CHANGE THIS VALUE
+ * 
+ * @var int
+ */
+define('START_MEMORY', memory_get_usage(true));
 
 /**
  * Absolute path to the webroot of the application.
@@ -195,6 +201,8 @@ function main($request)
 	$benchmark  = Phractal::get_benchmark();
 	$logger     = Phractal::get_logger();
 	$dispatcher = Phractal::get_dispatcher();
+	
+	$benchmark->mark_from_script_start('global', 'startup');
 	
 	$main_benchmark = $benchmark->start('global', 'main');
 	$response = $dispatcher->dispatch($request);
