@@ -12,6 +12,18 @@
  */
 
 /**
+ * Script start time.
+ * 
+ * While this isn't the actual start time of the script, it's
+ * close enough to be accurate.
+ * 
+ * DON'T CHANGE THIS VALUE
+ * 
+ * @var float
+ */
+define('START_TIME', microtime(true));
+
+/**
  * Absolute path to the webroot of the application.
  * Does NOT contain a trailing slash.
  * @var string
@@ -167,3 +179,27 @@ Phractal::set_benchmark($benchmark);
  */
 $dispatcher = new PhractalDispatcher();
 Phractal::set_dispatcher($dispatcher);
+
+// ------------------------------------------------------------------------
+
+/**
+ * Main function
+ * 
+ * Each entry point should define their own request, and then
+ * pass it in to this function.
+ * 
+ * @param PhractalRequestComponent $request
+ */
+function main($request)
+{
+	$main_benchmark = Phractal::get_benchmark()->start('main', 'main');
+	$response = Phractal::get_dispatcher()->dispatch($request);
+	Phractal::get_benchmark()->stop($$main_benchmark);
+	
+	// you probably only need 1 of these
+	Phractal::get_benchmark()->log_all();
+	//Phractal::get_benchmark()->log_all_groups();
+	
+	Phractal::get_logger()->write_logs_to_browser();
+	$response->send_to_client();
+}

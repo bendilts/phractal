@@ -12,15 +12,6 @@
  */
 
 /**
- * Script start time.
- * 
- * DON'T CHANGE THIS VALUE
- * 
- * @var float
- */
-define('START_TIME', microtime(true));
-
-/**
  * The method of framework entrance.
  * 
  * DON'T CHANGE THIS VALUE
@@ -43,13 +34,5 @@ require_once(dirname(__FILE__) . '/bootstrap.php');
 
 // ------------------------------------------------------------------------
 
-$token = Phractal::get_benchmark()->start('main', 'main');
 $request = Phractal::get_loader()->instantiate('Request', 'Component', array($_SERVER['argv'][1], $_SERVER['argv'][2]));
-$response = Phractal::get_dispatcher()->dispatch($request);
-Phractal::get_benchmark()->stop($token);
-
-Phractal::get_benchmark()->log_all();
-//Phractal::get_benchmark()->log_all_groups();
-
-$response->send_to_client();
-
+main($request);
