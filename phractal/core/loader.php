@@ -161,9 +161,10 @@ class PhractalLoader extends PhractalObject
 			'Controller' => 'controller/controllers',
 			'Component'  => 'controller/components',
 			'Driver'     => 'model/drivers',
+			'Manager'    => 'model/managers',
+			'Migration'  => 'model/migrations',
 			'Model'      => 'model/models',
 			'Record'     => 'model/records',
-			'Manager'    => 'model/managers',
 			'Helper'     => 'view/helpers',
 			'Renderer'   => 'view/renderers',
 		);
