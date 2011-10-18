@@ -63,6 +63,28 @@ require_once(PATH_PHRACTAL . '/config/bootstrap.php');
 // ------------------------------------
 
 /**
+ * Benchmark
+ * 
+ * Replace this class with a subclass of PhractalBenchmark
+ * to customize benchmarking
+ */
+$benchmark = new PhractalBenchmark();
+Phractal::set_benchmark($benchmark);
+
+// ------------------------------------
+
+/**
+ * Inflector
+ * 
+ * Replace this class with a subclass of PhractalInflector
+ * to customize inflecting
+ */
+$inflector = new PhractalInflector();
+Phractal::set_inflector($inflector);
+
+// ------------------------------------
+
+/**
  * Config
  * 
  * Replace this class with a subclass of PhractalConfig
@@ -152,28 +174,6 @@ Phractal::set_loader($loader);
  */
 $error_handler = new PhractalErrorHandler();
 Phractal::set_error_handler($error_handler);
-
-// ------------------------------------
-
-/**
- * Inflector
- * 
- * Replace this class with a subclass of PhractalInflector
- * to customize inflecting
- */
-$inflector = new PhractalInflector();
-Phractal::set_inflector($inflector);
-
-// ------------------------------------
-
-/**
- * Benchmark
- * 
- * Replace this class with a subclass of PhractalBenchmark
- * to customize benchmarking
- */
-$benchmark = new PhractalBenchmark();
-Phractal::set_benchmark($benchmark);
 
 // ------------------------------------
 
