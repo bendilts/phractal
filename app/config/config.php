@@ -57,7 +57,7 @@
  * 
  * @var bool
  */
-$config->set('site.maintenance', true);
+$config->set('site.maintenance', false);
 
 /**
  * Log file path
