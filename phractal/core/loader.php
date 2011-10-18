@@ -168,6 +168,8 @@ class PhractalLoader extends PhractalObject
 			'Renderer'   => 'view/renderers',
 		);
 		
+		Phractal::get_logger()->core_debug('Autoload ' . $classname);
+		
 		$core = substr($classname, 0, 8) === 'Phractal';
 		$base = $core ? PATH_PHRACTAL : PATH_APP;
 		

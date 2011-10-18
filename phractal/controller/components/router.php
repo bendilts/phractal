@@ -104,6 +104,7 @@ class PhractalRouterComponent extends PhractalBaseComponent
 			$route_extension = $request_extension;
 		}
 		
+		Phractal::get_logger()->core_debug('Force matched route ' . $route_name);
 		$this->matched_route = $route;
 		$this->request->set_matched_route($route, $route_name);
 		$this->request->set_extension($route_extension);
@@ -314,6 +315,7 @@ class PhractalRouterComponent extends PhractalBaseComponent
 			}
 			
 			// MATCH FOUND!
+			Phractal::get_logger()->core_debug('Matched route ' . $route_name);
 			$this->matched_route = $route;
 			$this->request->set_matched_route($route, $route_name);
 			$this->request->set_extension($route_extension);

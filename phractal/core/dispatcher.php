@@ -30,6 +30,7 @@ class PhractalDispatcher extends PhractalObject
 	 */
 	protected function grab_super_globals(PhractalRequestComponent $request)
 	{
+		Phractal::get_logger()->core_debug('Copying super globals ($_GET, $_POST, etc)');
 		$request->set_get_array($_GET);
 		$request->set_post_array($_POST);
 		$request->set_env_array($_ENV);
@@ -38,10 +39,12 @@ class PhractalDispatcher extends PhractalObject
 		
 		if (RUNTIME === 'web' && isset($_SERVER['CONTENT_LENGTH']) && $_SERVER['CONTENT_LENGTH'] > 0)
 		{
+			Phractal::get_logger()->core_debug('Reading in raw HTTP body');
 			$raw = file_get_contents('php://input');
 			$request->set_raw($raw);
 		}
 		
+		Phractal::get_logger()->core_debug('Clearing super globals ($_GET, $_POST, etc)');
 		unset($_GET);
 		unset($_POST);
 		unset($_ENV);
@@ -59,6 +62,8 @@ class PhractalDispatcher extends PhractalObject
 		$loader = Phractal::get_loader();
 		$logger = Phractal::get_logger();
 		$config = Phractal::get_config();
+		
+		$logger->core_debug('Dispatch ' . $request->get_uri());
 		
 		Phractal::push_context();
 		
@@ -90,6 +95,7 @@ class PhractalDispatcher extends PhractalObject
 			}
 			catch (Exception $e)
 			{
+				$logger->critical('Dispatcher caught ' . get_class($e) . ' with message: ' . $e->getMessage());
 				$is_500 = true;
 			}
 		}
@@ -101,6 +107,7 @@ class PhractalDispatcher extends PhractalObject
 			}
 			catch (PhractalRouterComponentNoMatchException $e)
 			{
+				$logger->core_debug('(404) No routes found for ' . $request->get_uri());
 				$is_404 = true;
 			}
 			
@@ -119,6 +126,8 @@ class PhractalDispatcher extends PhractalObject
 			}
 			catch (Exception $e)
 			{
+				$logger->critical('Dispatcher caught ' . get_class($e) . ' with message: ' . $e->getMessage());
+				
 				if ($is_404)
 				{
 					$logger->error('A 404 error was found, but an internal error occurred.');
@@ -148,6 +157,7 @@ class PhractalDispatcher extends PhractalObject
 			}
 			catch (Exception $e)
 			{
+				$logger->critical('Dispatcher caught ' . get_class($e) . ' with message: ' . $e->getMessage());
 				$logger->error('A 500 error was found, but an internal error occurred.');
 			}
 		}
