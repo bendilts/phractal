@@ -295,7 +295,7 @@ class PhractalLogger extends PhractalObject
 			{
 				if ($entry['level'] & $level)
 				{
-					header('log-' . $name . '-' . $i++ . ': ' . $this->format_entry($entry));
+					header('log-' . $name . '-' . str_pad($i++, 5, '0', STR_PAD_LEFT) . ': ' . $this->format_entry($entry));
 				}
 			}
 		}
