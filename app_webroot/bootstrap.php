@@ -54,7 +54,7 @@ define('PATH_PHRACTAL', dirname(dirname(__FILE__)) . '/phractal');
  * The PHP runtime being used.
  * @var string cli|web
  */
-define('RUNTIME', isset($_SERVER['argc']) ? 'cli' : 'web');
+define('RUNTIME', defined('STDIN') ? 'cli' : 'web');
 
 // ------------------------------------------------------------------------
 
