@@ -115,10 +115,14 @@ class PhractalConfig extends PhractalObject
 	 */
 	public function load_file($filename)
 	{
-		$token = Phractal::get_benchmark()->start('config', basename($filename));
+		$token = Phractal::get_benchmark()->start('config', basename($filename, '.php'));
 		
 		$this->push();
-		$filename = $filename . '.php';
+		
+		if (strtolower(substr($filename, -4)) !== '.php')
+		{
+			$filename = $filename . '.php';
+		}
 		
 		if ($filename[0] !== '/')
 		{

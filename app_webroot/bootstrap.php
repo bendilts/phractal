@@ -111,6 +111,7 @@ Phractal::set_inflector($inflector);
  * </example>
  */
 $config = new PhractalConfig();
+$config->load_file(PATH_PHRACTAL . '/config/config');
 $config->load_file('config');
 Phractal::set_config($config);
 
