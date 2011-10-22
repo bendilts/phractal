@@ -47,6 +47,7 @@ class PhractalDispatcher extends PhractalObject
 		Phractal::get_logger()->core_debug('Clearing super globals ($_GET, $_POST, etc)');
 		unset($_GET);
 		unset($_POST);
+		unset($_REQUEST);
 		unset($_ENV);
 		unset($_COOKIE);
 		unset($_SERVER);

@@ -39,10 +39,23 @@ class PhractalRequestComponentBadUnlockCodeException extends PhractalException {
  * Request Component
  *
  * Contains all request parameters. This includes POST,
- * GET, FILES, COOKIE, and SERVER.
+ * GET, FILES, COOKIE, SERVER, etc.
  */
 class PhractalRequestComponent extends PhractalBaseComponent
 {
+	/**
+	 * Variable source constants
+	 * 
+	 * @var string
+	 */
+	const VARIABLES_POST     = 'P';
+	const VARIABLES_GET      = 'G';
+	const VARIABLES_COOKIE   = 'C';
+	const VARIABLES_FILES    = 'F';
+	const VARIABLES_ENV      = 'E';
+	const VARIABLES_SERVER   = 'S';
+	const VARIABLES_ROUTER   = 'R';
+	
 	/**
 	 * True when the client initiated this request. False when
 	 * this is an internal request
@@ -116,6 +129,13 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	 * @var string
 	 */
 	protected $matched_route_name;
+	
+	/**
+	 * Order and use of variables
+	 * 
+	 * @var string
+	 */
+	protected $default_variables_order = 'RSECFPG';
 	
 	/**
 	 * GET variables
@@ -472,36 +492,82 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	}
 	
 	/**
-	 * Get a REQUEST variable as it would normally be gotten
-	 * from the $_REQUEST super global.
+	 * Set the default variables order.
 	 * 
-	 * The same precedence is used here as would be used
-	 * in the $_REQUEST super global
+	 * This will set the default ordering of variables
+	 * returned from get_all_variables when no ordering
+	 * is specified.
+	 * 
+	 * To get the GET and POST variables, use 'GP'. If
+	 * you want the POST variables to take precedence
+	 * over the GET variables (should any naming conflicts
+	 * occur), then use 'PG'.
+	 * 
+	 * @param string $order
+	 */
+	public function set_default_variables_order($order)
+	{
+		$this->default_variables_order = $order;
+	}
+	
+	/**
+	 * Get the default order of variables being used
+	 * 
+	 * @return string
+	 */
+	public function get_default_variables_order()
+	{
+		return $this->default_variables_order;
+	}
+	
+	/**
+	 * Get all the input variables as an array with
+	 * the key being the self::VARIABLES_* constant
+	 * that represents them
+	 * 
+	 * @return array
+	 */
+	protected function get_variables_by_input()
+	{
+		return array(
+			self::VARIABLES_GET    => $this->get,
+			self::VARIABLES_POST   => $this->post,
+			self::VARIABLES_COOKIE => $this->cookie,
+			self::VARIABLES_SERVER => $this->server,
+			self::VARIABLES_ENV    => $this->env,
+			self::VARIABLES_FILES  => $this->files,
+			self::VARIABLES_ROUTER => $this->router,
+		);
+	}
+	
+	/**
+	 * Get a variable from the inputs using the order
+	 * specified. If no order is specified, use the
+	 * default_variables_order defined on this object.
 	 * 
 	 * If the variable isn't found, then $default will be returned.
 	 * If $default is null, an exception will be thrown.
 	 * 
 	 * @param string $name
+	 * @param string $order
 	 * @param mixed $default
 	 * @return mixed
 	 * @throws PhractalRequestComponentVariableNotFoundException
 	 */
-	public function get_request($name, $default = null)
+	public function get_variable($name, $order = null, $default = null)
 	{
-		$lookup = array(
-			'G' => &$this->get,
-			'P' => &$this->post,
-			'C' => &$this->cookie,
-			'S' => &$this->server,
-			'E' => &$this->env,
-		);
+		if ($order === null)
+		{
+			$order = $this->default_variables_order;
+		}
 		
-		$order = ini_get('request_order');
+		$lookup = $this->get_variables_by_input();
+		
 		$length = strlen($order);
 		for ($i = 0; $i < $length; $i++)
 		{
 			$char = $order[$i];
-			$array = &$lookup[$char];
+			$array = $lookup[$char];
 			if (isset($array[$name]))
 			{
 				return $array[$name];
@@ -513,7 +579,67 @@ class PhractalRequestComponent extends PhractalBaseComponent
 			return $default;
 		}
 		
-		throw new PhractalRequestComponentVariableNotFoundException('REQUEST::' . $name);
+		throw new PhractalRequestComponentVariableNotFoundException($order . '::' . $name);
+	}
+	
+	/**
+	 * Get all variables using the order specified.
+	 * If no order is specified
+	 * 
+	 * @param string $order
+	 */
+	public function get_all_variables($order = null)
+	{
+		if ($order === null)
+		{
+			$order = $this->default_variables_order;
+		}
+		
+		$lookup = $this->get_variables_by_input();
+		
+		$all = array();
+		$length = strlen($order);
+		for ($i = 0; $i < $length; $i++)
+		{
+			$char = $order[$i];
+			$all = array_merge($array, $all);
+		}
+		
+		return $all;
+	}
+	
+	/**
+	 * Get a REQUEST variable as it would normally be gotten
+	 * from the $_REQUEST super global.
+	 * 
+	 * The same precedence is used here as would be used
+	 * in the $_REQUEST super global.
+	 * 
+	 * If the variable isn't found, then $default will be returned.
+	 * If $default is null, an exception will be thrown.
+	 * 
+	 * @param string $name
+	 * @param mixed $default
+	 * @return mixed
+	 * @throws PhractalRequestComponentVariableNotFoundException
+	 */
+	public function get_request($name, $default = null)
+	{
+		return $this->get_variable(ini_get('request_order'), $name, $default);
+	}
+	
+	/**
+	 * Get all the REQUEST variables. This is equivalent to
+	 * accessing the $_REQUEST super global.
+	 * 
+	 * The same precedence is used here as would be used
+	 * in the $_REQUEST super global.
+	 * 
+	 * @return array
+	 */
+	public function get_all_request()
+	{
+		return $this->get_all_variables(ini_get('request_order'));
 	}
 	
 	/**
