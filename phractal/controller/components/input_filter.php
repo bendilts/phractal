@@ -904,6 +904,65 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 		return true;
 	}
 	
+	/**
+	 * Round an input
+	 * 
+	 * @see round()
+	 * @param mixed $input
+	 * @param int $precision
+	 * @return bool
+	 */
+	protected function operation_manipulate_round(&$input, $precision = 0)
+	{
+		$input = round($input, $precision);
+		
+		return true;
+	}
+	
+	/**
+	 * Ceil an input
+	 * 
+	 * @param mixed $input
+	 * @param int $precision
+	 * @return bool
+	 */
+	protected function operation_manipulate_ceil(&$input, $precision = 0)
+	{
+		if ($precision === 0)
+		{
+			$input = ceil($input);
+		}
+		else
+		{
+			$mult = 10 * $precision;
+			$input = ceil($input * $mult) / $mult;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Floor an input
+	 * 
+	 * @param mixed $input
+	 * @param int $precision
+	 * @return bool
+	 */
+	protected function operation_manipulate_floor(&$input, $precision = 0)
+	{
+		if ($precision === 0)
+		{
+			$input = floor($input);
+		}
+		else
+		{
+			$mult = 10 * $precision;
+			$input = floor($input * $mult) / $mult;
+		}
+		
+		return true;
+	}
+	
 	// --------------------------------
 	// Setting
 	// --------------------------------
