@@ -68,29 +68,8 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 			foreach ($operations as $operation_name => $operation)
 			{
 				$filter = array_shift($operation);
-				$function = 'operation_' . $filter;
-				
-				switch(count($operation))
-				{
-					case 0:
-						$this->{$function}($outputs[$var_name]);
-						break;
-					case 1:
-						$this->{$function}($outputs[$var_name], $operation[0]);
-						break;
-					case 2:
-						$this->{$function}($outputs[$var_name], $operation[0], $operation[1]);
-						break;
-					case 3:
-						$this->{$function}($outputs[$var_name], $operation[0], $operation[1], $operation[2]);
-						break;
-					case 4:
-						$this->{$function}($outputs[$var_name], $operation[0], $operation[1], $operation[2], $operation[3]);
-						break;
-					case 5:
-						$this->{$function}($outputs[$var_name], $operation[0], $operation[1], $operation[2], $operation[3], $operation[4]);
-						break;
-				}
+				array_unshift($operation, &$outputs[$var_name]);
+				$success = $this->dynamic_call('operation_' . $filter, $operation);
 			}
 		}
 		

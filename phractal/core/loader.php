@@ -121,21 +121,7 @@ class PhractalLoader extends PhractalObject
 		{
 			try
 			{
-				switch ($num_constructor_args)
-				{
-					case 0:
-						return new $classname();
-					case 1:
-						return new $classname($constructor_args[0]);
-					case 2:
-						return new $classname($constructor_args[0], $constructor_args[1]);
-					case 3:
-						return new $classname($constructor_args[0], $constructor_args[1], $constructor_args[2]);
-					case 4:
-						return new $classname($constructor_args[0], $constructor_args[1], $constructor_args[2], $constructor_args[3]);
-					case 5:
-						return new $classname($constructor_args[0], $constructor_args[1], $constructor_args[2], $constructor_args[3], $constructor_args[4]);
-				}
+				return $this->dynamic_new($classname, $constructor_args);
 			}
 			catch (Exception $e) {}
 		}
