@@ -593,6 +593,22 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	}
 	
 	/**
+	 * Validate the number of files uploaded under a certain name.
+	 * 
+	 * @param mixed $input
+	 * @param mixed $min If null, no min value will be checked
+	 * @param mixed $max If null, no max value will be checked
+	 * @param bool $inclusive True to pass validation when the file size is equal to the min or max
+	 * @return bool
+	 */
+	protected function operation_validate_file_count_between(&$input, $min = null, $max = null, $inclusive = true)
+	{
+		$size = is_array($input['size']) ? count($input['size']) : 1;
+		return ($min !== null && (($inclusive && $size >= $min) || (!$inclusive && $size > $min)))
+		    && ($max !== null && (($inclusive && $size <= $max) || (!$inclusive && $size < $max)));
+	}
+	
+	/**
 	 * Check to see if the length of a string is between a set of values
 	 * 
 	 * @param string $input
