@@ -903,4 +903,43 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 		
 		return true;
 	}
+	
+	// --------------------------------
+	// Setting
+	// --------------------------------
+	
+	/**
+	 * Set the input if it is empty
+	 * 
+	 * @see empty()
+	 * @param mixed $input
+	 * @param mixed $value
+	 * @return bool
+	 */
+	protected function operation_default_empty(&$input, $value)
+	{
+		if (empty($input))
+		{
+			$input = $value;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Set an input to a value if the input isn't set
+	 * 
+	 * @param mixed $input
+	 * @param mixed $value
+	 * @return bool
+	 */
+	protected function operation_default_not_set(&$input, $value)
+	{
+		if ($input === null && !isset($this->inputs[$this->current_input_name]))
+		{
+			$input = $value;
+		}
+		
+		return true;
+	}
 }
