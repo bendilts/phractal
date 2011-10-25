@@ -692,6 +692,17 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 		    || ($input === $this->inputs[$other_field_name]);
 	}
 	
+	/**
+	 * Validate a base64 encoded string
+	 * 
+	 * @param mixed $input
+	 * @return bool
+	 */
+	protected function operation_validate_base64(&$input)
+	{
+		return preg_match('/^[a-z0-9+\/]*[=]{0,2}$/', $input);
+	}
+	
 	// --------------------------------
 	// Manipulation
 	// --------------------------------
