@@ -25,8 +25,25 @@ class PhractalInputFilterComponentValidationException extends PhractalException 
  */
 class PhractalInputFilterComponent extends PhractalBaseComponent
 {
+	/**
+	 * Inputs sent to the run function
+	 * 
+	 * @var array
+	 */
 	protected $inputs;
+	
+	/**
+	 * Filters sent to the run function
+	 * 
+	 * @var array
+	 */
 	protected $filters;
+	
+	/**
+	 * The name of the input being filtered right now
+	 * 
+	 * @var string
+	 */
 	protected $current_input_name;
 	
 	/**
