@@ -719,6 +719,20 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 		return preg_match('/^[a-z0-9+\/]*[=]{0,2}$/', $input);
 	}
 	
+	/**
+	 * Use filter_var to validate an input
+	 * 
+	 * @see filter_var()
+	 * @param mixed $input
+	 * @param int $filter
+	 * @param mixed $options
+	 * @return bool
+	 */
+	protected function operation_validate_filter_var(&$input, $filter, $options = null)
+	{
+		return filter_var($input, $filter, $options);
+	}
+	
 	// --------------------------------
 	// Manipulation
 	// --------------------------------
