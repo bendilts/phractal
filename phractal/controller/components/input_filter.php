@@ -571,7 +571,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * @param bool $inclusive True to pass validation when the file size is equal to the min or max
 	 * @return bool
 	 */
-	protected function operation_validate_file_size(&$input, $min = null, $max = null)
+	protected function operation_validate_file_size(&$input, $min = null, $max = null, $inclusive = true)
 	{
 		if (is_array($input['size']))
 		{
