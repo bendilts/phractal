@@ -457,28 +457,23 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	/**
 	 * Check to see if the input contains a date in the format passed in.
 	 * 
+	 * @see strptime()
 	 * @param mixed $input
-	 * @param mixed $strptime_format String for a single format, or an array of strings to allow multiple.
+	 * @param array $formats strftime string formats to allow
 	 * @return bool
 	 */
-	protected function operation_validate_datetime(&$input, $strptime_format)
+	protected function operation_validate_datetime(&$input, array $formats)
 	{
-		if (is_array($strptime_format))
+		foreach ($formats as $format)
 		{
-			foreach ($strptime_format as $format)
+			$date = strptime($input, $format);
+			if ($date !== false)
 			{
-				$date = strptime($input, $format);
-				if ($date === false)
-				{
-					return false;
-				}
+				return true;
 			}
-			
-			return true;
 		}
 		
-		$date = strptime($input, $strptime_format);
-		return $date !== false;
+		return false;
 	}
 	
 	/**
@@ -534,18 +529,15 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_file_upload_success(&$input)
 	{
-		if (is_array($input['error']))
+		foreach ((array) $input['errors'] as $error)
 		{
-			foreach ($input['error'] as $error)
+			if ($error !== UPLOAD_ERR_OK)
 			{
-				if ($error !== UPLOAD_ERR_OK)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 		
-		return $error === UPLOAD_ERR_OK;
+		return true;
 	}
 	
 	/**
@@ -559,34 +551,22 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_file_extension(&$input, $extensions)
 	{
-		if (is_array($input['name']))
+		foreach ((array) $input['name'] as $name)
 		{
-			foreach ($input['name'] as $name)
+			$index = strrpos($name, '.');
+			if ($index === false)
 			{
-				$index = strrpos($name, '.');
-				if ($index === false)
-				{
-					return false;
-				}
-				
-				$ext = substr($name, $index + 1);
-				if (!in_array($ext, $extensions, true))
-				{
-					return false;
-				}
+				return false;
 			}
 			
-			return true;
+			$ext = substr($name, $index + 1);
+			if (!in_array($ext, $extensions, true))
+			{
+				return false;
+			}
 		}
 		
-		$index = strrpos($input['name'], '.');
-		if ($index === false)
-		{
-			return false;
-		}
-		
-		$ext = substr($input['name'], $index + 1);
-		return in_array($ext, $extensions, true);
+		return true;
 	}
 	
 	/**
@@ -602,23 +582,16 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_file_size(&$input, $min = null, $max = null, $inclusive = true)
 	{
-		if (is_array($input['size']))
+		foreach ((array) $input['size'] as $size)
 		{
-			foreach ($input['size'] as $size)
+			if (!(($min !== null && (($inclusive && $size >= $min) || (!$inclusive && $size > $min)))
+			   && ($max !== null && (($inclusive && $size <= $max) || (!$inclusive && $size < $max)))))
 			{
-				if (!(($min !== null && (($inclusive && $size >= $min) || (!$inclusive && $size > $min)))
-				   && ($max !== null && (($inclusive && $size <= $max) || (!$inclusive && $size < $max)))))
-				{
-					return false;
-				}
+				return false;
 			}
-			
-			return true;
 		}
 		
-		$size = $input['size'];
-		return ($min !== null && (($inclusive && $size >= $min) || (!$inclusive && $size > $min)))
-		    && ($max !== null && (($inclusive && $size <= $max) || (!$inclusive && $size < $max)));
+		return true;
 	}
 	
 	/**
@@ -632,7 +605,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_file_count_between(&$input, $min = null, $max = null, $inclusive = true)
 	{
-		$size = is_array($input['size']) ? count($input['size']) : 1;
+		$size = count((array) $input['size']);
 		return ($min !== null && (($inclusive && $size >= $min) || (!$inclusive && $size > $min)))
 		    && ($max !== null && (($inclusive && $size <= $max) || (!$inclusive && $size < $max)));
 	}
