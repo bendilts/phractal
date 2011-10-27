@@ -735,6 +735,68 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 		return filter_var($input, $filter, $options);
 	}
 	
+	/**
+	 * Check to see if a key exists on an array
+	 * 
+	 * @param array $input
+	 * @param mixed $key
+	 * @return bool
+	 */
+	protected function operation_validate_array_key_exists(&$input, $key)
+	{
+		return isset($input[$key]);
+	}
+	
+	/**
+	 * Validate an array is associative (keys aren't 0-based through length - 1)
+	 * 
+	 * @param array $input
+	 * @return bool
+	 */
+	protected function operation_validate_array_is_assoc(&$input)
+	{
+		if (empty($input))
+		{
+			return true;
+		}
+		
+		$i = 0;
+		foreach ($input as $key => $val)
+		{
+			if ($key !== $i++)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Validate an array is indexed (keys are 0-based through length - 1)
+	 * 
+	 * @param array $input
+	 * @return bool
+	 */
+	protected function operation_validate_array_is_indexed(&$input)
+	{
+		if (empty($input))
+		{
+			return true;
+		}
+		
+		$i = 0;
+		foreach ($input as $key => $val)
+		{
+			if ($key !== $i++)
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
 	// --------------------------------
 	// Manipulation
 	// --------------------------------
