@@ -1095,4 +1095,52 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 			return call_user_func_array(array($input, $function), $parameters);
 		}
 	}
+	
+	/**
+	 * Make sure the output of a function call on an object
+	 * equals (==) a value
+	 * 
+	 * @param mixed $input
+	 * @param mixed $value
+	 * @param string $function
+	 * @param array $parameters
+	 * @return bool
+	 */
+	protected function operation_object_call_equals(&$input, $value, $function, array $parameters = array())
+	{
+		if (is_a($input, 'PhractalObject'))
+		{
+			$ret = $input->dynamic_call($function, $parameters);
+		}
+		else
+		{
+			$ret = call_user_func_array(array($input, $function), $parameters);
+		}
+		
+		return $ret == $value;
+	}
+	
+	/**
+	 * Make sure the output of a function call on an object
+	 * is identical (===) to a value
+	 * 
+	 * @param mixed $input
+	 * @param mixed $value
+	 * @param string $function
+	 * @param array $parameters
+	 * @return bool
+	 */
+	protected function operation_object_call_identical(&$input, $value, $function, array $parameters = array())
+	{
+		if (is_a($input, 'PhractalObject'))
+		{
+			$ret = $input->dynamic_call($function, $parameters);
+		}
+		else
+		{
+			$ret = call_user_func_array(array($input, $function), $parameters);
+		}
+		
+		return $ret === $value;
+	}
 }
