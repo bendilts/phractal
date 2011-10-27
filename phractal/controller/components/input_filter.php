@@ -389,6 +389,56 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	}
 	
 	/**
+	 * Check to make sure an input is an object
+	 * 
+	 * @param mixed $input
+	 * @return bool
+	 */
+	protected function operation_validate_type_object(&$input)
+	{
+		return is_object($input);
+	}
+	
+	/**
+	 * Check to make sure the input is of type $classname
+	 * 
+	 * @param mixed $input
+	 * @param mixed $classname
+	 * @return bool
+	 */
+	protected function operation_validate_object_class(&$input, $classname)
+	{
+		return get_class($input) === $classname;
+	}
+	
+	/**
+	 * Check to make sure the input has $classname as its base class or one
+	 * of its parent classes.
+	 * 
+	 * @see is_a()
+	 * @param mixed $input
+	 * @param mixed $classname
+	 * @return bool
+	 */
+	protected function operation_validate_object_is_a(&$input, $classname)
+	{
+		return is_a($input, $classname);
+	}
+	
+	/**
+	 * Check to see if an object has $classname as one of its parent classes
+	 * 
+	 * @see is_subclass_of()
+	 * @param mixed $input
+	 * @param string $classname
+	 * @return bool
+	 */
+	protected function operation_validate_object_subclass_of(&$input, $classname)
+	{
+		return is_subclass_of($input, $classname);
+	}
+	
+	/**
 	 * Validate the format of a float
 	 * 
 	 * @param mixed $input
@@ -1020,5 +1070,29 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 		}
 		
 		return true;
+	}
+	
+	// --------------------------------
+	// Custom Functions
+	// --------------------------------
+	
+	/**
+	 * Call a function on an object
+	 * 
+	 * @param mixed $input
+	 * @param string $function
+	 * @param array $parameters
+	 * @return bool
+	 */
+	protected function operation_object_call(&$input, $function, array $parameters = array())
+	{
+		if (is_a($input, 'PhractalObject'))
+		{
+			return $input->dynamic_call($function, $parameters);
+		}
+		else
+		{
+			return call_user_func_array(array($input, $function), $parameters);
+		}
 	}
 }

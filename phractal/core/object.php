@@ -55,7 +55,7 @@ abstract class PhractalObject
 	 * @param array $parameters Default is no parameters
 	 * @return mixed Whatever the function returns
 	 */
-	protected function dynamic_call($function, array $parameters = array())
+	public function dynamic_call($function, array $parameters = array())
 	{
 		switch (count($parameters))
 		{
@@ -94,7 +94,7 @@ abstract class PhractalObject
 	 * @return mixed New object of type $class
 	 * @throws PhractalObjectNewObjectTooManyArgsException
 	 */
-	protected function dynamic_new($class, array $parameters = array())
+	public function dynamic_new($class, array $parameters = array())
 	{
 		switch (count($paramaters))
 		{
