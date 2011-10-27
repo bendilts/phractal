@@ -1069,6 +1069,34 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	}
 	
 	// --------------------------------
+	// Conversion
+	// --------------------------------
+	
+	/**
+	 * Convert a date to a timestamp using the first
+	 * strptime formats that match
+	 * 
+	 * @see strptime()
+	 * @param mixed $input
+	 * @param array $formats strftime string formats to allow
+	 * @return bool
+	 */
+	protected function operation_convert_date_to_timestamp(&$input, array $formats)
+	{
+		foreach ($formats as $format)
+		{
+			$parsed = strptime($input, $format);
+			if ($parsed !== false)
+			{
+				$input = mktime($parsed['tm_hour'], $parsed['tm_min'], $parsed['tm_sec'], 1 + $parsed['tm_mon'], $parsed['tm_mday'], 1900 + $parsed['tm_year']);
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	// --------------------------------
 	// Setting
 	// --------------------------------
 	
