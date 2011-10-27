@@ -1077,6 +1077,50 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	// --------------------------------
 	
 	/**
+	 * Call a callback with the input as a parameter
+	 * 
+	 * @param mixed $input
+	 * @param callback $callback
+	 * @param array $parameters
+	 * @return bool
+	 */
+	protected function operation_callback(&$input, $callback, array $parameters = array())
+	{
+		array_unshift($parameters, &$input);
+		return call_user_func_array($callback, $parameters);
+	}
+	
+	/**
+	 * Make sure the return value of a callback equals (==) a value
+	 * 
+	 * @param mixed $input
+	 * @param mixed $value
+	 * @param callback $callback
+	 * @param array $parameters
+	 * @return bool
+	 */
+	protected function operation_callback_equals(&$input, $value, $callback, array $parameters = array())
+	{
+		array_unshift($parameters, &$input);
+		return $value == call_user_func_array($callback, $parameters);
+	}
+	
+	/**
+	 * Make sure the return value of a callback is identical (===) to a value
+	 * 
+	 * @param mixed $input
+	 * @param mixed $value
+	 * @param callback $callback
+	 * @param array $parameters
+	 * @return bool
+	 */
+	protected function operation_callback_identical(&$input, $value, $callback, array $parameters = array())
+	{
+		array_unshift($parameters, &$input);
+		return $value === call_user_func_array($callback, $parameters);
+	}
+	
+	/**
 	 * Call a function on an object
 	 * 
 	 * @param mixed $input
