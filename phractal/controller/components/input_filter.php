@@ -26,18 +26,19 @@ class PhractalInputFilterComponentValidationException extends PhractalException 
 class PhractalInputFilterComponent extends PhractalBaseComponent
 {
 	/**
-	 * Inputs sent to the run function
+	 * A stack of inputs
 	 * 
 	 * @var array
 	 */
-	protected $inputs;
+	protected $input_stack = array();
 	
 	/**
-	 * Filters sent to the run function
+	 * Index into the input stack for the current frame
+	 * of inputs
 	 * 
-	 * @var array
+	 * @var int
 	 */
-	protected $filters;
+	protected $input_stack_index = -1;
 	
 	/**
 	 * The name of the input being filtered right now
@@ -55,8 +56,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	public function run(array $inputs, array $filters)
 	{
-		$this->inputs = &$inputs;
-		$this->filters = &$filters;
+		$this->input_stack[++$this->input_stack_index] = &$inputs;
 		
 		$outputs = array();
 		
@@ -218,7 +218,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_not_set(&$input)
 	{
-		return $input === null && isset($this->inputs[$this->current_input_name]);
+		return $input === null && isset($this->input_stack[$this->input_stack_index][$this->current_input_name]);
 	}
 	
 	/**
@@ -231,7 +231,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_isset(&$input)
 	{
-		return $input !== null && isset($this->inputs[$this->current_input_name]);
+		return $input !== null && isset($this->input_stack[$this->input_stack_index][$this->current_input_name]);
 	}
 	
 	/**
@@ -706,8 +706,8 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_identical_field(&$input, $other_field_name)
 	{
-		return (!isset($this->inputs[$this->current_input_name]) && !isset($this->inputs[$other_field_name]))
-		    || ($input === $this->inputs[$other_field_name]);
+		return (!isset($this->input_stack[$this->input_stack_index][$this->current_input_name]) && !isset($this->input_stack[$this->input_stack_index][$other_field_name]))
+		    || ($input === $this->input_stack[$this->input_stack_index][$other_field_name]);
 	}
 	
 	/**
@@ -719,8 +719,8 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_not_identical_field(&$input, $other_field_name)
 	{
-		return (isset($this->inputs[$this->current_input_name]) !== isset($this->inputs[$other_field_name]))
-		    || ($input !== $this->inputs[$other_field_name]);
+		return (isset($this->input_stack[$this->input_stack_index][$this->current_input_name]) !== isset($this->input_stack[$this->input_stack_index][$other_field_name]))
+		    || ($input !== $this->input_stack[$this->input_stack_index][$other_field_name]);
 	}
 	
 	/**
@@ -1140,7 +1140,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_default_not_set(&$input, $value)
 	{
-		if ($input === null && !isset($this->inputs[$this->current_input_name]))
+		if ($input === null && !isset($this->input_stack[$this->input_stack_index][$this->current_input_name]))
 		{
 			$input = $value;
 		}
