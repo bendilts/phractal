@@ -139,7 +139,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	/**
 	 * Check to see if the input is all alpha characters
 	 * 
-	 * @param mixed $input
+	 * @param string $input
 	 * @return bool
 	 */
 	protected function operation_validate_alpha(&$input)
@@ -150,7 +150,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	/**
 	 * Check to see if the input is all alphanumeric characters
 	 * 
-	 * @param mixed $input
+	 * @param string $input
 	 * @return bool
 	 */
 	protected function operation_validate_alpha_numeric(&$input)
@@ -173,7 +173,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * Check to see if the input matches a perl regular expression
 	 * 
 	 * @see preg_match()
-	 * @param mixed $input
+	 * @param string $input
 	 * @param string $regex
 	 * @return bool
 	 */
@@ -237,9 +237,9 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	/**
 	 * Make sure the value of the input is between 2 values.
 	 * 
-	 * @param mixed $input
-	 * @param mixed $min If null, no min value will be checked
-	 * @param mixed $max If null, no max value will be checked
+	 * @param number $input
+	 * @param number $min If null, no min value will be checked
+	 * @param number $max If null, no max value will be checked
 	 * @param bool $inclusive True to pass validation when the input is equal to the min or max
 	 * @return bool
 	 */
@@ -252,7 +252,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	/**
 	 * Validate a credit card by using the luhn algorithm.
 	 * 
-	 * @param mixed $input
+	 * @param string $input
 	 * @return bool
 	 */
 	protected function operation_validate_credit_card(&$input)
@@ -402,8 +402,8 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	/**
 	 * Check to make sure the input is of type $classname
 	 * 
-	 * @param mixed $input
-	 * @param mixed $classname
+	 * @param object $input
+	 * @param string $classname
 	 * @return bool
 	 */
 	protected function operation_validate_object_class(&$input, $classname)
@@ -416,8 +416,8 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * of its parent classes.
 	 * 
 	 * @see is_a()
-	 * @param mixed $input
-	 * @param mixed $classname
+	 * @param object $input
+	 * @param string $classname
 	 * @return bool
 	 */
 	protected function operation_validate_object_is_a(&$input, $classname)
@@ -429,7 +429,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * Check to see if an object has $classname as one of its parent classes
 	 * 
 	 * @see is_subclass_of()
-	 * @param mixed $input
+	 * @param object $input
 	 * @param string $classname
 	 * @return bool
 	 */
@@ -441,7 +441,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	/**
 	 * Validate the format of a float
 	 * 
-	 * @param mixed $input
+	 * @param string $input
 	 * @param int $min_precision Null for no min precision
 	 * @param int $max_precision Null for no max precision
 	 * @return bool
@@ -458,7 +458,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * Check to see if the input contains a date in the format passed in.
 	 * 
 	 * @see strptime()
-	 * @param mixed $input
+	 * @param string $input
 	 * @param array $formats strftime string formats to allow
 	 * @return bool
 	 */
@@ -479,7 +479,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	/**
 	 * Validate an IP address
 	 * 
-	 * @param mixed $input
+	 * @param string $input
 	 * @param string $type all|ipv4|ipv6
 	 * @return bool
 	 */
@@ -500,7 +500,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	/**
 	 * Validate a hostname
 	 * 
-	 * @param mixed $input
+	 * @param string $input
 	 * @return bool
 	 */
 	protected function operation_validate_hostname(&$input)
@@ -511,7 +511,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	/**
 	 * Validate an email address
 	 * 
-	 * @param mixed $input
+	 * @param string $input
 	 * @return bool
 	 */
 	protected function operation_validate_email(&$input)
@@ -524,7 +524,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * is passed in (using the $_FILES array format), then all
 	 * of the files will be checked.
 	 * 
-	 * @param mixed $input
+	 * @param array $input
 	 * @return bool
 	 */
 	protected function operation_validate_file_upload_success(&$input)
@@ -545,7 +545,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * is passed in (using the $_FILES array format), then all
 	 * of the files will be checked.
 	 * 
-	 * @param mixed $input
+	 * @param array $input
 	 * @param array $extensions
 	 * @return bool
 	 */
@@ -574,9 +574,9 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * is passed in (using the $_FILES array format), then all
 	 * of the files will be checked.
 	 * 
-	 * @param mixed $input
-	 * @param mixed $min If null, no min value will be checked
-	 * @param mixed $max If null, no max value will be checked
+	 * @param array $input
+	 * @param int $min If null, no min value will be checked
+	 * @param int $max If null, no max value will be checked
 	 * @param bool $inclusive True to pass validation when the file size is equal to the min or max
 	 * @return bool
 	 */
@@ -597,9 +597,9 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	/**
 	 * Validate the number of files uploaded under a certain name.
 	 * 
-	 * @param mixed $input
-	 * @param mixed $min If null, no min value will be checked
-	 * @param mixed $max If null, no max value will be checked
+	 * @param array $input
+	 * @param int $min If null, no min value will be checked
+	 * @param int $max If null, no max value will be checked
 	 * @param bool $inclusive True to pass validation when the file size is equal to the min or max
 	 * @return bool
 	 */
@@ -614,8 +614,8 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * Check to see if the length of a string is between a set of values
 	 * 
 	 * @param string $input
-	 * @param mixed $min If null, no min value will be checked
-	 * @param mixed $max If null, no max value will be checked
+	 * @param int $min If null, no min value will be checked
+	 * @param int $max If null, no max value will be checked
 	 * @param bool $inclusive True to pass validation when the length is equal to the min or max
 	 * @return bool
 	 */
@@ -689,7 +689,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	/**
 	 * Validate a UUID
 	 * 
-	 * @param mixed $input
+	 * @param string $input
 	 * @return bool
 	 */
 	protected function operation_validate_uuid(&$input)
@@ -713,7 +713,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	/**
 	 * Validate a base64 encoded string
 	 * 
-	 * @param mixed $input
+	 * @param string $input
 	 * @return bool
 	 */
 	protected function operation_validate_base64(&$input)
@@ -727,7 +727,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * @see filter_var()
 	 * @param mixed $input
 	 * @param int $filter
-	 * @param mixed $options
+	 * @param array $options
 	 * @return bool
 	 */
 	protected function operation_validate_filter_var(&$input, $filter, $options = null)
@@ -739,7 +739,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * Check to see if a key exists on an array
 	 * 
 	 * @param array $input
-	 * @param mixed $key
+	 * @param int|string $key
 	 * @return bool
 	 */
 	protected function operation_validate_array_key_exists(&$input, $key)
@@ -1013,7 +1013,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * Round an input
 	 * 
 	 * @see round()
-	 * @param mixed $input
+	 * @param float $input
 	 * @param int $precision
 	 * @return bool
 	 */
@@ -1027,7 +1027,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	/**
 	 * Ceil an input
 	 * 
-	 * @param mixed $input
+	 * @param float $input
 	 * @param int $precision
 	 * @return bool
 	 */
@@ -1049,7 +1049,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	/**
 	 * Floor an input
 	 * 
-	 * @param mixed $input
+	 * @param float $input
 	 * @param int $precision
 	 * @return bool
 	 */
@@ -1077,7 +1077,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * strptime formats that match
 	 * 
 	 * @see strptime()
-	 * @param mixed $input
+	 * @param string $input
 	 * @param array $formats strftime string formats to allow
 	 * @return bool
 	 */
@@ -1186,7 +1186,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	/**
 	 * Call a function on an object
 	 * 
-	 * @param mixed $input
+	 * @param object $input
 	 * @param string $function
 	 * @param array $parameters
 	 * @return bool
@@ -1207,7 +1207,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * Make sure the output of a function call on an object
 	 * equals (==) a value
 	 * 
-	 * @param mixed $input
+	 * @param object $input
 	 * @param mixed $value
 	 * @param string $function
 	 * @param array $parameters
@@ -1231,7 +1231,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * Make sure the output of a function call on an object
 	 * is identical (===) to a value
 	 * 
-	 * @param mixed $input
+	 * @param object $input
 	 * @param mixed $value
 	 * @param string $function
 	 * @param array $parameters
