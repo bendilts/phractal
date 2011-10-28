@@ -698,7 +698,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	}
 	
 	/**
-	 * Check to make sure this field is identical to another field
+	 * Check to make sure this field is identical (===) to another field
 	 * 
 	 * @param mixed $input
 	 * @param string $other_field_name
@@ -708,6 +708,19 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	{
 		return (!isset($this->inputs[$this->current_input_name]) && !isset($this->inputs[$other_field_name]))
 		    || ($input === $this->inputs[$other_field_name]);
+	}
+	
+	/**
+	 * Check to make sure this field is not identical (!==) to another field
+	 * 
+	 * @param mixed $input
+	 * @param string $other_field_name
+	 * @return bool
+	 */
+	protected function operation_validate_not_identical_field(&$input, $other_field_name)
+	{
+		return (isset($this->inputs[$this->current_input_name]) !== isset($this->inputs[$other_field_name]))
+		    || ($input !== $this->inputs[$other_field_name]);
 	}
 	
 	/**
@@ -1169,6 +1182,21 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	}
 	
 	/**
+	 * Make sure the return value of a callback doesn't equal (!=) a value
+	 * 
+	 * @param mixed $input
+	 * @param mixed $value
+	 * @param callback $callback
+	 * @param array $parameters
+	 * @return bool
+	 */
+	protected function operation_callback_not_equals(&$input, $value, $callback, array $parameters = array())
+	{
+		array_unshift($parameters, &$input);
+		return $value != call_user_func_array($callback, $parameters);
+	}
+	
+	/**
 	 * Make sure the return value of a callback is identical (===) to a value
 	 * 
 	 * @param mixed $input
@@ -1181,6 +1209,21 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	{
 		array_unshift($parameters, &$input);
 		return $value === call_user_func_array($callback, $parameters);
+	}
+	
+	/**
+	 * Make sure the return value of a callback is not identical (!==) to a value
+	 * 
+	 * @param mixed $input
+	 * @param mixed $value
+	 * @param callback $callback
+	 * @param array $parameters
+	 * @return bool
+	 */
+	protected function operation_callback_not_identical(&$input, $value, $callback, array $parameters = array())
+	{
+		array_unshift($parameters, &$input);
+		return $value !== call_user_func_array($callback, $parameters);
 	}
 	
 	/**
@@ -1229,6 +1272,30 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	
 	/**
 	 * Make sure the output of a function call on an object
+	 * doesn't equal (!=) a value
+	 * 
+	 * @param object $input
+	 * @param mixed $value
+	 * @param string $function
+	 * @param array $parameters
+	 * @return bool
+	 */
+	protected function operation_object_call_not_equals(&$input, $value, $function, array $parameters = array())
+	{
+		if (is_a($input, 'PhractalObject'))
+		{
+			$ret = $input->dynamic_call($function, $parameters);
+		}
+		else
+		{
+			$ret = call_user_func_array(array($input, $function), $parameters);
+		}
+		
+		return $ret != $value;
+	}
+	
+	/**
+	 * Make sure the output of a function call on an object
 	 * is identical (===) to a value
 	 * 
 	 * @param object $input
@@ -1249,5 +1316,29 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 		}
 		
 		return $ret === $value;
+	}
+	
+	/**
+	 * Make sure the output of a function call on an object
+	 * is not identical (!==) to a value
+	 * 
+	 * @param object $input
+	 * @param mixed $value
+	 * @param string $function
+	 * @param array $parameters
+	 * @return bool
+	 */
+	protected function operation_object_call_not_identical(&$input, $value, $function, array $parameters = array())
+	{
+		if (is_a($input, 'PhractalObject'))
+		{
+			$ret = $input->dynamic_call($function, $parameters);
+		}
+		else
+		{
+			$ret = call_user_func_array(array($input, $function), $parameters);
+		}
+		
+		return $ret !== $value;
 	}
 }
