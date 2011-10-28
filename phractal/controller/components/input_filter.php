@@ -33,19 +33,53 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	protected $input_stack = array();
 	
 	/**
-	 * Index into the input stack for the current frame
-	 * of inputs
+	* A stack of the names of the inputs being
+	* filtered right now.
+	*
+	* @var array
+	*/
+	protected $input_name_stack = array();
+	
+	/**
+	 * Index into the stack of inputs to
+	 * get the current value
 	 * 
 	 * @var int
 	 */
-	protected $input_stack_index = -1;
+	protected $stack_index = -1;
 	
 	/**
-	 * The name of the input being filtered right now
+	 * Filter the inputs to the outputs.
 	 * 
-	 * @var string
+	 * This function isn't recursive by itself, but some of the
+	 * filter operation functions on this class will call this
+	 * function for nested filtering.
+	 * 
+	 * @param array $inputs
+	 * @param array $filters
+	 * @param array $outputs
 	 */
-	protected $current_input_name;
+	protected function recursive_filter(array $inputs, array $filters, array &$outputs)
+	{
+		$this->input_stack[$this->stack_index] = $inputs;
+		
+		foreach ($filters as $var_name => $operations)
+		{
+			array_push($this->input_name_stack, $var_name);
+			$outputs[$var_name] = isset($inputs[$var_name]) ? $inputs[$var_name] : null;
+			
+			foreach ($operations as $operation_name => $operation)
+			{
+				$filter = array_shift($operation);
+				array_unshift($operation, &$outputs[$var_name]);
+				$success = $this->dynamic_call('operation_' . $filter, $operation);
+			}
+			
+			array_pop($this->input_name_stack);
+		}
+		
+		unset($this->input_stack[$this->stack_index--]);
+	}
 	
 	/**
 	 * Run the filters on the inputs
@@ -56,23 +90,8 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	public function run(array $inputs, array $filters)
 	{
-		$this->input_stack[++$this->input_stack_index] = &$inputs;
-		
 		$outputs = array();
-		
-		foreach ($filters as $var_name => $operations)
-		{
-			$this->current_input_name = $var_name;
-			$outputs[$var_name] = isset($inputs[$var_name]) ? $inputs[$var_name] : null;
-			
-			foreach ($operations as $operation_name => $operation)
-			{
-				$filter = array_shift($operation);
-				array_unshift($operation, &$outputs[$var_name]);
-				$success = $this->dynamic_call('operation_' . $filter, $operation);
-			}
-		}
-		
+		$this->recursive_filter($inputs, $filters, $outputs);
 		return $outputs;
 	}
 	
@@ -218,7 +237,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_not_set(&$input)
 	{
-		return $input === null && isset($this->input_stack[$this->input_stack_index][$this->current_input_name]);
+		return $input === null && isset($this->input_stack[$this->stack_index][$this->input_name_stack[$this->stack_index]]);
 	}
 	
 	/**
@@ -231,7 +250,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_isset(&$input)
 	{
-		return $input !== null && isset($this->input_stack[$this->input_stack_index][$this->current_input_name]);
+		return $input !== null && isset($this->input_stack[$this->stack_index][$this->input_name_stack[$this->stack_index]]);
 	}
 	
 	/**
@@ -706,8 +725,8 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_identical_field(&$input, $other_field_name)
 	{
-		return (!isset($this->input_stack[$this->input_stack_index][$this->current_input_name]) && !isset($this->input_stack[$this->input_stack_index][$other_field_name]))
-		    || ($input === $this->input_stack[$this->input_stack_index][$other_field_name]);
+		return (!isset($this->input_stack[$this->stack_index][$this->input_name_stack[$this->stack_index]]) && !isset($this->input_stack[$this->stack_index][$other_field_name]))
+		    || ($input === $this->input_stack[$this->stack_index][$other_field_name]);
 	}
 	
 	/**
@@ -719,8 +738,8 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_not_identical_field(&$input, $other_field_name)
 	{
-		return (isset($this->input_stack[$this->input_stack_index][$this->current_input_name]) !== isset($this->input_stack[$this->input_stack_index][$other_field_name]))
-		    || ($input !== $this->input_stack[$this->input_stack_index][$other_field_name]);
+		return (isset($this->input_stack[$this->stack_index][$this->input_name_stack[$this->stack_index]]) !== isset($this->input_stack[$this->stack_index][$other_field_name]))
+		    || ($input !== $this->input_stack[$this->stack_index][$other_field_name]);
 	}
 	
 	/**
@@ -1140,7 +1159,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_default_not_set(&$input, $value)
 	{
-		if ($input === null && !isset($this->input_stack[$this->input_stack_index][$this->current_input_name]))
+		if ($input === null && !isset($this->input_stack[$this->stack_index][$this->input_name_stack[$this->stack_index]]))
 		{
 			$input = $value;
 		}
