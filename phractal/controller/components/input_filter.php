@@ -183,39 +183,38 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 		
 		foreach ($filters as $var_name => $operations)
 		{
-			$error_key = implode('.', $this->name_stack);
-			if (isset($this->errors[$error_key]))
-			{
-				continue;
-			}
-			
 			array_push($this->name_stack, $var_name);
 			
-			if (!isset($outputs[$var_name]))
+			// only process if no errors have been found for this input
+			$error_key = implode('.', $this->name_stack);
+			if (!isset($this->errors[$error_key]))
 			{
-				$outputs[$var_name] = isset($inputs[$var_name]) ? $inputs[$var_name] : null;
-			}
-			
-			foreach ($operations as $operation_name => $operation)
-			{
-				$filter = array_shift($operation);
-				array_unshift($operation, &$outputs[$var_name]);
-				$call = $this->dynamic_call('operation_' . $filter, $operation);
-				
-				if ($call === false)
+				if (!isset($outputs[$var_name]))
 				{
-					$this->errors[$error_key] = array(
-						'names' => $this->name_stack,
-						'filter' => $filter,
-					);
+					$outputs[$var_name] = isset($inputs[$var_name]) ? $inputs[$var_name] : null;
+				}
+				
+				foreach ($operations as $operation_name => $operation)
+				{
+					$filter = array_shift($operation);
+					array_unshift($operation, &$outputs[$var_name]);
+					$call = $this->dynamic_call('operation_' . $filter, $operation);
 					
-					if ($this->error_mode === self::ERROR_MODE_FIRST)
+					if ($call === false)
 					{
-						throw new PhractalInputFilterComponentErrorModeFirstException();
+						$this->errors[$error_key] = array(
+							'names' => $this->name_stack,
+							'filter' => $filter,
+						);
+						
+						if ($this->error_mode === self::ERROR_MODE_FIRST)
+						{
+							throw new PhractalInputFilterComponentErrorModeFirstException();
+						}
+						
+						// stop processing current variable
+						break;
 					}
-					
-					// stop processing current variable
-					break;
 				}
 			}
 			
