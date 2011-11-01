@@ -1322,6 +1322,180 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 		return true;
 	}
 	
+	/**
+	 * Ensure all elements of the array are unique
+	 * 
+	 * @see array_unique()
+	 * @param array $input
+	 * @param int $sort_flags
+	 * @return bool
+	 */
+	protected function operation_manipulate_array_unique(&$input, $sort_flags = SORT_STRING)
+	{
+		$input = array_unique($input, $sort_flags);
+		return true;
+	}
+	
+	/**
+	 * Filter elements in an array based on the return from
+	 * a callback
+	 * 
+	 * @see array_filter()
+	 * @param array $input
+	 * @param callback $callback
+	 * @return bool
+	 */
+	protected function operation_manipulate_array_filter(&$input, $callback)
+	{
+		$input = array_filter($input, $callback);
+		return true;
+	}
+	
+	/**
+	 * Flip an array's keys and values
+	 * 
+	 * @see array_flip()
+	 * @param array $input
+	 * @return bool
+	 */
+	protected function operation_manipulate_array_flip(&$input)
+	{
+		$input = array_flip($input);
+		return true;
+	}
+	
+	/**
+	* Sort an array
+	*
+	* @see sort()
+	* @param array $input
+	* @param int $sort_flags
+	* @return bool
+	*/
+	protected function operation_manipulate_sort(&$input, $sort_flags = SORT_REGULAR)
+	{
+		return sort($input, $sort_flags);
+	}
+	
+	/**
+	* Sort an array
+	*
+	* @see natsort()
+	* @param array $input
+	* @return bool
+	*/
+	protected function operation_manipulate_natsort(&$input)
+	{
+		return natsort($input);
+	}
+	
+	/**
+	* Sort an array
+	*
+	* @see natcasesort()
+	* @param array $input
+	* @return bool
+	*/
+	protected function operation_manipulate_natcasesort(&$input)
+	{
+		return natcasesort($input);
+	}
+	
+	/**
+	* Sort an array
+	*
+	* @see asort()
+	* @param array $input
+	* @param int $sort_flags
+	* @return bool
+	*/
+	protected function operation_manipulate_asort(&$input, $sort_flags = SORT_REGULAR)
+	{
+		$input = asort($input, $sort_flags);
+		return true;
+	}
+	
+	/**
+	* Sort an array
+	*
+	* @see arsort()
+	* @param array $input
+	* @param int $sort_flags
+	* @return bool
+	*/
+	protected function operation_manipulate_arsort(&$input, $sort_flags = SORT_REGULAR)
+	{
+		$input = arsort($input, $sort_flags);
+		return true;
+	}
+	
+	/**
+	* Sort an array
+	*
+	* @see ksort()
+	* @param array $input
+	* @param int $sort_flags
+	* @return bool
+	*/
+	protected function operation_manipulate_ksort(&$input, $sort_flags = SORT_REGULAR)
+	{
+		$input = ksort($input, $sort_flags);
+		return true;
+	}
+	
+	/**
+	* Sort an array
+	*
+	* @see krsort()
+	* @param array $input
+	* @param int $sort_flags
+	* @return bool
+	*/
+	protected function operation_manipulate_krsort(&$input, $sort_flags = SORT_REGULAR)
+	{
+		$input = krsort($input, $sort_flags);
+		return true;
+	}
+	
+	/**
+	* Sort an array
+	*
+	* @see usort()
+	* @param array $input
+	* @param callback $callback
+	* @return bool
+	*/
+	protected function operation_manipulate_usort(&$input, $callback)
+	{
+		return usort($input, $callback);
+	}
+	
+	/**
+	* Sort an array
+	*
+	* @see uasort()
+	* @param array $input
+	* @param callback $callback
+	* @return bool
+	*/
+	protected function operation_manipulate_uasort(&$input, $callback)
+	{
+		return uasort($input, $callback);
+	}
+	
+	/**
+	* Sort an array
+	*
+	* @see uksort()
+	* @param array $input
+	* @param callback $callback
+	* @return bool
+	*/
+	protected function operation_manipulate_uksort(&$input, $callback)
+	{
+		return uksort($input, $callback);
+	}
+	
 	// --------------------------------
 	// Conversion
 	// --------------------------------
