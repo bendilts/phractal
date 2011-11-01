@@ -13,7 +13,68 @@
 
 // ------------------------------------------------------------------------
 
-class PhractalInputFilterComponentValidationException extends PhractalException {}
+/**
+ * Thrown and caught in this class when the error mode is ERROR_MODE_FIRST,
+ * and an error is found
+ */
+class PhractalInputFilterComponentErrorModeFirstException extends PhractalException {}
+
+// ------------------------------------------------------------------------
+
+/**
+ * Thrown when an error occurs during input filtering.
+ */
+class PhractalInputFilterComponentFilterException extends PhractalException
+{
+	/**
+	 * List of validation errors
+	 * 
+	 * @var array
+	 */
+	protected $errors;
+	
+	/**
+	 * Error mode used in the input filterer
+	 * 
+	 * @var int
+	 */
+	protected $error_mode;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param array $errors
+	 * @param int $error_mode
+	 */
+	public function __construct($errors, $error_mode)
+	{
+		parent::__contruct();
+		
+		$this->errors = $errors;
+		$this->error_mode = $error_mode;
+	}
+	
+	/**
+	 * Get the key => data pairs of errors that occurred
+	 * during the input filtering
+	 * 
+	 * @return array
+	 */
+	public function get_errors()
+	{
+		return $this->errors;
+	}
+	
+	/**
+	 * Get the error mode
+	 * 
+	 * @return int
+	 */
+	public function get_error_mode()
+	{
+		return $this->error_mode;
+	}
+}
 
 // ------------------------------------------------------------------------
 
@@ -25,6 +86,26 @@ class PhractalInputFilterComponentValidationException extends PhractalException 
  */
 class PhractalInputFilterComponent extends PhractalBaseComponent
 {
+	/**
+	 * Error mode wherein the first error that is
+	 * found will be the only error returned. All
+	 * filtering stops after the first errors is
+	 * found
+	 * 
+	 * @var int
+	 */
+	const ERROR_MODE_FIRST = 1;
+	
+	/**
+	 * Error mode wherein the first error found for
+	 * every input variable will be returned. Filtering
+	 * will continue for each input until an error occurs
+	 * or the filter chain is finished.
+	 * 
+	 * @var int
+	 */
+	const ERROR_MODE_ALL   = 2;
+	
 	/**
 	 * A stack of inputs
 	 * 
@@ -49,6 +130,42 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	protected $stack_index = -1;
 	
 	/**
+	 * Array of errors for the last run
+	 * 
+	 * @var array
+	 */
+	protected $errors;
+	
+	/**
+	 * Initial inputs
+	 * 
+	 * @var array
+	 */
+	protected $inputs;
+	
+	/**
+	 * Error mode
+	 * 
+	 * @var int
+	 */
+	protected $error_mode;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param array $inputs
+	 * @param int $error_mode One of ERROR_MODE_* constants
+	 */
+	public function __construct(array $inputs, $error_mode = self::ERROR_MODE_ALL)
+	{
+		parent::__construct();
+		
+		$this->inputs = $inputs;
+		$this->error_mode = $error_mode;
+		$this->reset();
+	}
+	
+	/**
 	 * Filter the inputs to the outputs.
 	 * 
 	 * This function isn't recursive by itself, but some of the
@@ -58,7 +175,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * @param array $inputs
 	 * @param array $filters
 	 * @param array $outputs
-	 * @return bool
+	 * @throws PhractalInputFilterComponentErrorModeFirstException
 	 */
 	protected function recursive_filter(array $inputs, array $filters, array &$outputs)
 	{
@@ -67,36 +184,101 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 		foreach ($filters as $var_name => $operations)
 		{
 			array_push($this->name_stack, $var_name);
-			$outputs[$var_name] = isset($inputs[$var_name]) ? $inputs[$var_name] : null;
+			
+			if (!isset($outputs[$var_name]))
+			{
+				$outputs[$var_name] = isset($inputs[$var_name]) ? $inputs[$var_name] : null;
+			}
 			
 			foreach ($operations as $operation_name => $operation)
 			{
 				$filter = array_shift($operation);
 				array_unshift($operation, &$outputs[$var_name]);
-				$success = $this->dynamic_call('operation_' . $filter, $operation);
+				$call = $this->dynamic_call('operation_' . $filter, $operation);
+				
+				if ($call === false)
+				{
+					$key = implode('.', $this->name_stack);
+					$this->errors[$key] = array(
+						'stack' => $this->name_stack,
+						'filter' => $filter,
+					);
+					
+					if ($this->error_mode === self::ERROR_MODE_FIRST)
+					{
+						throw new PhractalInputFilterComponentErrorModeFirstException();
+					}
+				}
 			}
 			
 			array_pop($this->name_stack);
 		}
 		
 		unset($this->input_stack[$this->stack_index--]);
-		
-		// TODO
-		return true;
 	}
 	
 	/**
 	 * Run the filters on the inputs
 	 * 
-	 * @param array $inputs
 	 * @param array $filters
-	 * @return array Filtered inputs
+	 * @throws PhractalInputFilterComponentFilterException
 	 */
-	public function run(array $inputs, array $filters)
+	public function run(array $filters)
 	{
-		$outputs = array();
-		$this->recursive_filter($inputs, $filters, $outputs);
-		return $outputs;
+		if (!empty($this->errors) && $this->error_mode === self::ERROR_MODE_FIRST)
+		{
+			return;
+		}
+		
+		try
+		{
+			$this->recursive_filter($this->inputs, $filters, $this->outputs);
+		}
+		catch (PhractalInputFilterComponentErrorModeFirstException $e)
+		{
+			// ignored. this exception is used to stop all processing and break
+			// out to the caller.
+		}
+		
+		if (!empty($this->errors))
+		{
+			throw new PhractalInputFilterComponentFilterException($this->errors, $this->error_mode);
+		}
+	}
+	
+	/**
+	 * Get the filtered inputs as they currently exist
+	 * 
+	 * @return array
+	 */
+	public function get_filtered_inputs()
+	{
+		return $this->outputs;
+	}
+	
+	/**
+	 * Get the errors that have occurred.
+	 * 
+	 * The array returned is associative. The keys are the
+	 * names of the variables that had errors, and the
+	 * values are the filters that failed.
+	 * 
+	 * @return array
+	 */
+	public function get_errors()
+	{
+		return $this->errors;
+	}
+	
+	/**
+	 * Reset the input filter. All filtered inputs
+	 * will be returned to their original, unfiltered
+	 * values.
+	 */
+	public function reset()
+	{
+		$this->errors = array();
+		$this->outputs = array();
 	}
 	
 	// ------------------------------------------------------------------------
