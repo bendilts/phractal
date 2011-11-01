@@ -179,7 +179,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function recursive_filter(array $inputs, array $filters, array &$outputs)
 	{
-		$this->input_stack[$this->stack_index] = $inputs;
+		$this->input_stack[++$this->stack_index] = $inputs;
 		
 		foreach ($filters as $var_name => $operations)
 		{
@@ -471,7 +471,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_not_set(&$input)
 	{
-		return $input === null && isset($this->input_stack[$this->stack_index][$this->name_stack[$this->stack_index]]);
+		return $input === null && !isset($this->input_stack[$this->stack_index][$this->name_stack[$this->stack_index]]);
 	}
 	
 	/**
