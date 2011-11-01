@@ -304,7 +304,8 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 			$keyed_filters[$key] = $filters;
 		}
 		
-		return $this->recursive_filter($input, $keyed_filters, $input);
+		$this->recursive_filter($input, $keyed_filters, $input);
+		return true;
 	}
 	
 	/**
@@ -316,7 +317,8 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_subarray_filter(&$input, array $filters)
 	{
-		return $this->recursive_filter($input, $filters, $input);
+		$this->recursive_filter($input, $filters, $input);
+		return true;
 	}
 	
 	// --------------------------------
