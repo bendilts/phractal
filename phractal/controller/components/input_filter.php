@@ -407,7 +407,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_numeric(&$input)
 	{
-		return preg_match('/^\\d*$/', $input);
+		return 0 < preg_match('/^\\d*$/', $input);
 	}
 	
 	/**
@@ -420,7 +420,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_regex(&$input, $regex)
 	{
-		return preg_match($regex, $input);
+		return 0 < preg_match($regex, $input);
 	}
 	
 	/**
@@ -692,7 +692,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 		$precision = ($min_precision === null ? '0' : $min_precision) . ','
 		           . ($max_precision === null ? ''  : $max_precision);
 		
-		return is_float($input) || preg_match('/^[-+]?\d*\\.\d{' . $precision . '}$/', $input);
+		return is_float($input) || 0 < preg_match('/^[-+]?\d*\\.\d{' . $precision . '}$/', $input);
 	}
 	
 	/**
@@ -746,7 +746,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_hostname(&$input)
 	{
-		return preg_match('/^(?:[a-z0-9][-a-z0-9]*\.)*(?:[a-z0-9][-a-z0-9]{0,62})\.(?:(?:[a-z]{2}\.)?[a-z]{2,4}|museum|travel)$/', $input);
+		return 0 < preg_match('/^(?:[a-z0-9][-a-z0-9]*\.)*(?:[a-z0-9][-a-z0-9]{0,62})\.(?:(?:[a-z]{2}\.)?[a-z]{2,4}|museum|travel)$/', $input);
 	}
 	
 	/**
@@ -876,7 +876,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	protected function operation_validate_phone(&$input)
 	{
 		// includes all NANPA members. see http://en.wikipedia.org/wiki/North_American_Numbering_Plan#List_of_NANPA_countries_and_territories
-		return preg_match('/^(?:\+?1)?[-. ]?\\(?[2-9][0-8][0-9]\\)?[-. ]?[2-9][0-9]{2}[-. ]?[0-9]{4}$/', $input);
+		return 0 < preg_match('/^(?:\+?1)?[-. ]?\\(?[2-9][0-8][0-9]\\)?[-. ]?[2-9][0-9]{2}[-. ]?[0-9]{4}$/', $input);
 	}
 	
 	/**
@@ -910,7 +910,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 				break;
 		}
 		
-		return $regex === null || preg_match($regex, input);
+		return $regex === null || 0 < preg_match($regex, input);
 	}
 	
 	/**
@@ -935,7 +935,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_uuid(&$input)
 	{
-		return preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i', $input);
+		return 0 < preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i', $input);
 	}
 	
 	/**
@@ -972,7 +972,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_base64(&$input)
 	{
-		return preg_match('/^[a-z0-9+\/]*[=]{0,2}$/', $input);
+		return 0 < preg_match('/^[a-z0-9+\/]*[=]{0,2}$/', $input);
 	}
 	
 	/**
