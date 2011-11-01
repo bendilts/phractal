@@ -545,7 +545,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * @param string $input
 	 * @return bool
 	 */
-	protected function operation_validate_credit_card(&$input)
+	protected function operation_validate_luhn(&$input)
 	{
 		$sum = 0;
 		$length = strlen($input);
@@ -673,7 +673,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * @param mixed $input
 	 * @return bool
 	 */
-	protected function operation_validate_type_file(&$input)
+	protected function operation_validate_type_uploaded_file(&$input)
 	{
 		return is_array($input) && isset($input['size']) && isset($input['name']) && isset($input['type']) && isset($input['tmp_name']) && isset($input['error']);
 	}
@@ -839,7 +839,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * @param array $extensions
 	 * @return bool
 	 */
-	protected function operation_validate_file_extension(&$input, $extensions)
+	protected function operation_validate_uploaded_file_extension(&$input, $extensions)
 	{
 		foreach ((array) $input['name'] as $name)
 		{
@@ -870,7 +870,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * @param bool $inclusive True to pass validation when the file size is equal to the min or max
 	 * @return bool
 	 */
-	protected function operation_validate_file_size(&$input, $min = null, $max = null, $inclusive = true)
+	protected function operation_validate_uploaded_file_size(&$input, $min = null, $max = null, $inclusive = true)
 	{
 		foreach ((array) $input['size'] as $size)
 		{
@@ -893,7 +893,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * @param bool $inclusive True to pass validation when the file size is equal to the min or max
 	 * @return bool
 	 */
-	protected function operation_validate_file_count_between(&$input, $min = null, $max = null, $inclusive = true)
+	protected function operation_validate_uploaded_file_count_between(&$input, $min = null, $max = null, $inclusive = true)
 	{
 		$size = count((array) $input['size']);
 		return ($min === null || ($inclusive && $size >= $min) || (!$inclusive && $size > $min))
