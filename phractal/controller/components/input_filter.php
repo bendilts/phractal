@@ -338,6 +338,18 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	}
 	
 	/**
+	* Cast the input to a string
+	*
+	* @param mixed $input
+	* @return bool
+	*/
+	protected function operation_cast_string(&$input)
+	{
+		$input = (string) $input;
+		return true;
+	}
+	
+	/**
 	 * Cast the input to a floating point number
 	 * 
 	 * @param mixed $input
