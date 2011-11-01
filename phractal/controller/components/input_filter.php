@@ -183,6 +183,12 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 		
 		foreach ($filters as $var_name => $operations)
 		{
+			$error_key = implode('.', $this->name_stack);
+			if (isset($this->errors[$error_key]))
+			{
+				continue;
+			}
+			
 			array_push($this->name_stack, $var_name);
 			
 			if (!isset($outputs[$var_name]))
@@ -198,8 +204,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 				
 				if ($call === false)
 				{
-					$key = implode('.', $this->name_stack);
-					$this->errors[$key] = array(
+					$this->errors[$error_key] = array(
 						'names' => $this->name_stack,
 						'filter' => $filter,
 					);
@@ -208,6 +213,9 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 					{
 						throw new PhractalInputFilterComponentErrorModeFirstException();
 					}
+					
+					// stop processing current variable
+					break;
 				}
 			}
 			
