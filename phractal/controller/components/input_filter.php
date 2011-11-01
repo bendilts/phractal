@@ -395,6 +395,17 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	// --------------------------------
 	
 	/**
+	 * Check to make sure an input is a scalar value
+	 *
+	 * @param mixed $input
+	 * @return bool
+	 */
+	protected function operation_validate_type_scalar(&$input)
+	{
+		return is_scalar($input);
+	}
+	
+	/**
 	 * Check to make sure an input is an array
 	 *
 	 * @param mixed $input
