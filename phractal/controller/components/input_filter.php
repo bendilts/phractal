@@ -827,7 +827,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_file_upload_success(&$input)
 	{
-		foreach ((array) $input['errors'] as $error)
+		foreach ((array) $input['error'] as $error)
 		{
 			if ($error !== UPLOAD_ERR_OK)
 			{
