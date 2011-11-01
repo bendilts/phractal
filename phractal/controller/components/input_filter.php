@@ -465,26 +465,63 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * Check to make sure the input is not set in the list of
 	 * variables passed to the run function
 	 * 
-	 * @see isset()
+	 * Something that isn't set will be null. The off-case is
+	 * that something is set to null. It's hard to check this
+	 * because the following isset will be false:
+	 * 
+	 * $a = array('b' => null);
+	 * isset($a['b']); // returns false
+	 * 
 	 * @param mixed $input
 	 * @return bool
 	 */
 	protected function operation_validate_not_set(&$input)
 	{
-		return $input === null && !isset($this->input_stack[$this->stack_index][$this->name_stack[$this->stack_index]]);
+		return $input === null;
 	}
 	
 	/**
 	 * Check to make sure the input is set in the list of
 	 * variables passed to the run function
 	 * 
-	 * @see isset()
+	 * Something that is set won't be null. The off-case is
+	 * that something is set to null. It's hard to check this
+	 * because the following isset will be false:
+	 * 
+	 * $a = array('b' => null);
+	 * isset($a['b']); // returns false
+	 * 
 	 * @param mixed $input
 	 * @return bool
 	 */
 	protected function operation_validate_isset(&$input)
 	{
-		return $input !== null && isset($this->input_stack[$this->stack_index][$this->name_stack[$this->stack_index]]);
+		return $input !== null;
+	}
+	
+	/**
+	 * Check to see if the input is null
+	 * 
+	 * The input will be null if it was never set or defaulted
+	 * to anything, or if it was set to null before calling run
+	 * 
+	 * @param mixed $input
+	 * @return bool
+	 */
+	protected function operation_validate_null(&$input)
+	{
+		return $input === null;
+	}
+	
+	/**
+	 * Check to see if the input is not null
+	 * 
+	 * @param mixed $input
+	 * @return bool
+	 */
+	protected function operation_validate_not_null(&$input)
+	{
+		return $input !== null;
 	}
 	
 	/**
