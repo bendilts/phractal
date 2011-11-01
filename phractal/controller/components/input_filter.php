@@ -200,7 +200,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 				{
 					$key = implode('.', $this->name_stack);
 					$this->errors[$key] = array(
-						'stack' => $this->name_stack,
+						'names' => $this->name_stack,
 						'filter' => $filter,
 					);
 					
