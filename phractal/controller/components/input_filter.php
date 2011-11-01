@@ -749,7 +749,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 		$precision = ($min_precision === null ? '0' : $min_precision) . ','
 		           . ($max_precision === null ? ''  : $max_precision);
 		
-		return is_float($input) || 0 < preg_match('/^[-+]?\d*\\.\d{' . $precision . '}$/', $input);
+		return 0 < preg_match('/^[-+]?\d*\\.\d{' . $precision . '}$/', $input);
 	}
 	
 	/**
