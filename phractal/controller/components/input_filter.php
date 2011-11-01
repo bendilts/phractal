@@ -923,7 +923,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * @param bool $inclusive True to pass validation when the length is equal to the min or max
 	 * @return bool
 	 */
-	protected function operation_validate_strlength_between(&$input, $min = null, $max = null, $inclusive = true)
+	protected function operation_validate_strlen_between(&$input, $min = null, $max = null, $inclusive = true)
 	{
 		$length = strlen($input);
 		return ($min === null || ($inclusive && $length >= $min) || (!$inclusive && $length > $min))
