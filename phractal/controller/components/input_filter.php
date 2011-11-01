@@ -768,8 +768,10 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	{
 		foreach ($formats as $format)
 		{
-			$date = strptime($input, $format);
-			if ($date !== false)
+			$parsed = strptime($input, $format);
+			
+			// require exact matches
+			if ($parsed !== false && empty($parsed['unparsed']))
 			{
 				return true;
 			}
@@ -1575,7 +1577,9 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 		foreach ($formats as $format)
 		{
 			$parsed = strptime($input, $format);
-			if ($parsed !== false)
+			
+			// require exact matches
+			if ($parsed !== false && empty($parsed['unparsed']))
 			{
 				$input = mktime($parsed['tm_hour'], $parsed['tm_min'], $parsed['tm_sec'], 1 + $parsed['tm_mon'], $parsed['tm_mday'], 1900 + $parsed['tm_year']);
 				return true;
