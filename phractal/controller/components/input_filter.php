@@ -700,6 +700,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	/**
 	 * Check to make sure the input is of type $classname
 	 * 
+	 * @see get_class()
 	 * @param object $input
 	 * @param string $classname
 	 * @return bool
