@@ -535,8 +535,8 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_validate_between(&$input, $min = null, $max = null, $inclusive = true)
 	{
-		return ($min !== null && (($inclusive && $input >= $min) || (!$inclusive && $input > $min)))
-		    && ($max !== null && (($inclusive && $input <= $max) || (!$inclusive && $input < $max)));
+		return ($min === null || ($inclusive && $input >= $min) || (!$inclusive && $input > $min))
+		    && ($max === null || ($inclusive && $input <= $max) || (!$inclusive && $input < $max));
 	}
 	
 	/**
@@ -874,8 +874,8 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	{
 		foreach ((array) $input['size'] as $size)
 		{
-			if (!(($min !== null && (($inclusive && $size >= $min) || (!$inclusive && $size > $min)))
-			   && ($max !== null && (($inclusive && $size <= $max) || (!$inclusive && $size < $max)))))
+			if (!(($min === null || ($inclusive && $size >= $min) || (!$inclusive && $size > $min))
+			   && ($max === null || ($inclusive && $size <= $max) || (!$inclusive && $size < $max))))
 			{
 				return false;
 			}
@@ -896,8 +896,8 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	protected function operation_validate_file_count_between(&$input, $min = null, $max = null, $inclusive = true)
 	{
 		$size = count((array) $input['size']);
-		return ($min !== null && (($inclusive && $size >= $min) || (!$inclusive && $size > $min)))
-		    && ($max !== null && (($inclusive && $size <= $max) || (!$inclusive && $size < $max)));
+		return ($min === null || ($inclusive && $size >= $min) || (!$inclusive && $size > $min))
+		    && ($max === null || ($inclusive && $size <= $max) || (!$inclusive && $size < $max));
 	}
 	
 	/**
@@ -912,8 +912,8 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	protected function operation_validate_strlength_between(&$input, $min = null, $max = null, $inclusive = true)
 	{
 		$length = strlen($input);
-		return ($min !== null && (($inclusive && $length >= $min) || (!$inclusive && $length > $min)))
-		    && ($max !== null && (($inclusive && $length <= $max) || (!$inclusive && $length < $max)));
+		return ($min === null || ($inclusive && $length >= $min) || (!$inclusive && $length > $min))
+		    && ($max === null || ($inclusive && $length <= $max) || (!$inclusive && $length < $max));
 	}
 	
 	/**
