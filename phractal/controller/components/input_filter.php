@@ -305,13 +305,11 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_subarray_each(&$input, array $filters)
 	{
-		$keyed_filters = array();
 		foreach ($input as $key => $value)
 		{
-			$keyed_filters[$key] = $filters;
+			$this->recursive_filter($input[$key], $filters, $input[$key]);
 		}
 		
-		$this->recursive_filter($input, $keyed_filters, $input);
 		return true;
 	}
 	
