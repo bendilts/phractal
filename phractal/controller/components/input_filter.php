@@ -58,6 +58,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * @param array $inputs
 	 * @param array $filters
 	 * @param array $outputs
+	 * @return bool
 	 */
 	protected function recursive_filter(array $inputs, array $filters, array &$outputs)
 	{
