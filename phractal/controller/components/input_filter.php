@@ -1126,7 +1126,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * @param string $chrlist
 	 * @return bool
 	 */
-	protected function operation_manipulate_trim(&$input, $chrlist = null)
+	protected function operation_manipulate_trim(&$input, $chrlist = " \n\r\t\v\0")
 	{
 		$input = trim($input, $chrlist);
 		return true;
@@ -1140,7 +1140,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * @param string $chrlist
 	 * @return bool
 	 */
-	protected function operation_manipulate_ltrim(&$input, $chrlist = null)
+	protected function operation_manipulate_ltrim(&$input, $chrlist = " \n\r\t\v\0")
 	{
 		$input = ltrim($input, $chrlist);
 		return true;
@@ -1154,7 +1154,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 * @param string $chrlist
 	 * @return bool
 	 */
-	protected function operation_manipulate_rtrim(&$input, $chrlist = null)
+	protected function operation_manipulate_rtrim(&$input, $chrlist = " \n\r\t\v\0")
 	{
 		$input = rtrim($input, $chrlist);
 		return true;
