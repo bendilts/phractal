@@ -79,6 +79,9 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 		}
 		
 		unset($this->input_stack[$this->stack_index--]);
+		
+		// TODO
+		return true;
 	}
 	
 	/**
@@ -98,6 +101,40 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	// ------------------------------------------------------------------------
 	// Filter Operations
 	// ------------------------------------------------------------------------
+	
+	// --------------------------------
+	// Filtering subarrays
+	// --------------------------------
+	
+	/**
+	 * Run the same set of filters on each element of an array
+	 * 
+	 * @param array $input
+	 * @param array $filters
+	 * @return bool
+	 */
+	protected function operation_subarray_each(&$input, array $filters)
+	{
+		$keyed_filters = array();
+		foreach ($input as $key => $value)
+		{
+			$keyed_filters[$key] = $filters;
+		}
+		
+		return $this->recursive_filter($input, $keyed_filters, $input);
+	}
+	
+	/**
+	 * Run a filter on a subarray
+	 * 
+	 * @param array $input
+	 * @param array $filters
+	 * @return bool
+	 */
+	protected function operation_subarray_filter(&$input, array $filters)
+	{
+		return $this->recursive_filter($input, $filters, $input);
+	}
 	
 	// --------------------------------
 	// Casting
