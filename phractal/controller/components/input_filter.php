@@ -393,6 +393,127 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	}
 	
 	// --------------------------------
+	// Type Checking
+	// --------------------------------
+	
+	/**
+	 * Check to make sure an input is an array
+	 *
+	 * @param mixed $input
+	 * @return bool
+	 */
+	protected function operation_validate_type_array(&$input)
+	{
+		return is_array($input);
+	}
+	
+	/**
+	 * Check to make sure an input is an int
+	 *
+	 * @param mixed $input
+	 * @return bool
+	 */
+	protected function operation_validate_type_int(&$input)
+	{
+		return is_int($input);
+	}
+	
+	/**
+	 * Check to make sure an input is a float
+	 *
+	 * @param mixed $input
+	 * @return bool
+	 */
+	protected function operation_validate_type_float(&$input)
+	{
+		return is_float($input);
+	}
+	
+	/**
+	 * Check to make sure an input is a bool
+	 *
+	 * @param mixed $input
+	 * @return bool
+	 */
+	protected function operation_validate_type_bool(&$input)
+	{
+		return is_bool($input);
+	}
+	
+	/**
+	 * Check to make sure an input is a string
+	 *
+	 * @param string $input
+	 * @return bool
+	 */
+	protected function operation_validate_type_string(&$input)
+	{
+		return is_string($input);
+	}
+	
+	/**
+	 * Check to make sure an input is a file upload
+	 *
+	 * @param mixed $input
+	 * @return bool
+	 */
+	protected function operation_validate_type_uploaded_file(&$input)
+	{
+	 	return is_array($input) && isset($input['size']) && isset($input['name']) && isset($input['type']) && isset($input['tmp_name']) && isset($input['error']);
+	}
+		
+	/**
+	 * Check to make sure an input is an object
+	 * 
+	 * @param mixed $input
+	 * @return bool
+	 */
+	protected function operation_validate_type_object(&$input)
+	{
+		return is_object($input);
+	}
+	
+	/**
+	 * Check to make sure the input is of type $classname
+	 *
+	 * @see get_class()
+	 * @param object $input
+	 * @param string $classname
+	 * @return bool
+	 */
+	protected function operation_validate_object_class(&$input, $classname)
+	{
+		return get_class($input) === $classname;
+	}
+	
+	/**
+	 * Check to make sure the input has $classname as its base class or one
+	 * of its parent classes.
+	 *
+	 * @see is_a()
+	 * @param object $input
+	 * @param string $classname
+	 * @return bool
+	 */
+	 protected function operation_validate_object_is_a(&$input, $classname)
+	 {
+	 	return is_a($input, $classname);
+	 }
+	
+	/**
+	 * Check to see if an object has $classname as one of its parent classes
+	 *
+	 * @see is_subclass_of()
+	 * @param object $input
+	 * @param string $classname
+	 * @return bool
+	 */
+	protected function operation_validate_object_subclass_of(&$input, $classname)
+	{
+		return is_subclass_of($input, $classname);
+	}
+	
+	// --------------------------------
 	// Validation
 	// --------------------------------
 	
@@ -617,123 +738,6 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	protected function operation_validate_not_identical(&$input, $value)
 	{
 		return $input !== $value;
-	}
-	
-	/**
-	 * Check to make sure an input is an array
-	 * 
-	 * @param mixed $input
-	 * @return bool
-	 */
-	protected function operation_validate_type_array(&$input)
-	{
-		return is_array($input);
-	}
-	
-	/**
-	 * Check to make sure an input is an int
-	 * 
-	 * @param mixed $input
-	 * @return bool
-	 */
-	protected function operation_validate_type_int(&$input)
-	{
-		return is_int($input);
-	}
-	
-	/**
-	 * Check to make sure an input is a float
-	 * 
-	 * @param mixed $input
-	 * @return bool
-	 */
-	protected function operation_validate_type_float(&$input)
-	{
-		return is_float($input);
-	}
-	
-	/**
-	 * Check to make sure an input is a bool
-	 * 
-	 * @param mixed $input
-	 * @return bool
-	 */
-	protected function operation_validate_type_bool(&$input)
-	{
-		return is_bool($input);
-	}
-	
-	/**
-	 * Check to make sure an input is a string
-	 * 
-	 * @param string $input
-	 * @return bool
-	 */
-	protected function operation_validate_type_string(&$input)
-	{
-		return is_string($input);
-	}
-	
-	/**
-	 * Check to make sure an input is a file upload
-	 * 
-	 * @param mixed $input
-	 * @return bool
-	 */
-	protected function operation_validate_type_uploaded_file(&$input)
-	{
-		return is_array($input) && isset($input['size']) && isset($input['name']) && isset($input['type']) && isset($input['tmp_name']) && isset($input['error']);
-	}
-	
-	/**
-	 * Check to make sure an input is an object
-	 * 
-	 * @param mixed $input
-	 * @return bool
-	 */
-	protected function operation_validate_type_object(&$input)
-	{
-		return is_object($input);
-	}
-	
-	/**
-	 * Check to make sure the input is of type $classname
-	 * 
-	 * @see get_class()
-	 * @param object $input
-	 * @param string $classname
-	 * @return bool
-	 */
-	protected function operation_validate_object_class(&$input, $classname)
-	{
-		return get_class($input) === $classname;
-	}
-	
-	/**
-	 * Check to make sure the input has $classname as its base class or one
-	 * of its parent classes.
-	 * 
-	 * @see is_a()
-	 * @param object $input
-	 * @param string $classname
-	 * @return bool
-	 */
-	protected function operation_validate_object_is_a(&$input, $classname)
-	{
-		return is_a($input, $classname);
-	}
-	
-	/**
-	 * Check to see if an object has $classname as one of its parent classes
-	 * 
-	 * @see is_subclass_of()
-	 * @param object $input
-	 * @param string $classname
-	 * @return bool
-	 */
-	protected function operation_validate_object_subclass_of(&$input, $classname)
-	{
-		return is_subclass_of($input, $classname);
 	}
 	
 	/**
