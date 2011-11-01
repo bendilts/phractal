@@ -48,7 +48,7 @@ class PhractalInputFilterComponentFilterException extends PhractalException
 	 */
 	public function __construct($errors, $error_mode)
 	{
-		parent::__contruct();
+		parent::__construct();
 		
 		$this->errors = $errors;
 		$this->error_mode = $error_mode;
