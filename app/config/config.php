@@ -153,68 +153,6 @@ $config->set('route.site.maintenance.name', 'sitedown');
 // ROUTING CONFIGURATION
 // ------------------------------------------------------------------------
 
-$routes = array();
-
-$routes['home'] = array(
-	'path'         => '/',
-	'methods'      => array('GET'),
-	'no_extension' => 'html',
-	'controller'   => 'Home',
-	'action'       => 'index',
-	'extensions'   => array('html', 'htm'),
-);
-
-$routes['maintenance'] = array(
-	'path'         => '/cron/maintenance',
-	'methods'      => array('CRON'),
-	'runtimes'     => array('cli'),
-	'controller'   => 'Maintenance',
-	'action'       => 'doit',
-);
-
-$routes['admin.sidebar'] = array(
-	'path'         => '/admin/sidebar',
-	'methods'      => array('INTERNAL'),
-	'controller'   => 'Admin',
-	'action'       => 'sidebar',
-	'no_extension' => 'html',
-	'extensions'   => array('html'),
-	'extra_named'  => array(
-		'var1' => 'abc',
-		'var2' => 'def',
-	),
-);
-
-$routes['user.profile'] = array(
-	'path'         => '/users/{userid}-{abc}/profile/{profiletype}',
-	'methods'      => array('GET', 'POST'),
-	'controller'   => 'UserProfile',
-	'action'       => 'get_user_profile',
-	'extensions'   => array('json', 'xml'),
-	'regex'        => array(
-		'userid'      => '/^\d+$/',
-		'profiletype' => '/^account|password|history|picture$/',
-	),
-);
-
-$routes['error404'] = array(
-	'path'        => '/errors/404',
-	'controller'  => 'Error',
-	'action'      => 'error404',
-);
-
-$routes['error500'] = array(
-	'path'        => '/errors/500',
-	'controller'  => 'Error',
-	'action'      => 'error500',
-);
-
-$routes['sitedown'] = array(
-	'path'        => '/sitedown',
-	'controller'  => 'Error',
-	'action'      => 'sitedown',
-);
-
 /**
  * Routing Table
  * 
@@ -258,4 +196,58 @@ $routes['sitedown'] = array(
  * 
  * @var array
  */
-$config->set('route.table', $routes);
+$config->set('route.table', array(
+	'home' => array(
+		'path'         => '/',
+		'methods'      => array('GET'),
+		'no_extension' => 'html',
+		'controller'   => 'Home',
+		'action'       => 'index',
+		'extensions'   => array('html', 'htm'),
+	),
+	'maintenance' => array(
+		'path'         => '/cron/maintenance',
+		'methods'      => array('CRON'),
+		'runtimes'     => array('cli'),
+		'controller'   => 'Maintenance',
+		'action'       => 'doit',
+	),
+	'admin.sidebar' => array(
+		'path'         => '/admin/sidebar',
+		'methods'      => array('INTERNAL'),
+		'controller'   => 'Admin',
+		'action'       => 'sidebar',
+		'no_extension' => 'html',
+		'extensions'   => array('html'),
+		'extra_named'  => array(
+			'var1' => 'abc',
+			'var2' => 'def',
+		),
+	),
+	'user.profile' => array(
+		'path'         => '/users/{userid}-{abc}/profile/{profiletype}',
+		'methods'      => array('GET', 'POST'),
+		'controller'   => 'UserProfile',
+		'action'       => 'get_user_profile',
+		'extensions'   => array('json', 'xml'),
+		'regex'        => array(
+			'userid'      => '/^\d+$/',
+			'profiletype' => '/^account|password|history|picture$/',
+		),
+	),
+	'error404' => array(
+		'path'        => '/errors/404',
+		'controller'  => 'Error',
+		'action'      => 'error404',
+	),
+	'error500' => array(
+		'path'        => '/errors/500',
+		'controller'  => 'Error',
+		'action'      => 'error500',
+	),
+	'sitedown' => array(
+		'path'        => '/sitedown',
+		'controller'  => 'Error',
+		'action'      => 'sitedown',
+	),
+));
