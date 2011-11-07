@@ -1725,14 +1725,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_object_call(&$input, $function, array $parameters = array())
 	{
-		if (is_a($input, 'PhractalObject'))
-		{
-			return $input->dynamic_call($function, $parameters);
-		}
-		else
-		{
-			return call_user_func_array(array($input, $function), $parameters);
-		}
+		return call_user_func_array_optimized(array(&$input, $function), $parameters);
 	}
 	
 	/**
@@ -1747,16 +1740,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_object_call_equals(&$input, $value, $function, array $parameters = array())
 	{
-		if (is_a($input, 'PhractalObject'))
-		{
-			$ret = $input->dynamic_call($function, $parameters);
-		}
-		else
-		{
-			$ret = call_user_func_array(array($input, $function), $parameters);
-		}
-		
-		return $ret == $value;
+		return $value == call_user_func_array_optimized(array(&$input, $function), $parameters);
 	}
 	
 	/**
@@ -1771,16 +1755,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_object_call_not_equals(&$input, $value, $function, array $parameters = array())
 	{
-		if (is_a($input, 'PhractalObject'))
-		{
-			$ret = $input->dynamic_call($function, $parameters);
-		}
-		else
-		{
-			$ret = call_user_func_array(array($input, $function), $parameters);
-		}
-		
-		return $ret != $value;
+		return $value != call_user_func_array_optimized(array(&$input, $function), $parameters);
 	}
 	
 	/**
@@ -1795,16 +1770,7 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_object_call_identical(&$input, $value, $function, array $parameters = array())
 	{
-		if (is_a($input, 'PhractalObject'))
-		{
-			$ret = $input->dynamic_call($function, $parameters);
-		}
-		else
-		{
-			$ret = call_user_func_array(array($input, $function), $parameters);
-		}
-		
-		return $ret === $value;
+		return $value === call_user_func_array_optimized(array(&$input, $function), $parameters);
 	}
 	
 	/**
@@ -1819,15 +1785,6 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	 */
 	protected function operation_object_call_not_identical(&$input, $value, $function, array $parameters = array())
 	{
-		if (is_a($input, 'PhractalObject'))
-		{
-			$ret = $input->dynamic_call($function, $parameters);
-		}
-		else
-		{
-			$ret = call_user_func_array(array($input, $function), $parameters);
-		}
-		
-		return $ret !== $value;
+		return $value !== call_user_func_array_optimized(array(&$input, $function), $parameters);
 	}
 }

@@ -121,7 +121,7 @@ class PhractalLoader extends PhractalObject
 		{
 			try
 			{
-				return $this->dynamic_new($classname, $constructor_args);
+				return call_constructor($classname, $constructor_args);
 			}
 			catch (Exception $e) {}
 		}
