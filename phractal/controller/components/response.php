@@ -291,7 +291,7 @@ class PhractalResponseComponent extends PhractalBaseComponent
 	 */
 	public function get_all_headers()
 	{
-		$headers = array('HTTP/1.1 ' . $this->http_status_code . ' ' . $this->http_status_message);
+		$headers = array('HTTP/1.0 ' . $this->http_status_code . ' ' . $this->http_status_message);
 		
 		foreach ($this->headers as $name => $values)
 		{
@@ -353,7 +353,7 @@ class PhractalResponseComponent extends PhractalBaseComponent
 	}
 	
 	/**
-	 * Clear all headers EXCEPT for the status header (ie. HTTP/1.1 200 OK)
+	 * Clear all headers EXCEPT for the status header (ie. HTTP/1.0 200 OK)
 	 * 
 	 * @throws PhractalResponseComponentLockedException
 	 */
