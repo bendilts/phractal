@@ -30,7 +30,9 @@ class PhractalDispatcher extends PhractalObject
 	 */
 	protected function grab_super_globals(PhractalRequestComponent $request)
 	{
-		Phractal::get_logger()->core_debug('Copying super globals ($_GET, $_POST, etc)');
+		$logger = PhractalApp::get_instance()->get_logger();
+		
+		$logger->core_debug('Copying super globals ($_GET, $_POST, etc)');
 		$request->set_get_array($_GET);
 		$request->set_post_array($_POST);
 		$request->set_env_array($_ENV);
@@ -39,12 +41,12 @@ class PhractalDispatcher extends PhractalObject
 		
 		if (RUNTIME === 'web' && isset($_SERVER['CONTENT_LENGTH']) && $_SERVER['CONTENT_LENGTH'] > 0)
 		{
-			Phractal::get_logger()->core_debug('Reading in raw HTTP body');
+			$logger->core_debug('Reading in raw HTTP body');
 			$raw = file_get_contents('php://input');
 			$request->set_raw($raw);
 		}
 		
-		Phractal::get_logger()->core_debug('Clearing super globals ($_GET, $_POST, etc)');
+		$logger->core_debug('Clearing super globals ($_GET, $_POST, etc)');
 		unset($_GET);
 		unset($_POST);
 		unset($_REQUEST);
@@ -60,15 +62,17 @@ class PhractalDispatcher extends PhractalObject
 	 */
 	public function dispatch(PhractalRequestComponent $request)
 	{
-		$loader = Phractal::get_loader();
-		$logger = Phractal::get_logger();
-		$config = Phractal::get_config();
+		$app = PhractalApp::get_instance();
+		
+		$loader = $app->get_loader();
+		$logger = $app->get_logger();
+		$config = $app->get_config();
 		
 		$logger->core_debug('Dispatch ' . $request->get_uri());
 		
-		Phractal::push_context();
+		$app->push_context();
 		
-		$initial_request = Phractal::num_contexts() === 1;
+		$initial_request = $app->num_contexts() === 1;
 		if ($initial_request)
 		{
 			$this->grab_super_globals($request);
@@ -163,7 +167,7 @@ class PhractalDispatcher extends PhractalObject
 			}
 		}
 		
-		Phractal::pop_context();
+		$app->pop_context();
 		
 		return $response;
 	}

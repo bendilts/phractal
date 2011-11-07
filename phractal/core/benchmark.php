@@ -439,7 +439,7 @@ class PhractalBenchmark extends PhractalObject
 		if ($stat !== false)
 		{
 			$message = $this->format_for_log($stat, $group);
-			Phractal::get_logger()->benchmark($message);
+			PhractalApp::get_instance()->get_logger()->benchmark($message);
 		}
 	}
 	
@@ -457,7 +457,7 @@ class PhractalBenchmark extends PhractalObject
 		if ($stat !== false)
 		{
 			$message = $this->format_for_log($stat, $group . '->' . $name);
-			Phractal::get_logger()->benchmark($message);
+			PhractalApp::get_instance()->get_logger()->benchmark($message);
 		}
 	}
 }

@@ -115,7 +115,7 @@ class PhractalConfig extends PhractalObject
 	 */
 	public function load_file($filename)
 	{
-		$token = Phractal::get_benchmark()->start('config', basename($filename, '.php'));
+		$token = PhractalApp::get_instance()->get_benchmark()->start('config', basename($filename, '.php'));
 		
 		$this->push();
 		
@@ -141,7 +141,7 @@ class PhractalConfig extends PhractalObject
 		require($filename);
 		$this->loading = false;
 		
-		Phractal::get_benchmark()->stop($token);
+		PhractalApp::get_instance()->get_benchmark()->stop($token);
 	}
 	
 	/**

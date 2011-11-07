@@ -80,7 +80,7 @@ class PhractalRouterComponent extends PhractalBaseComponent
 	{
 		$this->matched_route = null;
 		
-		$config = Phractal::get_config();
+		$config = PhractalApp::get_instance()->get_config();
 		$routes = $config->get('route.table');
 		if (!isset($routes[$route_name]))
 		{
@@ -104,7 +104,7 @@ class PhractalRouterComponent extends PhractalBaseComponent
 			$route_extension = $request_extension;
 		}
 		
-		Phractal::get_logger()->core_debug('Force matched route ' . $route_name);
+		PhractalApp::get_instance()->get_logger()->core_debug('Force matched route ' . $route_name);
 		$this->matched_route = $route;
 		$this->request->set_matched_route($route, $route_name);
 		$this->request->set_extension($route_extension);
@@ -145,7 +145,7 @@ class PhractalRouterComponent extends PhractalBaseComponent
 		$request_uri_part_count = count($request_uri_parts);
 		
 		// loop through each route looking for a match
-		$config = Phractal::get_config();
+		$config = PhractalApp::get_instance()->get_config();
 		$routes = $config->get('route.table');
 		$matched_route = null;
 		foreach ($routes as $route_name => $route)
@@ -315,7 +315,7 @@ class PhractalRouterComponent extends PhractalBaseComponent
 			}
 			
 			// MATCH FOUND!
-			Phractal::get_logger()->core_debug('Matched route ' . $route_name);
+			PhractalApp::get_instance()->get_logger()->core_debug('Matched route ' . $route_name);
 			$this->matched_route = $route;
 			$this->request->set_matched_route($route, $route_name);
 			$this->request->set_extension($route_extension);

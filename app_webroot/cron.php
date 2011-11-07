@@ -34,5 +34,5 @@ require_once(dirname(__FILE__) . '/bootstrap.php');
 
 // ------------------------------------------------------------------------
 
-$request = Phractal::get_loader()->instantiate('Request', 'Component', array($_SERVER['argv'][1], $_SERVER['argv'][2]));
+$request = PhractalApp::get_instance()->get_loader()->instantiate('Request', 'Component', array($_SERVER['argv'][1], $_SERVER['argv'][2]));
 main($request);

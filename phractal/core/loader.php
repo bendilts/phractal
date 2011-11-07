@@ -155,7 +155,7 @@ class PhractalLoader extends PhractalObject
 			'Renderer'   => 'view/renderers',
 		);
 		
-		Phractal::get_logger()->core_debug('Autoload ' . $classname);
+		PhractalApp::get_instance()->get_logger()->core_debug('Autoload ' . $classname);
 		
 		$core = substr($classname, 0, 8) === 'Phractal';
 		$base = $core ? PATH_PHRACTAL : PATH_APP;
@@ -171,7 +171,7 @@ class PhractalLoader extends PhractalObject
 			if (substr($classname, -$suffix_length) === $suffix)
 			{
 				$classname = substr($classname, 0, strlen($classname) - $suffix_length);
-				$underscored = Phractal::get_inflector()->underscore($classname);
+				$underscored = PhractalApp::get_instance()->get_inflector()->underscore($classname);
 				$filename = $base . '/' . $path . '/' . $underscored . '.php';
 				
 				if (!file_exists($filename) || !is_file($filename) || !is_readable($filename))

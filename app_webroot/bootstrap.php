@@ -63,13 +63,27 @@ require_once(PATH_PHRACTAL . '/config/bootstrap.php');
 // ------------------------------------
 
 /**
+ * App
+ * 
+ * Replace this class with a subclass of PhractalApp
+ * to customize singleton references
+ * 
+ * The subclass of PhractalApp must set the
+ * PhractalApp::$instance static variable, otherwise
+ * the core will continue to use a PhractalApp instance.
+ */
+$app = PhractalApp::get_instance();
+
+// ------------------------------------
+
+/**
  * Benchmark
  * 
  * Replace this class with a subclass of PhractalBenchmark
  * to customize benchmarking
  */
 $benchmark = new PhractalBenchmark();
-Phractal::set_benchmark($benchmark);
+$app->set_benchmark($benchmark);
 
 // ------------------------------------
 
@@ -80,7 +94,7 @@ Phractal::set_benchmark($benchmark);
  * to customize inflecting
  */
 $inflector = new PhractalInflector();
-Phractal::set_inflector($inflector);
+$app->set_inflector($inflector);
 
 // ------------------------------------
 
@@ -113,7 +127,7 @@ Phractal::set_inflector($inflector);
 $config = new PhractalConfig();
 $config->load_file(PATH_PHRACTAL . '/config/config');
 $config->load_file('config');
-Phractal::set_config($config);
+$app->set_config($config);
 
 // ------------------------------------
 
@@ -146,7 +160,7 @@ $logger->register_file('trace',       PhractalLogger::LEVEL_DEBUG    | PhractalL
 $logger->register_file('benchmark',   PhractalLogger::LEVEL_BENCHMARK);
 $logger->register_header('benchmark', PhractalLogger::LEVEL_ALL);
 $logger->register_screen('onscreen',  PhractalLogger::LEVEL_CRITICAL | PhractalLogger::LEVEL_ERROR);
-Phractal::set_logger($logger);
+$app->set_logger($logger);
 
 // ------------------------------------
 
@@ -160,7 +174,7 @@ Phractal::set_logger($logger);
  * missing classes.
  */
 $loader = new PhractalLoader();
-Phractal::set_loader($loader);
+$app->set_loader($loader);
 
 // ------------------------------------
 
@@ -174,7 +188,7 @@ Phractal::set_loader($loader);
  * catch errors and exceptions from the PHP runtime.
  */
 $error_handler = new PhractalErrorHandler();
-Phractal::set_error_handler($error_handler);
+$app->set_error_handler($error_handler);
 
 // ------------------------------------
 
@@ -185,7 +199,7 @@ Phractal::set_error_handler($error_handler);
  * to customize dispatching
  */
 $dispatcher = new PhractalDispatcher();
-Phractal::set_dispatcher($dispatcher);
+$app->set_dispatcher($dispatcher);
 
 // ------------------------------------------------------------------------
 
@@ -199,9 +213,11 @@ Phractal::set_dispatcher($dispatcher);
  */
 function main($request)
 {
-	$benchmark  = Phractal::get_benchmark();
-	$logger     = Phractal::get_logger();
-	$dispatcher = Phractal::get_dispatcher();
+	$app = PhractalApp::get_instance();
+	
+	$benchmark  = $app->get_benchmark();
+	$logger     = $app->get_logger();
+	$dispatcher = $app->get_dispatcher();
 	
 	$benchmark->mark_from_script_start('global', 'startup');
 	
