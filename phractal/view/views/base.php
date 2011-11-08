@@ -14,11 +14,11 @@
 // ------------------------------------------------------------------------
 
 /**
- * Renderer Base Class
+ * View Base Class
  *
- * Renders data from controllers. Output can be in many
- * different formats, but only 1 per class.
+ * Takes inputs from the controllers and outputs the data
+ * in the requested format.
  */
-abstract class PhractalBaseRenderer extends PhractalObject
+class PhractalBaseView extends PhractalObject
 {
 }

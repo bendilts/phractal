@@ -152,7 +152,7 @@ class PhractalLoader extends PhractalObject
 			'Model'      => 'model/models',
 			'Record'     => 'model/records',
 			'Helper'     => 'view/helpers',
-			'Renderer'   => 'view/renderers',
+			'View'       => 'view/views',
 		);
 		
 		PhractalApp::get_instance()->get_logger()->core_debug('Autoload ' . $classname);
