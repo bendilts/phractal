@@ -327,28 +327,40 @@ class PhractalResponseComponent extends PhractalBaseComponent
 		else
 		{
 			list($name, $value) = array_map('trim', explode(':', $header, 2));
-			
-			if (isset($this->headers[$name]))
-			{
-				if ($replace)
-				{
-					$this->headers[$name] = array($value);
-				}
-				else
-				{
-					$this->headers[$name][] = $value;
-				}
-			}
-			else
+			$this->add_header_name_value($name, $value, $replace);
+		}
+	}
+	
+	/**
+	 * Add a header given the name and value (as opposed to HTTP header
+	 * format 'Name: Value')
+	 * 
+	 * @param string $name
+	 * @param string $value
+	 * @param bool $replace
+	 */
+	public function add_header_name_value($name, $value, $replace = true)
+	{
+		if (isset($this->headers[$name]))
+		{
+			if ($replace)
 			{
 				$this->headers[$name] = array($value);
 			}
-			
-			// add 302 status if 201 or 3XX status not already present for redirects
-			if (strtolower(substr($header, 0, 9)) === 'location:' && !($this->http_status_code === 201 || ($this->http_status_code >= 300 && $this->http_status_code < 400)))
+			else
 			{
-				$this->set_http_status(self::HTTP_STATUS_FOUND);
+				$this->headers[$name][] = $value;
 			}
+		}
+		else
+		{
+			$this->headers[$name] = array($value);
+		}
+		
+		// add 302 status if 201 or 3XX status not already present for redirects
+		if (strtolower($name) === 'location' && !($this->http_status_code === 201 || ($this->http_status_code >= 300 && $this->http_status_code < 400)))
+		{
+			$this->set_http_status(self::HTTP_STATUS_FOUND);
 		}
 	}
 	
