@@ -99,6 +99,10 @@ $config->set('log.file.extension', 'log');
  */
 $config->set('environment', 'development');
 
+// ------------------------------------------------------------------------
+// ROUTING CONFIGURATION
+// ------------------------------------------------------------------------
+
 /**
  * Basepath of routes
  * 
@@ -148,10 +152,6 @@ $config->set('route.error.500.name', 'error500');
  * @var string
  */
 $config->set('route.site.maintenance.name', 'sitedown');
-
-// ------------------------------------------------------------------------
-// ROUTING CONFIGURATION
-// ------------------------------------------------------------------------
 
 /**
  * Routing Table
