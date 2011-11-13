@@ -14,6 +14,13 @@
 // ------------------------------------------------------------------------
 
 /**
+ * Thrown when a template cannot be used because it doesn't exist or isn't readable.
+ */
+class PhractalBaseViewInvalidTemplatePathException extends PhractalNameException {}
+
+// ------------------------------------------------------------------------
+
+/**
  * View Base Class
  *
  * Takes inputs from the controllers and outputs the data
@@ -52,6 +59,7 @@ class PhractalBaseView extends PhractalObject
 	 * and working out to the last (outermost) template.
 	 * 
 	 * @return string Rendered views
+	 * @throws PhractalBaseViewInvalidTemplatePathException
 	 */
 	public function render()
 	{
@@ -60,6 +68,12 @@ class PhractalBaseView extends PhractalObject
 		foreach ($this->templates as $template)
 		{
 			$absolute = PATH_APP . '/view/templates/' . $template;
+			
+			if (!is_file($absolute) || !is_readable($absolute))
+			{
+				throw new PhractalBaseViewInvalidTemplatePathException($absolute);
+			}
+			
 			ob_start();
 			$this->render_no_locals($absolute, $this->data, $content);
 			$content = ob_get_clean();
