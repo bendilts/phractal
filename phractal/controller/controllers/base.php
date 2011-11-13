@@ -14,6 +14,13 @@
 // ------------------------------------------------------------------------
 
 /**
+ * Thrown when an extension is found in a route that isn't mapped to a content type
+ */
+class PhractalBaseControllerNoExtensionMappingException extends PhractalNameException {}
+
+// ------------------------------------------------------------------------
+
+/**
  * Controller Base Class
  *
  * Handles the flow of logic from request to response.
@@ -53,6 +60,7 @@ abstract class PhractalBaseController extends PhractalObject
 	 * 
 	 * @param PhractalRequestComponent $request
 	 * @param PhractalResponseComponent $response
+	 * @throws PhractalBaseControllerNoExtensionMappingException
 	 */
 	public function __construct(PhractalRequestComponent $request, PhractalResponseComponent $response)
 	{
@@ -69,6 +77,48 @@ abstract class PhractalBaseController extends PhractalObject
 		
 		// add the initial template web/<extension>/<controller>/<action>
 		$this->view->unshift_template('web/' . $request->get_extension() . '/' . $inflector->underscore($route['controller']) . '/' . $inflector->underscore($route['action']));
+		$this->set_content_type_from_extension($request->get_extension());
+	}
+	
+	/**
+	 * Set the content type on the response based on the
+	 * extension passed in.
+	 * 
+	 * The mapping of extension -> content type can be
+	 * overridden by the configuration variable named
+	 * 'map.extension.content-type'
+	 * 
+	 * @param string $extension
+	 * @throws PhractalBaseControllerNoExtensionMappingException
+	 */
+	protected function set_content_type_from_extension($extension)
+	{
+		$extensions = array_merge(
+			array(
+				'js'    => 'text/javascript',
+				'json'  => 'application/json',
+				'css'   => 'text/css',
+				'html'  => 'text/html',
+				'txt'   => 'text/plain',
+				'csv'   => 'text/plain',
+				'xhtml' => 'application/xhtml',
+				'xml'   => 'application/xml',
+				'rss'   => 'application/rss+xml',
+				'atom'  => 'application/atom+xml',
+				'amf'   => 'application/x-amf',
+				'pdf'   => 'application/pdf',
+				'zip'   => 'application/x-zip',
+				'tar'   => 'application/x-tar',
+			),
+			PhractalApp::get_instance()->get_config()->get('map.extension.content-type', array())
+		);
+		
+		if (!isset($extensions[$extension]))
+		{
+			throw new PhractalBaseControllerNoExtensionMappingException($extension);
+		}
+		
+		$this->response->add_header_name_value('Content-Type', $extensions[$extension]);
 	}
 	
 	/**

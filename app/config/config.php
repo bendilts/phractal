@@ -99,6 +99,24 @@ $config->set('log.file.extension', 'log');
  */
 $config->set('environment', 'development');
 
+/**
+ * Extension -> Content Type Mapping
+ * 
+ * Mapping of route extensions (json, html, etc) to content
+ * types. A number of default ones are already specified
+ * in PhractalBaseController, but the config below will
+ * take precedence over them.
+ * 
+ * If no mapping exists for an allowed extension, an exception
+ * will be thrown.
+ * 
+ * @var array
+ */
+$config->set('map.extension.content-type', array(
+	'html' => 'text/html',
+	'json' => 'application/json',
+));
+
 // ------------------------------------------------------------------------
 // ROUTING CONFIGURATION
 // ------------------------------------------------------------------------
