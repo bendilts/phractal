@@ -93,25 +93,7 @@ abstract class PhractalBaseController extends PhractalObject
 	 */
 	protected function set_content_type_from_extension($extension)
 	{
-		$extensions = array_merge(
-			array(
-				'js'    => 'text/javascript',
-				'json'  => 'application/json',
-				'css'   => 'text/css',
-				'html'  => 'text/html',
-				'txt'   => 'text/plain',
-				'csv'   => 'text/plain',
-				'xhtml' => 'application/xhtml',
-				'xml'   => 'application/xml',
-				'rss'   => 'application/rss+xml',
-				'atom'  => 'application/atom+xml',
-				'amf'   => 'application/x-amf',
-				'pdf'   => 'application/pdf',
-				'zip'   => 'application/x-zip',
-				'tar'   => 'application/x-tar',
-			),
-			PhractalApp::get_instance()->get_config()->get('map.extension.content-type', array())
-		);
+		$extensions = PhractalApp::get_instance()->get_config()->get('map.extension.content-type', array());
 		
 		if (!isset($extensions[$extension]))
 		{
