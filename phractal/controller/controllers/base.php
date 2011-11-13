@@ -104,11 +104,19 @@ abstract class PhractalBaseController extends PhractalObject
 	 * 
 	 * Authorization, HTTPS check, and HTTP method can all be validated
 	 * and handled here.
+	 * 
+	 * This function will NEVER contain anything useful in
+	 * PhractalBaseController. It is NOT necessary to call
+	 * parent::before_action() in your override.
 	 */
 	protected function before_action() {}
 	
 	/**
 	 * Callback after the action is called
+	 * 
+	 * This function will NEVER contain anything useful in
+	 * PhractalBaseController. It is NOT necessary to call
+	 * parent::after_action() in your override.
 	 * 
 	 * This is the last chance to stop view rendering.
 	 */
@@ -116,11 +124,19 @@ abstract class PhractalBaseController extends PhractalObject
 	
 	/**
 	 * Callback before the view is rendered
+	 * 
+	 * This function will NEVER contain anything useful in
+	 * PhractalBaseController. It is NOT necessary to call
+	 * parent::before_view() in your override.
 	 */
 	protected function before_view() {}
 	
 	/**
 	 * Callback after the run function is finished
+	 * 
+	 * This function will NEVER contain anything useful in
+	 * PhractalBaseController. It is NOT necessary to call
+	 * parent::after_run() in your override.
 	 */
 	protected function after_run() {}
 }
