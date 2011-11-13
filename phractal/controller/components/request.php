@@ -138,6 +138,13 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	protected $default_variables_order = 'RSECFPG';
 	
 	/**
+	 * IP Address where the request came from
+	 * 
+	 * @var string
+	 */
+	protected $ip = null;
+	
+	/**
 	 * GET variables
 	 * 
 	 * @var array
@@ -489,6 +496,50 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	public function replace_cookie(PhractalRequestComponent $request)
 	{
 		$this->cookie = $request->cookie;
+	}
+	
+	public function get_ip()
+	{
+		if ($this->ip === null)
+		{
+			$proxies = PhractalApp::get_instance()->get_config()->get('proxy.accept', false);
+			
+			$forwarded_for = $this->get_server('HTTP_X_FORWARDED_FOR', false);
+			$remote_addr   = $this->get_server('REMOTE_ADDR', false);
+			$client_ip     = $this->get_server('CLIENT_IP', false);
+			
+			if ($forwarded_for && $proxies === true)
+			{
+				$this->ip = $forwarded_for;
+			}
+			elseif ($forwarded_for && $remote_addr && in_array($remote_addr, (array) $proxies, true))
+			{
+				$this->ip = $forwarded_for;
+			}
+			elseif ($remote_addr)
+			{
+				$this->ip = $remote_addr;
+			}
+			elseif ($client_ip)
+			{
+				$this->ip = $client_ip;
+			}
+			elseif (RUNTIME === 'cli')
+			{
+				$this->ip = '127.0.0.1';
+			}
+			else
+			{
+				$this->ip = false;
+			}
+			
+			if ($this->ip && strpos($this->ip, ',') !== false)
+			{
+				$this->ip = trim(end(explode(',', $this->ip)));
+			}
+		}
+		
+		return $this->ip;
 	}
 	
 	/**

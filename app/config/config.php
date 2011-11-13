@@ -127,6 +127,31 @@ $config->set('map.extension.content-type', array(
 	'tar'   => 'application/x-tar',
 ));
 
+/**
+ * Accepted proxy servers
+ * 
+ * HTTP clients (browsers and others) can spoof the
+ * X-Forwarded-For to steal sessions and cookies that
+ * are IP specific.
+ * 
+ * This value can be an array of server IP addresses,
+ * which will be accepted as valid proxy servers to get
+ * the correct client IP address.
+ * 
+ * This value can also be a boolean. If the value is true,
+ * all proxies will be accepted all the time (very insecure).
+ * If the value is false, no proxies will ever be accepted.
+ * 
+ * If you are using HTTPS without an SSL enabled load
+ * balancer, false is a good choice.
+ * 
+ * @var array|boolean
+ */
+$config->set('proxy.accept', array(
+	'1.1.1.1',
+	'2.2.2.2',
+));
+
 // ------------------------------------------------------------------------
 // ROUTING CONFIGURATION
 // ------------------------------------------------------------------------
