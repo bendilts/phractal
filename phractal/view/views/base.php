@@ -67,7 +67,7 @@ class PhractalBaseView extends PhractalObject
 		
 		foreach ($this->templates as $template)
 		{
-			$absolute = PATH_APP . '/view/templates/' . $template;
+			$absolute = PATH_APP . '/view/templates/' . $template . '.php';
 			
 			if (!is_file($absolute) || !is_readable($absolute))
 			{
@@ -100,7 +100,8 @@ class PhractalBaseView extends PhractalObject
 	 * This function should be used for templates specific to page
 	 * content, as they will be contained in later views.
 	 * 
-	 * Path must be relative to APP/view/templates
+	 * Path must be relative to APP/view/templates, and must be
+	 * extensionless (no .php)
 	 * 
 	 * @param string $path
 	 */
@@ -116,7 +117,8 @@ class PhractalBaseView extends PhractalObject
 	 * files should use the variable '$content' to access previously
 	 * generated template content.
 	 * 
-	 * Path must be relative to APP/view/templates
+	 * Path must be relative to APP/view/templates, and must be
+	 * extensionless (no .php)
 	 * 
 	 * @param string $path
 	 */
