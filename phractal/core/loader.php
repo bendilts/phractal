@@ -52,27 +52,22 @@ class PhractalLoader extends PhractalObject
 	/**
 	 * Mapping of Classname suffix to directories where the class might be found.
 	 * 
-	 * Each key is the classname suffix, and each value is the directory or array
-	 * of directories where the class might be found. Each directory is relative
-	 * to the phractal or app directory (since they have identical subdirectories).
+	 * Each key is the classname suffix, and each value is the directory where the
+	 * class might be found. Each directory is relative to the phractal or app
+	 * directory (since they have identical subdirectories).
 	 * 
 	 * @var array
 	 */
 	protected $classname_suffix_map;
 	
 	/**
-	 * Get the classname suffix map
-	 * 
-	 * This function will only be called once by this class. It should be overridden
-	 * by subclasses to get app specific mappings.
-	 * 
-	 * If one of the default classname suffixes is overridden, classes may not load.
-	 * 
-	 * @return array
+	 * Constructor
 	 */
-	protected function get_classname_suffix_map()
+	public function __construct()
 	{
-		return array(
+		parent::__construct();
+		
+		$this->classname_suffix_map = array(
 			'Controller' => 'controller/controllers',
 			'Component'  => 'controller/components',
 			'Driver'     => 'model/drivers',
@@ -184,11 +179,6 @@ class PhractalLoader extends PhractalObject
 		// function is only one of the registered autoload
 		// functions
 		if (class_exists($classname)) { return; }
-		
-		if (!$this->classname_suffix_map)
-		{
-			$this->classname_suffix_map = $this->get_classname_suffix_map();
-		}
 		
 		PhractalApp::get_instance()->get_logger()->core_debug('Autoload ' . $classname);
 		
