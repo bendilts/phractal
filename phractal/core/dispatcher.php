@@ -135,7 +135,7 @@ class PhractalDispatcher extends PhractalObject
 				
 				if ($is_404)
 				{
-					$logger->error('A 404 error was found, but an internal error occurred.');
+					$logger->error('Error processing 404 route.');
 				}
 				
 				$is_500 = true;
@@ -163,7 +163,7 @@ class PhractalDispatcher extends PhractalObject
 			catch (Exception $e)
 			{
 				$logger->critical('Dispatcher caught ' . get_class($e) . ' with message: ' . $e->getMessage());
-				$logger->error('A 500 error was found, but an internal error occurred.');
+				$logger->error('Error processing 500 route.');
 			}
 		}
 		
