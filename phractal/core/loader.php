@@ -160,9 +160,6 @@ class PhractalLoader extends PhractalObject
 		// function is only one of the registered autoload
 		// functions
 		if (class_exists($classname)) { return; }
-		{
-			return;
-		}
 		
 		PhractalApp::get_instance()->get_logger()->core_debug('Autoload ' . $classname);
 		
