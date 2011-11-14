@@ -498,6 +498,15 @@ class PhractalRequestComponent extends PhractalBaseComponent
 		$this->cookie = $request->cookie;
 	}
 	
+	/**
+	 * Get the client's IP address.
+	 * 
+	 * Proxy / load balancer IP addresses are taken into
+	 * consideration along with the proxy.* configuration
+	 * parameters.
+	 * 
+	 * @return string Null if none found
+	 */
 	public function get_ip()
 	{
 		if ($this->ip === null)
