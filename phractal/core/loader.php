@@ -50,6 +50,42 @@ class PhractalLoader extends PhractalObject
 	protected $registered = false;
 	
 	/**
+	 * Mapping of Classname suffix to directories where the class might be found.
+	 * 
+	 * Each key is the classname suffix, and each value is the directory or array
+	 * of directories where the class might be found. Each directory is relative
+	 * to the phractal or app directory (since they have identical subdirectories).
+	 * 
+	 * @var array
+	 */
+	protected $classname_suffix_map;
+	
+	/**
+	 * Get the classname suffix map
+	 * 
+	 * This function will only be called once by this class. It should be overridden
+	 * by subclasses to get app specific mappings.
+	 * 
+	 * If one of the default classname suffixes is overridden, classes may not load.
+	 * 
+	 * @return array
+	 */
+	protected function get_classname_suffix_map()
+	{
+		return array(
+			'Controller' => 'controller/controllers',
+			'Component'  => 'controller/components',
+			'Driver'     => 'model/drivers',
+			'Manager'    => 'model/managers',
+			'Migration'  => 'model/migrations',
+			'Model'      => 'model/models',
+			'Record'     => 'model/records',
+			'Helper'     => 'view/helpers',
+			'View'       => 'view/views',
+		);
+	}
+	
+	/**
 	 * Registers the autoload function on this class.
 	 * 
 	 * @throws PhractalLoaderRegistrationException
@@ -143,23 +179,16 @@ class PhractalLoader extends PhractalObject
 	 */
 	public function autoload($classname)
 	{
-		static $suffix_map = array(
-			'Controller' => 'controller/controllers',
-			'Component'  => 'controller/components',
-			'Driver'     => 'model/drivers',
-			'Manager'    => 'model/managers',
-			'Migration'  => 'model/migrations',
-			'Model'      => 'model/models',
-			'Record'     => 'model/records',
-			'Helper'     => 'view/helpers',
-			'View'       => 'view/views',
-		);
-		
 		// short circuit an already loaded class. this can occur
 		// when this function is called directly and when this
 		// function is only one of the registered autoload
 		// functions
 		if (class_exists($classname)) { return; }
+		
+		if (!$this->classname_suffix_map)
+		{
+			$this->classname_suffix_map = $this->get_classname_suffix_map();
+		}
 		
 		PhractalApp::get_instance()->get_logger()->core_debug('Autoload ' . $classname);
 		
@@ -171,7 +200,7 @@ class PhractalLoader extends PhractalObject
 			$classname = substr($classname, 8);
 		}
 		
-		foreach ($suffix_map as $suffix => $path)
+		foreach ($this->classname_suffix_map as $suffix => $path)
 		{
 			$suffix_length = strlen($suffix);
 			if (substr($classname, -$suffix_length) === $suffix)
