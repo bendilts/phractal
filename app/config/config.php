@@ -179,6 +179,10 @@ $config->set('route.base', '/');
  * or valid extensions. It must accept all extensions and be as flexible as
  * possible, as it will accept all 404 errors.
  * 
+ * This route must have the no_extension parameter in the routing table,
+ * because some urls won't have routes, but they will need to be redirected
+ * here anyway.
+ * 
  * @var string
  */
 $config->set('route.error.404.name', 'error404');
@@ -189,6 +193,10 @@ $config->set('route.error.404.name', 'error404');
  * The route specified here should not contain uri parameters, validation,
  * or valid extensions. It must accept all extensions and be as flexible as
  * possible, as it will accept all 500 errors.
+ * 
+ * This route must have the no_extension parameter in the routing table,
+ * because some urls won't have routes, but they will need to be redirected
+ * here anyway.
  * 
  * @var string
  */
@@ -201,6 +209,10 @@ $config->set('route.error.500.name', 'error500');
  * or valid extensions. It must accept all extensions and be as flexible as
  * possible, as it will accept all requests when the site is in maintenance
  * mode.
+ * 
+ * This route must have the no_extension parameter in the routing table,
+ * because some urls won't have routes, but they will need to be redirected
+ * here anyway.
  * 
  * @var string
  */
@@ -289,18 +301,21 @@ $config->set('route.table', array(
 		),
 	),
 	'error404' => array(
-		'path'        => '/errors/404',
-		'controller'  => 'Error',
-		'action'      => 'error404',
+		'path'         => '/errors/404',
+		'controller'   => 'Error',
+		'action'       => 'error404',
+		'no_extension' => 'html',
 	),
 	'error500' => array(
-		'path'        => '/errors/500',
-		'controller'  => 'Error',
-		'action'      => 'error500',
+		'path'         => '/errors/500',
+		'controller'   => 'Error',
+		'action'       => 'error500',
+		'no_extension' => 'html',
 	),
 	'sitedown' => array(
-		'path'        => '/sitedown',
-		'controller'  => 'Error',
-		'action'      => 'sitedown',
+		'path'         => '/sitedown',
+		'controller'   => 'Error',
+		'action'       => 'sitedown',
+		'no_extension' => 'html',
 	),
 ));
