@@ -155,6 +155,15 @@ class PhractalLoader extends PhractalObject
 			'View'       => 'view/views',
 		);
 		
+		// short circuit an already loaded class. this can occur
+		// when this function is called directly and when this
+		// function is only one of the registered autoload
+		// functions
+		if (class_exists($classname)) { return; }
+		{
+			return;
+		}
+		
 		PhractalApp::get_instance()->get_logger()->core_debug('Autoload ' . $classname);
 		
 		$core = substr($classname, 0, 8) === 'Phractal';
