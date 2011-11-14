@@ -552,6 +552,27 @@ class PhractalRequestComponent extends PhractalBaseComponent
 	}
 	
 	/**
+	 * Return whether this request is over HTTPS or not.
+	 * 
+	 * @return bool
+	 */
+	public function is_ssl()
+	{
+		$https = $this->get_server('HTTPS', false);
+		return $https && $https !== 'off';
+	}
+	
+	/**
+	 * Return whether this request is from an AJAX call or not.
+	 * 
+	 * @return bool
+	 */
+	public function is_ajax()
+	{
+		return $this->get_server('HTTP_X_REQUESTED_WITH', false) === 'XMLHttpRequest';
+	}
+	
+	/**
 	 * Set the default variables order.
 	 * 
 	 * This will set the default ordering of variables
