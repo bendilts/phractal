@@ -21,6 +21,20 @@ class PhractalBaseCacheComponentConfigNotFoundException extends PhractalNameExce
 // ------------------------------------------------------------------------
 
 /**
+ * Thrown when a key cannot be retrieved because it doesn't exist.
+ */
+class PhractalBaseCacheComponentKeyNotFoundException extends PhractalNameException {}
+
+// ------------------------------------------------------------------------
+
+/**
+ * Thrown when a key cannot be added because it already exists.
+ */
+class PhractalBaseCacheComponentKeyAlreadyExistsException extends PhractalNameException {}
+
+// ------------------------------------------------------------------------
+
+/**
  * Base Cache Component
  *
  * Parent class for all caching components
@@ -120,7 +134,7 @@ abstract class PhractalBaseCacheComponent extends PhractalBaseComponent
 	 * Delete an entry from the cache
 	 * 
 	 * @param string $key
-	 * @return bool
+	 * @return bool Success
 	 */
 	abstract public function delete($key);
 	
@@ -130,7 +144,8 @@ abstract class PhractalBaseCacheComponent extends PhractalBaseComponent
 	 * @param string $key
 	 * @param mixed $value
 	 * @param int$expires
-	 * @return bool
+	 * @return bool Success
+	 * @throws PhractalBaseCacheComponentKeyAlreadyExistsException
 	 */
 	abstract public function add($key, $value, $expires = null);
 	
@@ -140,7 +155,8 @@ abstract class PhractalBaseCacheComponent extends PhractalBaseComponent
 	 * @param string $key
 	 * @param mixed $value
 	 * @param int $expires
-	 * @return bool
+	 * @return bool Success
+	 * @throws PhractalBaseCacheComponentKeyNotFoundException
 	 */
 	abstract public function replace($key, $value, $expires = null);
 	
@@ -150,16 +166,20 @@ abstract class PhractalBaseCacheComponent extends PhractalBaseComponent
 	 * @param string $key
 	 * @param mixed $value
 	 * @param int $expires
-	 * @return bool
+	 * @return bool Success
 	 */
 	abstract public function set($key, $value, $expires = null);
 	
 	/**
 	 * Get the value of a cache entry
 	 * 
+	 * If the key doesn't exist, then $default will be returned.
+	 * If $default is null, then an exception will be thrown.
+	 * 
 	 * @param string $key
 	 * @param mixed $default
 	 * @return mixed
+	 * @throws PhractalBaseCacheComponentKeyNotFoundException
 	 */
 	abstract public function get($key, $default = null);
 }
