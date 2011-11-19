@@ -153,6 +153,65 @@ $config->set('proxy.accept', array(
 ));
 
 // ------------------------------------------------------------------------
+// CACHING CONFIGURATION
+// ------------------------------------------------------------------------
+
+/**
+ * Caching configurations
+ * 
+ * Each key is the name of a cache configuration. Each value
+ * is the details of that configuration. The details for each
+ * configuration will depend on the engine being used.
+ * 
+ * All configurations will take the following parameters:
+ *     @param string engine Engine to use. This will correspond exactly to the classname of the engine
+ *                          being used. To use the MemcachedCacheComponent, the engine will be 'Memcached' (case
+ *                          sensitive).
+ *     @param int expire    Default expiration, in seconds, for all keys.
+ *     @param string prefix Prefix to prepend to all keys.
+ * 
+ * Memcached (recommended) and Memcache engines:
+ *     @param array servers List of servers to connect to. Each server is an array of host, port, and weight.
+ * 
+ * Apc engine:
+ *     (no extra params)
+ * 
+ * File engine:
+ *     @param string directory   Absolute path to the directory that the cached files will be stored in.
+ *                               This must NOT contain a trailing slash.
+ *     @param int cleanup        The average number of requests between automatic cleanup of stale cache entries.
+ *                               Use 0 to never cleanup old files.
+ *     @param int max_entry_size The maximum entry size for entries. All entries bigger than this will
+ *                               not be cached.
+ * 
+ * @var array
+ */
+$config->set('cache.configs', array(
+	'cache1' => array(
+		'engine'         => 'File',
+		'expire'         => 86400,
+		'prefix'         => 'myapp',
+		'directory'      => PATH_APP . '/tmp/cache',
+		'cleanup'        => 10000, // once every 10,000 requests
+		'max_entry_size' => 2097152, // 2 MiB
+	),
+	'cache2' => array(
+		'engine' => 'Apc',
+		'expire' => 1800,
+		'prefix' => 'myapp',
+	),
+	'cache3' => array(
+		'engine'  => 'Memcached',
+		'expire'  => 1800,
+		'prefix'  => 'myapp',
+		'servers' => array(
+			array('memcache1.mydomain.com', 11211, 1),
+			array('memcache2.mydomain.com', 11211, 1),
+		),
+	),
+));
+
+// ------------------------------------------------------------------------
 // ROUTING CONFIGURATION
 // ------------------------------------------------------------------------
 
