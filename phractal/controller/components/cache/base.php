@@ -67,16 +67,17 @@ abstract class PhractalBaseCacheComponent extends PhractalBaseComponent
 				throw new PhractalBaseCacheComponentConfigNotFoundException($config);
 			}
 			
-			$this->config = $all[$config];
+			$config = $all[$config];
 		}
-		elseif (is_array($config))
-		{
-			$this->config = $config;
-		}
-		else
+		elseif (!is_array($config))
 		{
 			throw new InvalidArgumentException('Cache constructor accepts a cache config name or a configuration array.');
 		}
+		
+		$this->config = array_merge(array(
+			'ttl'    => 86400,
+			'prefix' => '',
+		), $config);
 	}
 	
 	/**
