@@ -91,44 +91,47 @@ abstract class PhractalBaseCacheComponent extends PhractalBaseComponent
 	 * 
 	 * @param string $key
 	 * @param int $step
-	 * @param int $expires
+	 * @param int $ttl
 	 * @param int $default
-	 * @return int The new value of the entry (after incrementing)
+	 * @return int The new value of the entry (after incrementing) or false on failure
 	 */
-	abstract public function increment($key, $step = 1, $expires = null, $default = 0);
+	abstract public function increment($key, $step = 1, $ttl = null, $default = 0);
 	
 	/**
 	 * Decrement the numeric value of a cache entry
 	 * 
 	 * @param string $key
 	 * @param int $step
-	 * @param int $expires
+	 * @param int $ttl
 	 * @param int $default
-	 * @return int The new value of the entry (after decrementing)
+	 * @return int The new value of the entry (after decrementing) or false on failure
 	 */
-	abstract public function decrement($key, $step = 1, $expires = null, $default = 0);
+	public function decrement($key, $step = 1, $ttl = null, $default = 0)
+	{
+		return $this->increment($key, -$step, $ttl, $default);
+	}
 	
 	/**
 	 * Prepend a string value to a string cache entry
 	 * 
 	 * @param string $key
 	 * @param string $contents
-	 * @param int $expires
+	 * @param int $ttl
 	 * @param string $default
 	 * @return bool Success
 	 */
-	abstract public function prepend($key, $contents, $expires = null, $default = '');
+	abstract public function prepend($key, $contents, $ttl = null, $default = '');
 	
 	/**
 	 * Append a string value to a string cache entry
 	 * 
 	 * @param string $key
 	 * @param string $contents
-	 * @param int $expires
+	 * @param int $ttl
 	 * @param string $default
 	 * @return bool Success
 	 */
-	abstract public function append($key, $contents, $expires = null, $default = '');
+	abstract public function append($key, $contents, $ttl = null, $default = '');
 	
 	/**
 	 * Delete an entry from the cache
@@ -143,32 +146,32 @@ abstract class PhractalBaseCacheComponent extends PhractalBaseComponent
 	 * 
 	 * @param string $key
 	 * @param mixed $value
-	 * @param int$expires
+	 * @param int $ttl
 	 * @return bool Success
 	 * @throws PhractalBaseCacheComponentKeyAlreadyExistsException
 	 */
-	abstract public function add($key, $value, $expires = null);
+	abstract public function add($key, $value, $ttl = null);
 	
 	/**
 	 * Replace an entry in the cache if it exists.
 	 * 
 	 * @param string $key
 	 * @param mixed $value
-	 * @param int $expires
+	 * @param int $ttl
 	 * @return bool Success
 	 * @throws PhractalBaseCacheComponentKeyNotFoundException
 	 */
-	abstract public function replace($key, $value, $expires = null);
+	abstract public function replace($key, $value, $ttl = null);
 	
 	/**
 	 * Set the value of a cache entry
 	 * 
 	 * @param string $key
 	 * @param mixed $value
-	 * @param int $expires
+	 * @param int $ttl
 	 * @return bool Success
 	 */
-	abstract public function set($key, $value, $expires = null);
+	abstract public function set($key, $value, $ttl = null);
 	
 	/**
 	 * Get the value of a cache entry

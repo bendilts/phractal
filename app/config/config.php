@@ -167,7 +167,7 @@ $config->set('proxy.accept', array(
  *     @param string engine Engine to use. This will correspond exactly to the classname of the engine
  *                          being used. To use the MemcachedCacheComponent, the engine will be 'Memcached' (case
  *                          sensitive).
- *     @param int expire    Default expiration, in seconds, for all keys.
+ *     @param int ttl       Default Time to Live, in seconds, for all keys.
  *     @param string prefix Prefix to prepend to all keys.
  * 
  * Memcached (recommended) and Memcache engines:
@@ -189,7 +189,7 @@ $config->set('proxy.accept', array(
 $config->set('cache.configs', array(
 	'cache1' => array(
 		'engine'         => 'File',
-		'expire'         => 86400,
+		'ttl'            => 86400,
 		'prefix'         => 'myapp',
 		'directory'      => PATH_APP . '/tmp/cache',
 		'cleanup'        => 10000, // once every 10,000 requests
@@ -197,12 +197,12 @@ $config->set('cache.configs', array(
 	),
 	'cache2' => array(
 		'engine' => 'Apc',
-		'expire' => 1800,
+		'ttl'    => 1800,
 		'prefix' => 'myapp',
 	),
 	'cache3' => array(
 		'engine'  => 'Memcached',
-		'expire'  => 1800,
+		'ttl'     => 1800,
 		'prefix'  => 'myapp',
 		'servers' => array(
 			array('memcache1.mydomain.com', 11211, 1),
