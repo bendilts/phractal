@@ -186,4 +186,12 @@ abstract class PhractalBaseCacheComponent extends PhractalBaseComponent
 	 * @throws PhractalBaseCacheComponentKeyNotFoundException
 	 */
 	abstract public function get($key, $default = null);
+	
+	/**
+	 * Check to see if a key exists
+	 * 
+	 * @param string $key
+	 * @return bool
+	 */
+	abstract public function exists($key);
 }
