@@ -259,13 +259,13 @@ class PhractalLogger extends PhractalObject
 			if (!empty($formatted))
 			{
 				$output = implode("\n", $formatted) . "\n";
-				if (RUNTIME === 'cli')
-				{
-					echo $output;
-				}
-				elseif (RUNTIME === 'web')
+				if (RUNTIME === 'web')
 				{
 					echo '<pre>' . $output . '</pre>';
+				}
+				else
+				{
+					echo $output;
 				}
 			}
 		}
