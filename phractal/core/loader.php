@@ -68,15 +68,16 @@ class PhractalLoader extends PhractalObject
 		parent::__construct();
 		
 		$this->classname_suffix_map = array(
-			'Controller' => 'controller/controllers',
-			'Component'  => 'controller/components',
-			'Driver'     => 'model/drivers',
-			'Manager'    => 'model/managers',
-			'Migration'  => 'model/migrations',
-			'Model'      => 'model/models',
-			'Record'     => 'model/records',
-			'Helper'     => 'view/helpers',
-			'View'       => 'view/views',
+			'CacheComponent' => 'controller/components/cache',
+			'Controller'     => 'controller/controllers',
+			'Component'      => 'controller/components',
+			'Driver'         => 'model/drivers',
+			'Manager'        => 'model/managers',
+			'Migration'      => 'model/migrations',
+			'Model'          => 'model/models',
+			'Record'         => 'model/records',
+			'Helper'         => 'view/helpers',
+			'View'           => 'view/views',
 		);
 	}
 	
