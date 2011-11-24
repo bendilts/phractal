@@ -47,7 +47,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 		$val = apc_inc($this->config['prefix'] . $key, $step);
 		if ($val === false)
 		{
-			$val = $default + step;
+			$val = $default + $step;
 			if (!apc_add($this->config['prefix'] . $key,
 			            $val,
 			            $ttl === null ? $this->config['ttl'] : $ttl))
