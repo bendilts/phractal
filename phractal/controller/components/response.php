@@ -36,6 +36,13 @@ class PhractalResponseComponentUnknownHTTPStatusMessageException extends Phracta
 // ------------------------------------------------------------------------
 
 /**
+ * Thrown when the response cannot be sent to the client because headers were already sent.
+ */
+class PhractalResponseComponentHeadersSentException extends PhractalException {}
+
+// ------------------------------------------------------------------------
+
+/**
  * Response Component
  *
  * Contains response headers and data for a request
@@ -448,6 +455,7 @@ class PhractalResponseComponent extends PhractalBaseComponent
 	 * Send the response to the client
 	 * 
 	 * @param bool $force
+	 * @throws PhractalResponseComponentHeadersSentException
 	 */
 	public function send_to_client($force = false)
 	{
@@ -457,9 +465,17 @@ class PhractalResponseComponent extends PhractalBaseComponent
 		{
 			$this->sent = true;
 			
-			foreach ($this->get_all_headers() as $header)
+			if (RUNTIME !== 'cli')
 			{
-				header($header, false);
+				if (headers_sent())
+				{
+					throw new PhractalResponseComponentHeadersSentException();
+				}
+				
+				foreach ($this->get_all_headers() as $header)
+				{
+					header($header, false);
+				}
 			}
 			
 			echo $this->body;
