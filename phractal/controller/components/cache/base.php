@@ -58,7 +58,7 @@ abstract class PhractalBaseCacheComponent extends PhractalBaseComponent
 	{
 		parent::__construct();
 		
-		if (is_string($connection))
+		if (is_string($config))
 		{
 			$all = PhractalApp::get_instance()->get_config()->get('cache.configs', array());
 			
