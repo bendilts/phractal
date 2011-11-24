@@ -21,14 +21,25 @@
 class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 {
 	/**
-	 * Check to see if apc is currently enabled
+	 * True when APC is enabled
 	 * 
-	 * @return bool
+	 * @var bool
 	 */
-	protected function apc_enabled()
+	protected $apc_enabled;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param mixed $config
+	 * @see PhractalBaseCacheComponent::__construct
+	 */
+	public function __construct($config)
 	{
-		return (RUNTIME === 'web' && ini_get('apc.enabled')) ||
-		       (RUNTIME === 'cli' && ini_get('apc.enable_cli'));
+		parent::__construct($config);
+		
+		$this->apc_enabled = function_exists('apc_clear_cache') &&
+		                     ((RUNTIME === 'web' && ini_get('apc.enabled')) ||
+		                      (RUNTIME === 'cli' && ini_get('apc.enable_cli')));
 	}
 	
 	/**
@@ -36,7 +47,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	 */
 	public function flush()
 	{
-		return apc_clear_cache('user');
+		return $this->apc_enabled && apc_clear_cache('user');
 	}
 	
 	/**
@@ -44,6 +55,11 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	 */
 	public function increment($key, $step = 1, $ttl = null, $default = 0)
 	{
+		if (!$this->apc_enabled)
+		{
+			return false;
+		}
+		
 		$val = apc_inc($this->config['prefix'] . $key, $step);
 		if ($val === false)
 		{
@@ -68,10 +84,13 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	{
 		trigger_error('Apc::prepend is NOT atomic. You probably ought to not be using this function.', E_WARNING);
 		
-		$key = $this->config['prefix'] . $key;
-		$value = apc_fetch($key);
+		if (!$this->apc_enabled)
+		{
+			return false;
+		}
 		
-		return apc_store($key,
+		$value = apc_fetch($this->config['prefix'] . $key);
+		return apc_store($this->config['prefix'] . $key,
 		                 $contents . ($value === false ? $default : $value),
 		                 $ttl === null ? $this->config['ttl'] : $ttl);
 	}
@@ -85,10 +104,13 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	{
 		trigger_error('Apc::append is NOT atomic. You probably ought to not be using this function.', E_WARNING);
 		
-		$key = $this->config['prefix'] . $key;
-		$value = apc_fetch($key);
+		if (!$this->apc_enabled)
+		{
+			return false;
+		}
 		
-		return apc_store($key,
+		$value = apc_fetch($this->config['prefix'] . $key);
+		return apc_store($this->config['prefix'] . $key,
 		                 ($value === false ? $default : $value) . $contents,
 		                 $ttl === null ? $this->config['ttl'] : $ttl);
 	}
@@ -98,7 +120,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	 */
 	public function delete($key)
 	{
-		return apc_delete($this->config['prefix'] . $key);
+		return $this->apc_enabled && apc_delete($this->config['prefix'] . $key);
 	}
 	
 	/**
@@ -106,11 +128,16 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	 */
 	public function add($key, $value, $ttl = null)
 	{
+		if (!$this->apc_enabled)
+		{
+			return false;
+		}
+		
 		$added = apc_add($this->config['prefix'] . $key,
 		                 $value,
-		                 $ttl === null ? $this->config['prefix'] : $ttl);
+		                 $ttl === null ? $this->config['ttl'] : $ttl);
 		
-		if (!$added && $this->apc_enabled())
+		if (!$added)
 		{
 			throw new PhractalBaseCacheComponentKeyAlreadyExistsException($key);
 		}
@@ -124,6 +151,11 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	public function replace($key, $value, $ttl = null)
 	{
 		trigger_error('Apc::replace is NOT atomic. You probably ought to not be using this function.', E_WARNING);
+		
+		if (!$this->apc_enabled)
+		{
+			return false;
+		}
 		
 		if (apc_exists($this->config['prefix'] . $key))
 		{
@@ -140,7 +172,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	 */
 	public function set($key, $value, $ttl = null)
 	{
-		return apc_store($this->config['prefix'] . $key,
+		return $this->apc_enabled && apc_store($this->config['prefix'] . $key,
 		                 $value,
 		                 $ttl === null ? $this->config['ttl'] : $ttl);
 	}
@@ -150,7 +182,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	 */
 	public function get($key, $default = null)
 	{
-		$value = apc_fetch($this->config['prefix'] . $key);
+		$value = $this->apc_enabled ? apc_fetch($this->config['prefix'] . $key) : false;
 		
 		if ($value === false)
 		{
@@ -170,6 +202,6 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	 */
 	public function exists($key)
 	{
-		return apc_exists($this->config['prefix'] . $key);
+		return $this->apc_enabled && apc_exists($this->config['prefix'] . $key);
 	}
 }
