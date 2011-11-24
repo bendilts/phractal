@@ -55,7 +55,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	 */
 	public function prepend($key, $contents, $ttl = null, $default = '')
 	{
-		trigger_error('Apc::prepend is NOT atomic. You probably ought to not be using this function.', E_WARNING);
+		trigger_error(__CLASS__ . '::' . __FUNCTION__ . ' is NOT atomic. You probably ought to not be using this function.', E_WARNING);
 		
 		$value = apc_fetch($this->config['prefix'] . $key);
 		return apc_store($this->config['prefix'] . $key,
@@ -70,7 +70,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	 */
 	public function append($key, $contents, $ttl = null, $default = '')
 	{
-		trigger_error('Apc::append is NOT atomic. You probably ought to not be using this function.', E_WARNING);
+		trigger_error(__CLASS__ . '::' . __FUNCTION__ . ' is NOT atomic. You probably ought to not be using this function.', E_WARNING);
 		
 		$value = apc_fetch($this->config['prefix'] . $key);
 		return apc_store($this->config['prefix'] . $key,
@@ -101,7 +101,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	 */
 	public function replace($key, $value, $ttl = null)
 	{
-		trigger_error('Apc::replace is NOT atomic. You probably ought to not be using this function.', E_WARNING);
+		trigger_error(__CLASS__ . '::' . __FUNCTION__ . ' is NOT atomic. You probably ought to not be using this function.', E_WARNING);
 		
 		if (apc_exists($this->config['prefix'] . $key))
 		{
