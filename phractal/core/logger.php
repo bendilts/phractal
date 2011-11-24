@@ -278,14 +278,14 @@ class PhractalLogger extends PhractalObject
 	 */
 	public function write_logs_to_browser()
 	{
-		if (headers_sent())
-		{
-			throw new PhractalLoggerHeadersSentException();
-		}
-		
 		if (RUNTIME === 'cli')
 		{
 			return;
+		}
+		
+		if (headers_sent())
+		{
+			throw new PhractalLoggerHeadersSentException();
 		}
 
 		foreach ($this->groups['header'] as $name => $level)
