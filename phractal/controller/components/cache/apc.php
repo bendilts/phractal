@@ -173,8 +173,8 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	public function set($key, $value, $ttl = null)
 	{
 		return $this->apc_enabled && apc_store($this->config['prefix'] . $key,
-		                 $value,
-		                 $ttl === null ? $this->config['ttl'] : $ttl);
+		                                       $value,
+		                                       $ttl === null ? $this->config['ttl'] : $ttl);
 	}
 	
 	/**
