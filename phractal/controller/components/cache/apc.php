@@ -68,7 +68,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	{
 		trigger_error('Apc::prepend is NOT atomic. You probably ought to not be using this function.', E_WARNING);
 		
-		$key = $this->config['prepend'] . $key;
+		$key = $this->config['prefix'] . $key;
 		$value = apc_fetch($key);
 		
 		return apc_store($key,
@@ -85,7 +85,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	{
 		trigger_error('Apc::append is NOT atomic. You probably ought to not be using this function.', E_WARNING);
 		
-		$key = $this->config['prepend'] . $key;
+		$key = $this->config['prefix'] . $key;
 		$value = apc_fetch($key);
 		
 		return apc_store($key,
@@ -98,7 +98,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	 */
 	public function delete($key)
 	{
-		return apc_delete($this->config['prepend'] . $key);
+		return apc_delete($this->config['prefix'] . $key);
 	}
 	
 	/**
@@ -106,9 +106,9 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	 */
 	public function add($key, $value, $ttl = null)
 	{
-		$added = apc_add($this->config['prepend'] . $key,
+		$added = apc_add($this->config['prefix'] . $key,
 		                 $value,
-		                 $ttl === null ? $this->config['prepend'] : $ttl);
+		                 $ttl === null ? $this->config['prefix'] : $ttl);
 		
 		if (!$added && $this->apc_enabled())
 		{
