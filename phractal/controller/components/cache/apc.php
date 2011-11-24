@@ -91,16 +91,9 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	 */
 	public function add($key, $value, $ttl = null)
 	{
-		$added = apc_add($this->config['prefix'] . $key,
+		return apc_add($this->config['prefix'] . $key,
 		                 $value,
 		                 $ttl === null ? $this->config['ttl'] : $ttl);
-		
-		if (!$added)
-		{
-			throw new PhractalBaseCacheComponentKeyAlreadyExistsException($key);
-		}
-		
-		return $added;
 	}
 	
 	/**
@@ -112,7 +105,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 		
 		if (apc_exists($this->config['prefix'] . $key))
 		{
-			throw new PhractalBaseCacheComponentKeyAlreadyExistsException($key);
+			return false;
 		}
 		
 		return apc_store($this->config['prefix'] . $key,

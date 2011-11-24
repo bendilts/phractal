@@ -28,13 +28,6 @@ class PhractalBaseCacheComponentKeyNotFoundException extends PhractalNameExcepti
 // ------------------------------------------------------------------------
 
 /**
- * Thrown when a key cannot be added because it already exists.
- */
-class PhractalBaseCacheComponentKeyAlreadyExistsException extends PhractalNameException {}
-
-// ------------------------------------------------------------------------
-
-/**
  * Base Cache Component
  *
  * Parent class for all caching components
@@ -149,7 +142,6 @@ abstract class PhractalBaseCacheComponent extends PhractalBaseComponent
 	 * @param mixed $value
 	 * @param int $ttl
 	 * @return bool Success
-	 * @throws PhractalBaseCacheComponentKeyAlreadyExistsException
 	 */
 	abstract public function add($key, $value, $ttl = null);
 	
@@ -160,7 +152,6 @@ abstract class PhractalBaseCacheComponent extends PhractalBaseComponent
 	 * @param mixed $value
 	 * @param int $ttl
 	 * @return bool Success
-	 * @throws PhractalBaseCacheComponentKeyNotFoundException
 	 */
 	abstract public function replace($key, $value, $ttl = null);
 	
