@@ -18,7 +18,7 @@
  *
  * Connects to a set of servers running memcached.
  */
-class PhractalMemcacheCacheComponent extends PhractalBaseCacheComponent
+class PhractalMemcacheCacheComponent extends PhractalCacheComponent
 {
 	/**
 	 * Memcache instance
@@ -31,7 +31,7 @@ class PhractalMemcacheCacheComponent extends PhractalBaseCacheComponent
 	 * Constructor
 	 * 
 	 * @param string|array $config
-	 * @see PhractalBaseCacheComponent::__construct
+	 * @see PhractalCacheComponent::__construct
 	 */
 	public function __construct($config)
 	{
@@ -62,7 +62,7 @@ class PhractalMemcacheCacheComponent extends PhractalBaseCacheComponent
 	}
 	
 	/**
-	 * @see PhractalBaseCacheComponent::flush()
+	 * @see PhractalCacheComponent::flush()
 	 */
 	public function flush()
 	{
@@ -70,7 +70,7 @@ class PhractalMemcacheCacheComponent extends PhractalBaseCacheComponent
 	}
 	
 	/**
-	 * @see PhractalBaseCacheComponent::increment()
+	 * @see PhractalCacheComponent::increment()
 	 */
 	public function increment($key, $step = 1, $ttl = null, $default = 0)
 	{
@@ -91,7 +91,7 @@ class PhractalMemcacheCacheComponent extends PhractalBaseCacheComponent
 	}
 	
 	/**
-	 * @see PhractalBaseCacheComponent::prepend()
+	 * @see PhractalCacheComponent::prepend()
 	 */
 	public function prepend($key, $contents, $ttl = null, $default = '')
 	{
@@ -105,7 +105,7 @@ class PhractalMemcacheCacheComponent extends PhractalBaseCacheComponent
 	}
 	
 	/**
-	 * @see PhractalBaseCacheComponent::append()
+	 * @see PhractalCacheComponent::append()
 	 */
 	public function append($key, $contents, $ttl = null, $default = '')
 	{
@@ -119,7 +119,7 @@ class PhractalMemcacheCacheComponent extends PhractalBaseCacheComponent
 	}
 	
 	/**
-	 * @see PhractalBaseCacheComponent::delete()
+	 * @see PhractalCacheComponent::delete()
 	 */
 	public function delete($key)
 	{
@@ -127,7 +127,7 @@ class PhractalMemcacheCacheComponent extends PhractalBaseCacheComponent
 	}
 	
 	/**
-	 * @see PhractalBaseCacheComponent::add()
+	 * @see PhractalCacheComponent::add()
 	 */
 	public function add($key, $value, $ttl = null)
 	{
@@ -138,7 +138,7 @@ class PhractalMemcacheCacheComponent extends PhractalBaseCacheComponent
 	}
 	
 	/**
-	 * @see PhractalBaseCacheComponent::replace()
+	 * @see PhractalCacheComponent::replace()
 	 */
 	public function replace($key, $value, $ttl = null)
 	{
@@ -149,7 +149,7 @@ class PhractalMemcacheCacheComponent extends PhractalBaseCacheComponent
 	}
 	
 	/**
-	 * @see PhractalBaseCacheComponent::set()
+	 * @see PhractalCacheComponent::set()
 	 */
 	public function set($key, $value, $ttl = null)
 	{
@@ -160,7 +160,7 @@ class PhractalMemcacheCacheComponent extends PhractalBaseCacheComponent
 	}
 	
 	/**
-	 * @see PhractalBaseCacheComponent::get()
+	 * @see PhractalCacheComponent::get()
 	 */
 	public function get($key, $default = null)
 	{
@@ -170,7 +170,7 @@ class PhractalMemcacheCacheComponent extends PhractalBaseCacheComponent
 		{
 			if ($default === null)
 			{
-				throw new PhractalBaseCacheComponentKeyNotFoundException($key);
+				throw new PhractalCacheComponentKeyNotFoundException($key);
 			}
 			
 			return $default;
@@ -180,7 +180,7 @@ class PhractalMemcacheCacheComponent extends PhractalBaseCacheComponent
 	}
 	
 	/**
-	 * @see PhractalBaseCacheComponent::exists()
+	 * @see PhractalCacheComponent::exists()
 	 */
 	public function exists($key)
 	{

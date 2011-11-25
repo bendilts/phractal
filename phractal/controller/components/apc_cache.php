@@ -18,10 +18,10 @@
  *
  * Connects to the local APC cache.
  */
-class PhractalApcCacheComponent extends PhractalBaseCacheComponent
+class PhractalApcCacheComponent extends PhractalCacheComponent
 {
 	/**
-	 * @see PhractalBaseCacheComponent::flush()
+	 * @see PhractalCacheComponent::flush()
 	 */
 	public function flush()
 	{
@@ -29,7 +29,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	}
 	
 	/**
-	 * @see PhractalBaseCacheComponent::increment()
+	 * @see PhractalCacheComponent::increment()
 	 */
 	public function increment($key, $step = 1, $ttl = null, $default = 0)
 	{
@@ -51,7 +51,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	/**
 	 * This function is NOT atomic!
 	 * 
-	 * @see PhractalBaseCacheComponent::prepend()
+	 * @see PhractalCacheComponent::prepend()
 	 */
 	public function prepend($key, $contents, $ttl = null, $default = '')
 	{
@@ -66,7 +66,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	/**
 	 * This function is NOT atomic!
 	 * 
-	 * @see PhractalBaseCacheComponent::append()
+	 * @see PhractalCacheComponent::append()
 	 */
 	public function append($key, $contents, $ttl = null, $default = '')
 	{
@@ -79,7 +79,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	}
 	
 	/**
-	 * @see PhractalBaseCacheComponent::delete()
+	 * @see PhractalCacheComponent::delete()
 	 */
 	public function delete($key)
 	{
@@ -87,7 +87,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	}
 	
 	/**
-	 * @see PhractalBaseCacheComponent::add()
+	 * @see PhractalCacheComponent::add()
 	 */
 	public function add($key, $value, $ttl = null)
 	{
@@ -97,7 +97,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	}
 	
 	/**
-	 * @see PhractalBaseCacheComponent::replace()
+	 * @see PhractalCacheComponent::replace()
 	 */
 	public function replace($key, $value, $ttl = null)
 	{
@@ -114,7 +114,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	}
 	
 	/**
-	 * @see PhractalBaseCacheComponent::set()
+	 * @see PhractalCacheComponent::set()
 	 */
 	public function set($key, $value, $ttl = null)
 	{
@@ -124,7 +124,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	}
 	
 	/**
-	 * @see PhractalBaseCacheComponent::get()
+	 * @see PhractalCacheComponent::get()
 	 */
 	public function get($key, $default = null)
 	{
@@ -134,7 +134,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 		{
 			if ($default === null)
 			{
-				throw new PhractalBaseCacheComponentKeyNotFoundException($key);
+				throw new PhractalCacheComponentKeyNotFoundException($key);
 			}
 			
 			return $default;
@@ -144,7 +144,7 @@ class PhractalApcCacheComponent extends PhractalBaseCacheComponent
 	}
 	
 	/**
-	 * @see PhractalBaseCacheComponent::exists()
+	 * @see PhractalCacheComponent::exists()
 	 */
 	public function exists($key)
 	{

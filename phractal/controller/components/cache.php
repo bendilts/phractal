@@ -16,14 +16,14 @@
 /**
  * Thrown when a config name is not found in the cache.configs configuration.
  */
-class PhractalBaseCacheComponentConfigNotFoundException extends PhractalNameException {}
+class PhractalCacheComponentConfigNotFoundException extends PhractalNameException {}
 
 // ------------------------------------------------------------------------
 
 /**
  * Thrown when a key cannot be retrieved because it doesn't exist.
  */
-class PhractalBaseCacheComponentKeyNotFoundException extends PhractalNameException {}
+class PhractalCacheComponentKeyNotFoundException extends PhractalNameException {}
 
 // ------------------------------------------------------------------------
 
@@ -32,7 +32,7 @@ class PhractalBaseCacheComponentKeyNotFoundException extends PhractalNameExcepti
  *
  * Parent class for all caching components
  */
-abstract class PhractalBaseCacheComponent extends PhractalBaseComponent
+abstract class PhractalCacheComponent extends PhractalBaseComponent
 {
 	/**
 	 * The configuration array associated with this instance.
@@ -57,7 +57,7 @@ abstract class PhractalBaseCacheComponent extends PhractalBaseComponent
 			
 			if (!isset($all[$config]))
 			{
-				throw new PhractalBaseCacheComponentConfigNotFoundException($config);
+				throw new PhractalCacheComponentConfigNotFoundException($config);
 			}
 			
 			$config = $all[$config];
@@ -174,7 +174,7 @@ abstract class PhractalBaseCacheComponent extends PhractalBaseComponent
 	 * @param string $key
 	 * @param mixed $default
 	 * @return mixed
-	 * @throws PhractalBaseCacheComponentKeyNotFoundException
+	 * @throws PhractalCacheComponentKeyNotFoundException
 	 */
 	abstract public function get($key, $default = null);
 	
