@@ -52,6 +52,16 @@ class PhractalMemcacheCacheComponent extends PhractalBaseCacheComponent
 	}
 	
 	/**
+	 * Return the Memcache connection
+	 * 
+	 * @return Memcache
+	 */
+	public function connection()
+	{
+		return $this->memcache;
+	}
+	
+	/**
 	 * @see PhractalBaseCacheComponent::flush()
 	 */
 	public function flush()
