@@ -170,7 +170,7 @@ $config->set('proxy.accept', array(
  *     @param int ttl       Default Time to Live, in seconds, for all keys.
  *     @param string prefix Prefix to prepend to all keys.
  * 
- * Memcached (recommended) and Memcache engines:
+ * Memcached engine:
  *     @param array servers List of servers to connect to. Each server is an array of host, port, and weight.
  * 
  * Apc engine:
