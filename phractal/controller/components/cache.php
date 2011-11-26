@@ -74,6 +74,26 @@ abstract class PhractalCacheComponent extends PhractalBaseComponent
 	}
 	
 	/**
+	 * Get the cache configuration.
+	 * 
+	 * @return array
+	 */
+	public function get_config()
+	{
+		return $this->config;
+	}
+	
+	/**
+	 * Get the configured cache engine
+	 * 
+	 * @return string
+	 */
+	public function get_engine()
+	{
+		return $this->config['engine'];
+	}
+	
+	/**
 	 * Flush all elements in the cache
 	 * 
 	 * @return bool Success
