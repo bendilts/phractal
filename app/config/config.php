@@ -176,14 +176,6 @@ $config->set('proxy.accept', array(
  * Apc engine:
  *     (no extra params)
  * 
- * File engine:
- *     @param string directory   Absolute path to the directory that the cached files will be stored in.
- *                               This must NOT contain a trailing slash.
- *     @param int cleanup        The average number of requests between automatic cleanup of stale cache entries.
- *                               Use 0 to never cleanup old files.
- *     @param int max_entry_size The maximum entry size for entries. All entries bigger than this will
- *                               not be cached.
- * 
  * @var array
  */
 $config->set('cache.configs', array(
