@@ -44,33 +44,13 @@ abstract class PhractalCacheComponent extends PhractalBaseComponent
 	/**
 	 * Constructor
 	 * 
-	 * @param string|array $config Either the name of the config (in cache.configs array) or the configuration itself.
-	 * @throws InvalidArgumentException
+	 * @param array $config
 	 */
 	public function __construct($config)
 	{
 		parent::__construct();
 		
-		if (is_string($config))
-		{
-			$all = PhractalApp::get_instance()->get_config()->get('cache.configs', array());
-			
-			if (!isset($all[$config]))
-			{
-				throw new PhractalCacheComponentConfigNotFoundException($config);
-			}
-			
-			$config = $all[$config];
-		}
-		elseif (!is_array($config))
-		{
-			throw new InvalidArgumentException('Cache constructor accepts a cache config name or a configuration array.');
-		}
-		
-		$this->config = array_merge(array(
-			'ttl'    => 86400,
-			'prefix' => '',
-		), $config);
+		$this->config = $config;
 	}
 	
 	/**

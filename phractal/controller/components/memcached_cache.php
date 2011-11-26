@@ -30,16 +30,12 @@ class PhractalMemcachedCacheComponent extends PhractalCacheComponent
 	/**
 	 * Constructor
 	 * 
-	 * @param string|array $config
+	 * @param array $config
 	 * @see PhractalCacheComponent::__construct
 	 */
 	public function __construct($config)
 	{
 		parent::__construct($config);
-		
-		$this->config = array_merge(array(
-			'servers' => array(),
-		), $this->config);
 		
 		$this->memcached = new Memcached();
 		$this->memcached->addServers($this->config['servers']);
