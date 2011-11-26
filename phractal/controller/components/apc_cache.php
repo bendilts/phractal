@@ -31,21 +31,17 @@ class PhractalApcCacheComponent extends PhractalCacheComponent
 	/**
 	 * @see PhractalCacheComponent::increment()
 	 */
-	public function increment($key, $step = 1, $ttl = null, $default = 0)
+	public function increment($key, $step = 1)
 	{
-		$val = apc_inc($this->config['prefix'] . $key, $step);
-		if ($val === false)
-		{
-			$val = $default + $step;
-			if (!apc_add($this->config['prefix'] . $key,
-			            $val,
-			            $ttl === null ? $this->config['ttl'] : $ttl))
-			{
-				return false;
-			}
-		}
-		
-		return $val;
+		return apc_inc($this->config['prefix'] . $key, $step);
+	}
+	
+	/**
+	 * @see PhractalCacheComponent::decrement()
+	 */
+	public function decrement($key, $step = 1)
+	{
+		return apc_dec($this->config['prefix'] . $key, $step);
 	}
 	
 	/**
@@ -53,7 +49,7 @@ class PhractalApcCacheComponent extends PhractalCacheComponent
 	 * 
 	 * @see PhractalCacheComponent::prepend()
 	 */
-	public function prepend($key, $contents, $ttl = null, $default = '')
+	public function prepend($key, $contents)
 	{
 		trigger_error(__CLASS__ . '::' . __FUNCTION__ . ' is NOT atomic. You probably ought to not be using this function.', E_USER_WARNING);
 		
@@ -68,7 +64,7 @@ class PhractalApcCacheComponent extends PhractalCacheComponent
 	 * 
 	 * @see PhractalCacheComponent::append()
 	 */
-	public function append($key, $contents, $ttl = null, $default = '')
+	public function append($key, $contents)
 	{
 		trigger_error(__CLASS__ . '::' . __FUNCTION__ . ' is NOT atomic. You probably ought to not be using this function.', E_USER_WARNING);
 		

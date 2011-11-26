@@ -72,50 +72,45 @@ class PhractalMemcacheCacheComponent extends PhractalCacheComponent
 	/**
 	 * @see PhractalCacheComponent::increment()
 	 */
-	public function increment($key, $step = 1, $ttl = null, $default = 0)
+	public function increment($key, $step = 1)
 	{
-		$val = $this->memcache->increment($this->config['prefix'] . $key, $step);
-		if ($val === false)
-		{
-			$val = $default + $step;
-			if (!$this->memcache->add($this->config['prefix'] . $key,
-			                          $val,
-			                          0,
-			                          $ttl === null ? $this->config['ttl'] : $ttl))
-			{
-				return false;
-			}
-		}
-		
-		return $val;
+		return $this->memcache->increment($this->config['prefix'] . $key, $step);
+	}
+	
+	/**
+	 * @see PhractalCacheComponent::decrement()
+	 */
+	public function decrement($key, $step = 1)
+	{
+		return $this->memcache->decrement($this->config['prefix'] . $key, $step);
 	}
 	
 	/**
 	 * @see PhractalCacheComponent::prepend()
 	 */
-	public function prepend($key, $contents, $ttl = null, $default = '')
+	public function prepend($key, $contents)
 	{
 		trigger_error(__CLASS__ . '::' . __FUNCTION__ . ' is NOT atomic. You probably ought to not be using this function.', E_USER_WARNING);
 		
 		$value = $this->memcache->get($this->config['prefix'] . $key);
-		return $this->memcache->set($this->config['prefix'] . $key,
-		                            $contents . ($value === false ? $default : $value),
-		                            0,
-		                            $ttl === null ? $this->config['ttl'] : $ttl);
+		return $value !== false && $this->memcache->set($this->config['prefix'] . $key,
+		                                                $contents . $value,
+		                                                0,
+		                                                $ttl === null ? $this->config['ttl'] : $ttl);
 	}
 	
 	/**
 	 * @see PhractalCacheComponent::append()
 	 */
-	public function append($key, $contents, $ttl = null, $default = '')
+	public function append($key, $contents)
 	{
 		trigger_error(__CLASS__ . '::' . __FUNCTION__ . ' is NOT atomic. You probably ought to not be using this function.', E_USER_WARNING);
 		
 		$value = $this->memcache->get($this->config['prefix'] . $key);
-		return $this->memcache->set($this->config['prefix'] . $key,
-		                            ($value === false ? $default : $value) . $contents,
-		                            0,
-		                            $ttl === null ? $this->config['ttl'] : $ttl);
+		return $value !== false && $this->memcache->set($this->config['prefix'] . $key,
+		                                                $value . $contents,
+		                                                0,
+		                                                $ttl === null ? $this->config['ttl'] : $ttl);
 	}
 	
 	/**

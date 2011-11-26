@@ -68,41 +68,17 @@ class PhractalMemcachedCacheComponent extends PhractalCacheComponent
 	/**
 	 * @see PhractalCacheComponent::increment()
 	 */
-	public function increment($key, $step = 1, $ttl = null, $default = 0)
+	public function increment($key, $step = 1)
 	{
-		$val = $this->memcached->increment($key, $step);
-		if ($val === false && $this->memcached->getResultCode() === Memcached::RES_NOTFOUND)
-		{
-			$val = $default + $step;
-			if (!$this->memcached->add($key,
-			                           $val,
-			                           $ttl === null ? $this->config['ttl'] : $ttl))
-			{
-				return false;
-			}
-		}
-		
-		return $val;
+		return $this->memcached->increment($key, $step);
 	}
 	
 	/**
 	 * @see PhractalCacheComponent::decrement()
 	 */
-	public function decrement($key, $step = 1, $ttl = null, $default = 0)
+	public function decrement($key, $step = 1)
 	{
-		$val = $this->memcached->decrement($key, $step);
-		if ($val === false && $this->memcached->getResultCode() === Memcached::RES_NOTFOUND)
-		{
-			$val = $default - $step;
-			if (!$this->memcached->add($key,
-			                           $val,
-			                           $ttl === null ? $this->config['ttl'] : $ttl))
-			{
-				return false;
-			}
-		}
-		
-		return $val;
+		return $this->memcached->decrement($key, $step);
 	}
 	
 	/**
@@ -110,15 +86,7 @@ class PhractalMemcachedCacheComponent extends PhractalCacheComponent
 	 */
 	public function prepend($key, $contents, $ttl = null, $default = '')
 	{
-		$success = $this->memcached->prepend($key, $contents);
-		if (!$success && $this->memcached->getResultCode() === Memcached::RES_NOTFOUND)
-		{
-			$success = $this->memcached->add($key,
-			                                 $contents . $default,
-			                                 $ttl === null ? $this->config['ttl'] : $ttl);
-		}
-		
-		return $success;
+		return $this->memcached->prepend($key, $contents);
 	}
 	
 	/**
@@ -126,15 +94,7 @@ class PhractalMemcachedCacheComponent extends PhractalCacheComponent
 	 */
 	public function append($key, $contents, $ttl = null, $default = '')
 	{
-		$success = $this->memcached->append($key, $contents);
-		if (!$success && $this->memcached->getResultCode() === Memcached::RES_NOTFOUND)
-		{
-			$success = $this->memcached->add($key,
-			                                 $default . $contents,
-			                                 $ttl === null ? $this->config['ttl'] : $ttl);
-		}
-		
-		return $success;
+		return $this->memcached->append($key, $contents);
 	}
 	
 	/**

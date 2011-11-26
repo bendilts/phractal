@@ -85,47 +85,36 @@ abstract class PhractalCacheComponent extends PhractalBaseComponent
 	 * 
 	 * @param string $key
 	 * @param int $step
-	 * @param int $ttl
-	 * @param int $default
 	 * @return int The new value of the entry (after incrementing) or false on failure
 	 */
-	abstract public function increment($key, $step = 1, $ttl = null, $default = 0);
+	abstract public function increment($key, $step = 1);
 	
 	/**
 	 * Decrement the numeric value of a cache entry
 	 * 
 	 * @param string $key
 	 * @param int $step
-	 * @param int $ttl
-	 * @param int $default
 	 * @return int The new value of the entry (after decrementing) or false on failure
 	 */
-	public function decrement($key, $step = 1, $ttl = null, $default = 0)
-	{
-		return $this->increment($key, -$step, $ttl, $default);
-	}
+	abstract public function decrement($key, $step = 1);
 	
 	/**
 	 * Prepend a string value to a string cache entry
 	 * 
 	 * @param string $key
 	 * @param string $contents
-	 * @param int $ttl
-	 * @param string $default
 	 * @return bool Success
 	 */
-	abstract public function prepend($key, $contents, $ttl = null, $default = '');
+	abstract public function prepend($key, $contents);
 	
 	/**
 	 * Append a string value to a string cache entry
 	 * 
 	 * @param string $key
 	 * @param string $contents
-	 * @param int $ttl
-	 * @param string $default
 	 * @return bool Success
 	 */
-	abstract public function append($key, $contents, $ttl = null, $default = '');
+	abstract public function append($key, $contents);
 	
 	/**
 	 * Delete an entry from the cache
