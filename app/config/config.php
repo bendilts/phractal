@@ -180,19 +180,11 @@ $config->set('proxy.accept', array(
  */
 $config->set('cache.configs', array(
 	'cache1' => array(
-		'engine'         => 'File',
-		'ttl'            => 86400,
-		'prefix'         => 'myapp',
-		'directory'      => PATH_APP . '/tmp/cache',
-		'cleanup'        => 10000, // once every 10,000 requests
-		'max_entry_size' => 2097152, // 2 MiB
-	),
-	'cache2' => array(
 		'engine' => 'Apc',
 		'ttl'    => 1800,
 		'prefix' => 'myapp',
 	),
-	'cache3' => array(
+	'cache2' => array(
 		'engine'  => 'Memcached',
 		'ttl'     => 1800,
 		'prefix'  => 'myapp',
