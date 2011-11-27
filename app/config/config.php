@@ -60,6 +60,53 @@
 $config->set('site.maintenance', false);
 
 /**
+ * Encryption Configuration
+ * 
+ * Each configuration is named (the key). The Encrypt class takes
+ * a configuration name as a parameter, so the names are important.
+ * 
+ * Each configuration contains these keys:
+ *   @param string key The encryption key. This can be any length.
+ *   @param string salt Salt to prepend the encrypted value with.
+ *   @param string iv Initialization vector. This will be a somewhat
+ *                    random string, but the string length is determined
+ *                    by the cipher and mode being used. Use this code to
+ *                    get a random string of the correct length whenever
+ *                    the cipher or mode are changed.
+ *                    <code>
+ *                    $iv = mcrypt_create_iv(mcrypt_get_iv_size(<CIPHER>, <MODE>), MCRYPT_RAND);
+ *                    </code>
+ *   @param string cipher One of the MCRYPT_* constants
+ *   @param string mode One of the MCRYPT_MODE_* constants
+ *   @param bool base64 True to base64 encode/decode on encrypt/decrypt.
+ *   @param bool serialize True to serialize values before encryption and
+ *                         unserialize values after decryption. This is nice
+ *                         for objects or arrays.
+ * 
+ * @var array
+ */
+$config->set('encryption', array(
+	'default' => array(
+		'key' => 'CHANGE ME!!! this should be different in dev and production',
+		'salt' => 'CHANGE ME!!! this should be different in dev and production',
+		'iv' => '32 characters...................',
+		'cipher' => MCRYPT_RIJNDAEL_256,
+		'mode' => MCRYPT_MODE_CBC,
+		'base64' => true,
+		'serialize' => true,
+	),
+	'double-encrypt' => array(
+		'key' => 'CHANGE ME!!! this should be different in dev and production',
+		'salt' => 'CHANGE ME!!! this should be different in dev and production',
+		'iv' => 'only 8 c',
+		'cipher' => MCRYPT_3DES,
+		'mode' => MCRYPT_MODE_OFB,
+		'base64' => false,
+		'serialize' => true,
+	),
+));
+
+/**
  * Log file path
  * 
  * All logs will be placed in this directory. The directory
