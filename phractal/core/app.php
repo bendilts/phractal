@@ -287,6 +287,28 @@ abstract class PhractalApp extends PhractalObject
 	}
 	
 	/**
+	 * Create a new cache object from the name of the config
+	 * that will be passed to it.
+	 * 
+	 * @param string $config_name
+	 * @return PhractalCacheComponent
+	 */
+	public function cache_factory($config_name)
+	{
+		return $this->contexts[$this->context_index]->ensure_with_closure('Cache.' . $config_name, function() use ($config_name) {
+			$configs = PhractalApp::get_instance()->get_config()->get('cache.configs');
+			
+			if (!isset($configs[$config_name]))
+			{
+				return null;
+			}
+			
+			$cache_config = $configs[$config_name];
+			return PhractalApp::get_instance()->get_loader()->instantiate($cache_config['engine'] . 'Cache', 'Component', array($cache_config));
+		});
+	}
+	
+	/**
 	 * Get the singleton instance
 	 * 
 	 * @return PhractalApp
