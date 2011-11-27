@@ -21,11 +21,25 @@ class PhractalAppNoContextException extends PhractalException {}
 // ------------------------------------------------------------------------
 
 /**
+ * Thrown when no app singleton has been registered.
+ */
+class PhractalAppNoAppSingletonRegisteredException extends PhractalException {}
+
+// ------------------------------------------------------------------------
+
+/**
+ * Thrown when the app singleton is registered more than once.
+ */
+class PhractalAppSingletonAlreadyRegisteredException extends PhractalException {}
+
+// ------------------------------------------------------------------------
+
+/**
  * Phractal App Class
  *
- * The only singleton class in the project.
+ * Parent class for the App singleton
  */
-class PhractalApp extends PhractalObject
+abstract class PhractalApp extends PhractalObject
 {
 	/**
 	 * A stack of contexts and variables within contexts
@@ -61,8 +75,15 @@ class PhractalApp extends PhractalObject
 	{
 		parent::__construct();
 		
-		$this->global_context = new PhractalContext();
+		$this->create_global_context();
 	}
+	
+	/**
+	 * Create the global context.
+	 * 
+	 * This function is called by the PhractalApp::__construct function.
+	 */
+	abstract protected function create_global_context();
 	
 	/**
 	 * Get the number of contexts in existence.
@@ -269,14 +290,31 @@ class PhractalApp extends PhractalObject
 	 * Get the singleton instance
 	 * 
 	 * @return PhractalApp
+	 * @throws PhractalAppNoAppSingletonException
 	 */
 	public static function get_instance()
 	{
-		if (!self::$instance)
+		if (self::$instance === null)
 		{
-			self::$instance = new PhractalApp();
+			throw new PhractalAppNoAppSingletonException();
 		}
 		
 		return self::$instance;
+	}
+	
+	/**
+	 * Register the singleton instance
+	 * 
+	 * @param PhractalApp $instance
+	 * @throws PhractalAppSingletonAlreadyRegisteredException
+	 */
+	protected static function register_app_singleton(PhractalApp $instance)
+	{
+		if (self::$instance !== null)
+		{
+			throw new PhractalAppSingletonAlreadyRegisteredException();
+		}
+		
+		self::$instance = $instance;
 	}
 }

@@ -58,21 +58,18 @@ define('RUNTIME', defined('STDIN') ? 'cli' : 'web');
 
 // ------------------------------------------------------------------------
 
+// require the phractal core first
 require_once(PATH_PHRACTAL . '/config/bootstrap.php');
+
+// then require all of the app specific stuff
+require_once(PATH_APP . '/core/app.php');
 
 // ------------------------------------
 
 /**
- * App
- * 
- * Replace this class with a subclass of PhractalApp
- * to customize singleton references
- * 
- * The subclass of PhractalApp must set the
- * PhractalApp::$instance static variable, otherwise
- * the core will continue to use a PhractalApp instance.
+ * App instance
  */
-$app = PhractalApp::get_instance();
+$app = App::register();
 
 // ------------------------------------
 
