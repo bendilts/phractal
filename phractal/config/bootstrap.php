@@ -29,4 +29,5 @@ require_once(PATH_PHRACTAL . '/core/loader.php');
 require_once(PATH_PHRACTAL . '/core/benchmark.php');
 require_once(PATH_PHRACTAL . '/core/logger.php');
 require_once(PATH_PHRACTAL . '/core/dispatcher.php');
+require_once(PATH_PHRACTAL . '/core/context.php');
 require_once(PATH_PHRACTAL . '/core/app.php');
