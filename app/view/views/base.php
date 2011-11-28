@@ -13,6 +13,14 @@
 
 // ------------------------------------------------------------------------
 
+/**
+ * Base View
+ *
+ * App specific parent for all views.
+ * 
+ * Views are for organizing data from controllers into whatever
+ * format the controller desires.
+ */
 class BaseView extends PhractalBaseView
 {
 }

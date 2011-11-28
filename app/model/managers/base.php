@@ -13,6 +13,11 @@
 
 // ------------------------------------------------------------------------
 
-class BaseManager extends PhractalBaseManager
+/**
+ * Base Manager
+ * 
+ * App specific parent for all managers.
+ */
+abstract class BaseManager extends PhractalBaseManager
 {
 }

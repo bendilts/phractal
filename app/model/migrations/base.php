@@ -13,6 +13,11 @@
 
 // ------------------------------------------------------------------------
 
-class BaseMigration extends PhractalBaseMigration
+/**
+ * Base Migration
+ *
+ * App specific parent for all migrations.
+ */
+abstract class BaseMigration extends PhractalBaseMigration
 {
 }

@@ -13,6 +13,11 @@
 
 // ------------------------------------------------------------------------
 
-class BaseRecord extends PhractalBaseRecord
+/**
+ * Base Record
+ *
+ * App specific parent for all records.
+ */
+abstract class BaseRecord extends PhractalBaseRecord
 {
 }

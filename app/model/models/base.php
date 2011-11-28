@@ -13,6 +13,11 @@
 
 // ------------------------------------------------------------------------
 
-class BaseModel extends PhractalBaseModel
+/**
+ * Base Model
+ *
+ * App specific parent for all models.
+ */
+abstract class BaseModel extends PhractalBaseModel
 {
 }

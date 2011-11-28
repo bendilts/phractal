@@ -13,6 +13,11 @@
 
 // ------------------------------------------------------------------------
 
-class BaseDriver extends PhractalBaseDriver
+/**
+ * Base Driver
+ * 
+ * App specific parent class for all drivers.
+ */
+abstract class BaseDriver extends PhractalBaseDriver
 {
 }
