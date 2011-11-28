@@ -68,15 +68,16 @@ abstract class PhractalBaseController extends PhractalObject
 		
 		$app = PhractalApp::get_instance();
 		
-		$this->request = $request;
-		$this->response = $response;
-		$this->view = $app->get_loader()->instantiate('Base', 'View');
-		
 		$route = $request->get_matched_route();
 		$inflector = $app->get_inflector();
 		
-		// add the initial template web/<extension>/<controller>/<action>
-		$this->view->unshift_template('web/' . $request->get_extension() . '/' . $inflector->underscore($route['controller']) . '/' . $inflector->underscore($route['action']));
+		$this->request = $request;
+		$this->response = $response;
+		
+		$this->view = $app->get_loader()->instantiate('Base', 'View', array(
+			'web/' . $request->get_extension() . '/' . $inflector->underscore($route['controller']) . '/' . $inflector->underscore($route['action']),
+		));
+		
 		$this->set_content_type_from_extension($request->get_extension());
 	}
 	

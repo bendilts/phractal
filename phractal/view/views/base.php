@@ -44,6 +44,51 @@ class PhractalBaseView extends PhractalObject
 	protected $templates = array();
 	
 	/**
+	 * The main, and innermost, template to render. This will correspond
+	 * to the most specific data to be rendered. This will never be a
+	 * content template.
+	 * 
+	 * @var string
+	 */
+	protected $main_template;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param string $main_template Main template file to render inside of
+	 *                              all layouts and templates.
+	 */
+	public function __construct($main_template)
+	{
+		parent::__construct();
+		
+		$this->main_template = $main_template;
+	}
+	
+	/**
+	 * Get the main template to render
+	 * 
+	 * @return string
+	 */
+	public function get_main_template()
+	{
+		return $this->main_template;
+	}
+	
+	/**
+	 * Set the main template
+	 * 
+	 * Path must be relative to APP/view/templates, and must be
+	 * extensionless (no .php)
+	 * 
+	 * @param string $main_template
+	 */
+	public function set_main_template($main_template)
+	{
+		$this->main_template = $main_template;
+	}
+	
+	/**
 	 * Reset the view.
 	 * Delete all data variables.
 	 * Delete all scheduled templates
@@ -65,7 +110,7 @@ class PhractalBaseView extends PhractalObject
 	{
 		$content = '';
 		
-		foreach ($this->templates as $template)
+		foreach (array_merge(array($this->main_template), $this->templates) as $template)
 		{
 			$absolute = PATH_APP . '/view/templates/' . $template . '.php';
 			
@@ -111,6 +156,16 @@ class PhractalBaseView extends PhractalObject
 	}
 	
 	/**
+	 * Remove a template file from the front of the process queue.
+	 * 
+	 * @return string
+	 */
+	public function shift_template()
+	{
+		return array_shift($this->templates);
+	}
+	
+	/**
 	 * Add a template file to the end of the process queue.
 	 * 
 	 * This function should be used for generic templates. The template
@@ -125,6 +180,16 @@ class PhractalBaseView extends PhractalObject
 	public function push_template($path)
 	{
 		array_push($this->templates, $path);
+	}
+	
+	/**
+	 * Remove a template file from the end of the process queue.
+	 * 
+	 * @return string
+	 */
+	public function pop_template()
+	{
+		return array_pop($this->templates);
 	}
 	
 	/**
