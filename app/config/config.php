@@ -50,6 +50,17 @@
 // ------------------------------------------------------------------------
 
 /**
+ * App Version
+ * 
+ * The current version of the application. This is
+ * not required by any of the phractal framework
+ * classes, but is good to have for applications.
+ * 
+ * @var string
+ */
+$config->set('app.version', '1.0.0');
+
+/**
  * Site Maintenance
  * 
  * Set to true to show the maintenance route to all
