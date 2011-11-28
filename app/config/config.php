@@ -66,7 +66,8 @@ $config->set('site.maintenance', false);
  * a configuration name as a parameter, so the names are important.
  * 
  * Each configuration contains these keys:
- *   @param string key The encryption key. This can be any length.
+ *   @param string key The encryption key. The length is limited by the
+ *                     cipher and mode.
  *   @param string salt Salt to prepend the encrypted value with.
  *   @param string iv Initialization vector. This will be a somewhat
  *                    random string, but the string length is determined
@@ -87,8 +88,8 @@ $config->set('site.maintenance', false);
  */
 $config->set('encryption', array(
 	'default' => array(
-		'key'       => 'CHANGE ME!!! this should be different in dev and production',
-		'salt'      => 'CHANGE ME!!! this should be different in dev and production',
+		'key'       => 'CHANGE ME!!!',
+		'salt'      => 'CHANGE ME!!!',
 		'iv'        => '32 characters...................',
 		'cipher'    => MCRYPT_RIJNDAEL_256,
 		'mode'      => MCRYPT_MODE_CBC,
@@ -96,8 +97,8 @@ $config->set('encryption', array(
 		'serialize' => true,
 	),
 	'double-encrypt' => array(
-		'key'       => 'CHANGE ME!!! this should be different in dev and production',
-		'salt'      => 'CHANGE ME!!! this should be different in dev and production',
+		'key'       => 'CHANGE ME!!!',
+		'salt'      => 'CHANGE ME!!!',
 		'iv'        => 'only 8 c',
 		'cipher'    => MCRYPT_3DES,
 		'mode'      => MCRYPT_MODE_OFB,
