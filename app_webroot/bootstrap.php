@@ -222,6 +222,8 @@ function main($request)
 	$response = $dispatcher->dispatch($request);
 	$benchmark->stop($main_benchmark);
 	
+	$benchmark->mark_from_script_start('global', 'all');
+	
 	// you probably only need 1 of these
 	$benchmark->log_all();
 	//$benchmark->log_all_groups();
