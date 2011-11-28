@@ -1000,6 +1000,22 @@ class PhractalInputFilterComponent extends PhractalBaseComponent
 	}
 	
 	/**
+	 * Check the number of elements in an array
+	 * 
+	 * @param string $input
+	 * @param int $min If null, no min value will be checked
+	 * @param int $max If null, no max value will be checked
+	 * @param bool $inclusive True to pass validation when the length is equal to the min or max
+	 * @return bool
+	 */
+	protected function operation_validate_array_count_between(&$input, $min = null, $max = null, $inclusive = true)
+	{
+		$count = count($input);
+		return ($min === null || ($inclusive && $count >= $min) || (!$inclusive && $count > $min))
+		    && ($max === null || ($inclusive && $count <= $max) || (!$inclusive && $count < $max));
+	}
+	
+	/**
 	 * Validate a UUID
 	 * 
 	 * @param string $input
