@@ -87,21 +87,21 @@ $config->set('site.maintenance', false);
  */
 $config->set('encryption', array(
 	'default' => array(
-		'key' => 'CHANGE ME!!! this should be different in dev and production',
-		'salt' => 'CHANGE ME!!! this should be different in dev and production',
-		'iv' => '32 characters...................',
-		'cipher' => MCRYPT_RIJNDAEL_256,
-		'mode' => MCRYPT_MODE_CBC,
-		'base64' => true,
+		'key'       => 'CHANGE ME!!! this should be different in dev and production',
+		'salt'      => 'CHANGE ME!!! this should be different in dev and production',
+		'iv'        => '32 characters...................',
+		'cipher'    => MCRYPT_RIJNDAEL_256,
+		'mode'      => MCRYPT_MODE_CBC,
+		'base64'    => true,
 		'serialize' => true,
 	),
 	'double-encrypt' => array(
-		'key' => 'CHANGE ME!!! this should be different in dev and production',
-		'salt' => 'CHANGE ME!!! this should be different in dev and production',
-		'iv' => 'only 8 c',
-		'cipher' => MCRYPT_3DES,
-		'mode' => MCRYPT_MODE_OFB,
-		'base64' => false,
+		'key'       => 'CHANGE ME!!! this should be different in dev and production',
+		'salt'      => 'CHANGE ME!!! this should be different in dev and production',
+		'iv'        => 'only 8 c',
+		'cipher'    => MCRYPT_3DES,
+		'mode'      => MCRYPT_MODE_OFB,
+		'base64'    => false,
 		'serialize' => true,
 	),
 ));
