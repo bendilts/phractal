@@ -324,7 +324,7 @@ class PhractalLogger extends PhractalObject
 	 * @param string $name
 	 * @throws PhractalLoggerGroupNotRegisteredException
 	 */
-	public function unregister_group($type, $name)
+	protected function unregister_group($type, $name)
 	{
 		if (!isset($this->groups[$type][$name]))
 		{
