@@ -49,6 +49,15 @@ class PhractalBenchmark extends PhractalObject
 	protected $tokens = array();
 	
 	/**
+	 * The amount of time the script has taken up until the
+	 * reporting of metrics. This is used in the time percentage
+	 * calculation.
+	 * 
+	 * @var float
+	 */
+	protected $script_percent_time;
+	
+	/**
 	 * Add an entry to the benchmark array
 	 * 
 	 * @param string $group
@@ -384,6 +393,9 @@ class PhractalBenchmark extends PhractalObject
 	 */
 	public function log_all()
 	{
+		// mark the script total time
+		$this->script_percent_time = (microtime(true) - START_TIME) / 100;
+		
 		foreach ($this->groups as $group => $names)
 		{
 			foreach ($names as $name => $entries)
@@ -403,6 +415,9 @@ class PhractalBenchmark extends PhractalObject
 	 */
 	public function log_groups(array $groups)
 	{
+		// mark the script total time
+		$this->script_percent_time = (microtime(true) - START_TIME) / 100;
+		
 		foreach ($groups as $group)
 		{
 			$this->log_group($group);
@@ -419,7 +434,7 @@ class PhractalBenchmark extends PhractalObject
 	protected function format_for_log($stat, $title)
 	{
 		$message = $title . ' (' . $stat['count'] . ')'
-		         . ' {Time min='   . sprintf('%.7f', $stat['time']['min'])   . ' max=' . sprintf('%.7f', $stat['time']['max'])   . ' avg=' . sprintf('%.7f', $stat['time']['avg'])   . ' all=' . sprintf('%.7f', $stat['time']['all'])   . '}'
+		         . ' {Time ' . sprintf('%.3f', $stat['time']['all'] / $this->script_percent_time) . '% min='   . sprintf('%.7f', $stat['time']['min'])   . ' max=' . sprintf('%.7f', $stat['time']['max'])   . ' avg=' . sprintf('%.7f', $stat['time']['avg'])   . ' all=' . sprintf('%.7f', $stat['time']['all'])   . '}'
 		         . ' {Memory min=' . sprintf('%d',   $stat['memory']['min']) . ' max=' . sprintf('%d',   $stat['memory']['max']) . ' avg=' . sprintf('%d',   $stat['memory']['avg']) . ' all=' . sprintf('%d',   $stat['memory']['all']) . '}';
 		
 		return $message;
