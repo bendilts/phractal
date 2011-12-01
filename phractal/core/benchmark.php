@@ -419,8 +419,8 @@ class PhractalBenchmark extends PhractalObject
 	protected function format_for_log($stat, $title)
 	{
 		$message = $title . ' (' . $stat['count'] . ')'
-		         . ' {Time min=' . round($stat['time']['min'], 5) . ' max=' . round($stat['time']['max'], 5) . ' avg=' . round($stat['time']['avg'], 5) . ' all=' . round($stat['time']['avg'], 5) . '}'
-		         . ' {Memory min=' . round($stat['memory']['min'] >> 20, 1) . 'MB max=' . round($stat['memory']['max'] >> 20, 1) . 'MB avg=' . round($stat['memory']['avg'] >> 20, 1) . 'MB all=' . round($stat['memory']['all'] >> 20, 1) . 'MB}';
+		         . ' {Time min='   . sprintf('%.7f', $stat['time']['min'])   . ' max=' . sprintf('%.7f', $stat['time']['max'])   . ' avg=' . sprintf('%.7f', $stat['time']['avg'])   . ' all=' . sprintf('%.7f', $stat['time']['all'])   . '}'
+		         . ' {Memory min=' . sprintf('%d',   $stat['memory']['min']) . ' max=' . sprintf('%d',   $stat['memory']['max']) . ' avg=' . sprintf('%d',   $stat['memory']['avg']) . ' all=' . sprintf('%d',   $stat['memory']['all']) . '}';
 		
 		return $message;
 	}
